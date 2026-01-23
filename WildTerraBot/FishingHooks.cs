@@ -9,6 +9,7 @@ namespace WildTerraBot
         [HarmonyPostfix]
         static void OnShowActions()
         {
+            // Apenas reseta a sessão, não ativa o bot (controle manual permitido)
             FishBrain.ResetSession();
         }
 
@@ -23,49 +24,45 @@ namespace WildTerraBot
         [HarmonyPostfix]
         static void OnUserCodeFishAction(WTPlayer __instance, object[] __args)
         {
-            // Trava do Dashboard
+            // Trava de segurança: Se o Dashboard não mandou ligar, não faz nada.
             if (!WTSocketBot.IsFishingBotActive) return;
 
             if (__args == null || __args.Length < 3) return;
 
             try
             {
-                // ARGUMENTOS:
-                // [0] = FishBite (A Figura Visual: Bite, Lift, etc)
-                // [1] = FishingUse (A Tecla Sugerida: E, R, T...)
-                // [2] = bool (Sucesso/Verde ou Falha/Vermelho)
-
-                object visualObj = __args[0]; // NOVO: Pegamos o visual
-                object tipObj = __args[1];    // A tecla
-
-                int visualID = Convert.ToInt32(visualObj); // 0=Bite, 1=Lift...
-                int serverTip = Convert.ToInt32(tipObj);   // 0=E, 1=R...
+                // === CORREÇÃO: Declarando as variáveis corretamente ===
+                object visualObj = __args[0]; // Visual (0=Bite, 1=Lift...)
+                object tipObj = __args[1];    // Dica do Jogo (Objeto Enum) - NECESSÁRIO NO FINAL
                 bool isSuccess = (bool)__args[2];
+
+                int visualID = Convert.ToInt32(visualObj);
+                int tipID = Convert.ToInt32(tipObj); // Valor numérico da dica
 
                 int actionToTake = -1;
 
                 if (isSuccess)
                 {
-                    // VERDE: Pode confiar na dica
-                    actionToTake = serverTip;
-                    WTSocketBot.PublicLogger.LogInfo($"[VERDE] Visual: {visualID} | Jogo pede: {FishBrain.GetKeyName(actionToTake)}");
+                    // === VERDE (Verdade) ===
+                    actionToTake = tipID;
+
+                    // Adiciona ao histórico (Só confiamos no verde para identificar o peixe)
+                    FishBrain.AddToHistory(visualID);
+
+                    WTSocketBot.PublicLogger.LogInfo($"[VERDE] Visual: {visualID} | Ação: {FishBrain.GetKeyName(actionToTake)}");
                 }
                 else
                 {
-                    // VERMELHO: O servidor mente.
-                    // Usamos o Visual ID atual + Histórico Visual para descobrir a verdade.
-                    WTSocketBot.PublicLogger.LogWarning($"[VERMELHO] Visual: {visualID} | Jogo mentiu pedindo: {FishBrain.GetKeyName(serverTip)}");
-                    actionToTake = FishBrain.PredictNextMove(visualID, serverTip, WTSocketBot.PublicLogger);
+                    // === VERMELHO (Mentira) ===
+                    WTSocketBot.PublicLogger.LogWarning($"[VERMELHO] O jogo tentou enganar com Visual {visualID}. Consultando IA...");
+
+                    // Chama a IA para decidir com base no histórico que já temos
+                    actionToTake = FishBrain.PredictFinalMove(WTSocketBot.PublicLogger);
                 }
 
-                if (actionToTake == 4) actionToTake = 3;
+                if (actionToTake == 4) actionToTake = 3; // Any vira Wait
 
-                // Atualiza histórico com o Visual que vimos
-                FishBrain.AddHistory(visualID);
-
-                //xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-                // Executa
+                // Execução
                 if (actionToTake == 3)
                 {
                     WTSocketBot.PublicLogger.LogInfo("[SILÊNCIO] Mantendo Wait.");
@@ -74,7 +71,9 @@ namespace WildTerraBot
 
                 if (WTSocketBot.CmdFishingUseMethod != null)
                 {
+                    // CORREÇÃO: Aqui usamos o tipObj.GetType() que agora existe!
                     object enumValue = Enum.ToObject(tipObj.GetType(), actionToTake);
+
                     WTSocketBot.PublicLogger.LogMessage($"[ENVIANDO] CmdFishingUse({FishBrain.GetKeyName(actionToTake)})");
                     WTSocketBot.CmdFishingUseMethod.Invoke(__instance, new object[] { enumValue });
                 }
