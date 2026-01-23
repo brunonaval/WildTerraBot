@@ -4,68 +4,113 @@ using BepInEx.Logging;
 
 namespace WildTerraBot
 {
+    // Estrutura para relacionar o Visual com a Ação
+    public class FishProfile
+    {
+        public int[] VisualSequence; // A figura que aparece (0=Bite, 1=Lift...)
+        public int[] ActionSequence; // O botão correto (0=E, 3=Wait...)
+
+        public FishProfile(int[] visual, int[] action)
+        {
+            VisualSequence = visual;
+            ActionSequence = action;
+        }
+    }
+
     public static class FishBrain
     {
-        public static Dictionary<string, int[]> KnownPatterns = new Dictionary<string, int[]>();
-        public static List<int> SessionHistory = new List<int>();
+        public static List<FishProfile> KnownProfiles = new List<FishProfile>();
+        public static List<int> SessionVisualHistory = new List<int>(); // Histórico das FIGURAS vistas
+        public static int StepsCount = 0;
 
         public static void Initialize()
         {
-            // Padrões conhecidos (PDF/Docx)
-            KnownPatterns["Jellyfish"] = new int[] { 0 };
-            KnownPatterns["Shrimp"] = new int[] { 2, 0 };
-            KnownPatterns["Alburnus"] = new int[] { 3, 2 };
-            KnownPatterns["Crucian"] = new int[] { 3, 0 };
-            KnownPatterns["Roach"] = new int[] { 3, 3, 0 };
-            KnownPatterns["Carp"] = new int[] { 3, 3, 2, 0 };
-            KnownPatterns["Pike"] = new int[] { 3, 2, 1, 0 };
-            KnownPatterns["SeaBass"] = new int[] { 3, 2, 0, 1 };
-            KnownPatterns["Trout"] = new int[] { 3, 3, 2, 1, 0 };
-            KnownPatterns["Halibut"] = new int[] { 3, 1, 1, 0 };
-            KnownPatterns["Cod"] = new int[] { 3, 3, 3, 0 };
-            KnownPatterns["Catfish"] = new int[] { 1, 1, 1 };
-            KnownPatterns["Flounder"] = new int[] { 1, 2, 2, 2 };
-            KnownPatterns["Salmon"] = new int[] { 3, 3, 1, 3, 2 };
-            KnownPatterns["Pufferfish"] = new int[] { 3, 3, 2, 3, 1 };
-            KnownPatterns["Wolffish"] = new int[] { 1, 2, 1, 3, 2, 1 };
-            KnownPatterns["Piranha"] = new int[] { 3, 3, 2 };
+            KnownProfiles.Clear();
+
+            // === PEIXES DO RIO (ISCA: WORM) ===
+
+            // 1. Crucian (Crucian)
+            // Visual: Lift(1) -> Down(3)
+            // Ação:   Wait(3) -> E(0)
+            KnownProfiles.Add(new FishProfile(
+                new int[] { 1, 3 },
+                new int[] { 3, 0 }
+            ));
+
+            // 2. Roach (Pardelha)
+            // Visual: Bite(0) -> Bite(0) -> Lift(1)
+            // Ação:   Wait(3) -> Wait(3) -> E(0)
+            KnownProfiles.Add(new FishProfile(
+                new int[] { 0, 0, 1 },
+                new int[] { 3, 3, 0 }
+            ));
+
+            // 3. Carp (Carpa)
+            // Visual: Bite(0) -> Bite(0) -> Side(2) -> Down(3)
+            // Ação:   Wait(3) -> Wait(3) -> T(2)    -> E(0)
+            KnownProfiles.Add(new FishProfile(
+                new int[] { 0, 0, 2, 3 },
+                new int[] { 3, 3, 2, 0 }
+            ));
+
+            // 4. Trout (Truta)
+            // Visual: Bite(0) -> Down(3) -> Side(2) -> Lift(1) -> Drag(4)
+            // Ação:   Wait(3) -> Wait(3) -> T(2)    -> R(1)    -> E(0)
+            KnownProfiles.Add(new FishProfile(
+                new int[] { 0, 3, 2, 1, 4 },
+                new int[] { 3, 3, 2, 1, 0 }
+            ));
         }
 
-        public static void ResetSession() { if (SessionHistory.Count > 0) SessionHistory.Clear(); }
-
-        public static void AddHistory(int action)
+        public static void ResetSession()
         {
-            if (SessionHistory.Count == 0 || SessionHistory.Last() != action) SessionHistory.Add(action);
+            SessionVisualHistory.Clear();
+            StepsCount = 0;
         }
 
-        public static int PredictNextMove(int forbiddenKey, ManualLogSource logger)
+        // Prevê o movimento com base no visual atual e no histórico
+        public static int PredictNextMove(int currentVisualID, int forbiddenKey, ManualLogSource logger)
         {
-            if (SessionHistory.Count == 0) return 3; // Wait
+            // Cria uma lista temporária com o histórico + visual atual para conferência
+            var currentCheck = new List<int>(SessionVisualHistory);
+            currentCheck.Add(currentVisualID);
+            int currentStepIndex = currentCheck.Count - 1;
 
-            var candidates = new List<int>();
-            foreach (var kvp in KnownPatterns)
+            foreach (var fish in KnownProfiles)
             {
-                int[] seq = kvp.Value;
-                if (seq.Length > SessionHistory.Count)
-                {
-                    bool match = true;
-                    for (int i = 0; i < SessionHistory.Count; i++) if (seq[i] != SessionHistory[i]) { match = false; break; }
+                // Se o peixe tem menos passos do que já demos, ignora
+                if (fish.VisualSequence.Length <= currentStepIndex) continue;
 
-                    if (match)
+                // Verifica se a sequência visual bate perfeitamente até agora
+                bool match = true;
+                for (int i = 0; i <= currentStepIndex; i++)
+                {
+                    if (fish.VisualSequence[i] != currentCheck[i])
                     {
-                        int nextStep = seq[SessionHistory.Count];
-                        if (nextStep != forbiddenKey) candidates.Add(nextStep);
+                        match = false;
+                        break;
                     }
+                }
+
+                if (match)
+                {
+                    // ACHAMOS O PEIXE PELO VISUAL!
+                    // A resposta é a ação correspondente no mesmo index
+                    int correctAction = fish.ActionSequence[currentStepIndex];
+
+                    logger.LogWarning($"[IA] Peixe Identificado! Visual: {currentVisualID} -> Ação Correta: {GetKeyName(correctAction)}");
+                    return correctAction;
                 }
             }
 
-            if (candidates.Count > 0)
-            {
-                var bestMove = candidates.GroupBy(x => x).OrderByDescending(g => g.Count()).First().Key;
-                logger.LogWarning($"[IA] Decisão (Baseada em {candidates.Count} peixes): {GetKeyName(bestMove)}");
-                return bestMove;
-            }
-            return 3; // Wait
+            // Se não achou (ou for o primeiro passo sem match), retorna Wait por segurança
+            return 3;
+        }
+
+        public static void AddHistory(int visualID)
+        {
+            SessionVisualHistory.Add(visualID);
+            StepsCount++;
         }
 
         public static string GetKeyName(int val)
@@ -74,7 +119,7 @@ namespace WildTerraBot
             if (val == 1) return "R";
             if (val == 2) return "T";
             if (val == 3) return "Wait";
-            if (val == 4) return "Any";
+            if (val == 4) return "Drag"; // Apenas visual, não é tecla
             return val.ToString();
         }
     }
