@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Linq;
 
 namespace WildTerraBot
 {
@@ -54,6 +55,12 @@ namespace WildTerraBot
         private int _eatThreshold = 30;
         private bool _resting = false;
         private bool _depositando = false;
+
+        // Anti-Spam Variables
+        private float _nextBagFullAlert = 0f;
+        private string _lastHarvestLog = ""; // Controla repetição do log de coleta
+        private string _lastHuntLog = "";    // Controla repetição do log de caça
+
         private HashSet<string> bonusPendentes = new HashSet<string>();
         private HashSet<string> itensSeguros = new HashSet<string>();
         private HashSet<string> itensDropar = new HashSet<string>();
@@ -62,6 +69,7 @@ namespace WildTerraBot
         private ConcurrentQueue<string> actionQueue = new ConcurrentQueue<string>();
         public ConcurrentQueue<Action> mainThreadActions = new ConcurrentQueue<Action>();
 
+        // Reflection
         private MethodInfo _dropMethod = null;
         private MethodInfo _useMethod = null;
         private MethodInfo _swapEquipMethod = null;
@@ -86,7 +94,6 @@ namespace WildTerraBot
 
         void Start()
         {
-            // === CORREÇÃO: Usa o novo nome do método (DumpFromScene) ===
             StartCoroutine(AutoDumpDelay());
 
             udpSender = new UdpClient();
@@ -101,7 +108,10 @@ namespace WildTerraBot
             }
             catch (Exception ex) { WTSocketBot.PublicLogger.LogError("[ERRO] Porta: " + ex.Message); }
 
-            Type tipoWT = typeof(WTPlayer); Type tipoPlayer = typeof(Player); Type tipoEntity = typeof(Entity); Type tipoMob = typeof(WTMob);
+            Type tipoWT = typeof(WTPlayer);
+            Type tipoPlayer = typeof(Player);
+            Type tipoEntity = typeof(Entity);
+            Type tipoMob = typeof(WTMob);
             Type tipoEquipItem = Type.GetType("WTEquipmentItem, Assembly-CSharp") ?? typeof(WTEquipmentItem);
             Type tipoBaseEquip = Type.GetType("EquipmentItem, Assembly-CSharp");
 
@@ -131,13 +141,11 @@ namespace WildTerraBot
             catch (Exception ex) { WTSocketBot.PublicLogger.LogError($"[INIT] Reflection Error: {ex.Message}"); }
         }
 
-        // TIMER DE 15 SEGUNDOS
         IEnumerator AutoDumpDelay()
         {
             yield return new WaitForSeconds(15.0f);
             if (WTSocketBot.Instance != null && !WTSocketBot.HasDumped)
             {
-                // ATENÇÃO: Nome corrigido aqui
                 WTSocketBot.Instance.DumpFromScene("AUTO-START-15s");
                 WTSocketBot.HasDumped = true;
             }
@@ -156,16 +164,42 @@ namespace WildTerraBot
                     string msg = Encoding.ASCII.GetString(bytes);
                     string[] p = msg.Split(';');
 
-                    // ATENÇÃO: Nome corrigido aqui também
                     if (p[0] == "DUMP") mainThreadActions.Enqueue(() => WTSocketBot.Instance.DumpFromScene("UDP-TRIGGER"));
                     else if (p[0] == "MOVE") { moveQueue.Enqueue(new Vector2(float.Parse(p[1], CultureInfo.InvariantCulture), float.Parse(p[2], CultureInfo.InvariantCulture))); ResetModes(); }
-                    else if (p[0] == "HARVEST") { while (actionQueue.TryDequeue(out _)) { } actionQueue.Enqueue(p[1]); ResetModes(); _modoColeta = true; }
+                    else if (p[0] == "HARVEST")
+                    {
+                        while (actionQueue.TryDequeue(out _)) { }
+                        actionQueue.Enqueue(p[1]);
+
+                        if (p.Length >= 3)
+                        {
+                            _armaPreferida = p[2].Trim();
+                            // --- CORREÇÃO: ANTI-SPAM DE LOG ---
+                            string logMsg = $"[HARVEST] Alvo: {p[1]} | Arma Defensiva: {_armaPreferida}";
+                            if (_lastHarvestLog != logMsg)
+                            {
+                                WTSocketBot.PublicLogger.LogInfo(logMsg);
+                                _lastHarvestLog = logMsg;
+                            }
+                        }
+
+                        ResetModes();
+                        _modoColeta = true;
+                    }
                     else if (p[0] == "HUNT" && p.Length >= 2)
                     {
                         _alvoHunterTipo = p[1].Trim();
                         _armaPreferida = (p.Length >= 3) ? p[2].Trim() : "";
-                        ResetModes(); _modoHunter = true;
-                        WTSocketBot.PublicLogger.LogInfo($"[HUNTER] Alvo: {_alvoHunterTipo} | Arma: {_armaPreferida}");
+                        ResetModes();
+                        _modoHunter = true;
+
+                        // --- CORREÇÃO: ANTI-SPAM DE LOG ---
+                        string logMsg = $"[HUNTER] Alvo: {_alvoHunterTipo} | Arma: {_armaPreferida}";
+                        if (_lastHuntLog != logMsg)
+                        {
+                            WTSocketBot.PublicLogger.LogInfo(logMsg);
+                            _lastHuntLog = logMsg;
+                        }
                     }
                     else if (p[0] == "FISHING")
                     {
@@ -196,21 +230,7 @@ namespace WildTerraBot
                     }
                     else if (p[0] == "MOUNT_CONFIG") { _useMount = (p[1] == "ON"); }
                     else if (p[0] == "TEST_MOUNT") { mainThreadActions.Enqueue(() => { if (MeuPersonagem is WTPlayer wtPlayer) ToggleMount(wtPlayer); }); }
-                    else if (p[0] == "SAFE_LIST")
-                    {
-                        string[] itens = p.Length >= 2 ? p[1].Split('~') : Array.Empty<string>();
-                        mainThreadActions.Enqueue(() =>
-                        {
-                            itensSeguros.Clear();
-                            foreach (var raw in itens)
-                            {
-                                var s = raw?.Trim();
-                                if (string.IsNullOrWhiteSpace(s)) continue;   // <-- FIX: ignora vazio
-                                itensSeguros.Add(s);
-                            }
-                        });
-                    }
-
+                    else if (p[0] == "SAFE_LIST") { string[] itens = p[1].Split('~'); mainThreadActions.Enqueue(() => { itensSeguros.Clear(); foreach (var i in itens) itensSeguros.Add(i.Trim()); }); }
                     else if (p[0] == "DROP_LIST") { string[] itens = p[1].Split('~'); mainThreadActions.Enqueue(() => { itensDropar.Clear(); foreach (var i in itens) if (!string.IsNullOrWhiteSpace(i)) itensDropar.Add(i.Trim()); }); }
                     else if (p[0] == "EAT_LIST") { string[] itens = p[1].Split('~'); mainThreadActions.Enqueue(() => { itensComer.Clear(); foreach (var i in itens) if (!string.IsNullOrWhiteSpace(i)) itensComer.Add(i.Trim()); }); }
                     else if (p[0] == "EAT_THRESHOLD") { if (int.TryParse(p[1], out int val)) _eatThreshold = val; }
@@ -230,7 +250,6 @@ namespace WildTerraBot
 
             while (mainThreadActions.TryDequeue(out var action)) action.Invoke();
 
-            // === PRIORIDADE: SOBREVIVÊNCIA ===
             bool emCombateReal = CheckInCombat(wtPlayer);
             int currentHp = wtPlayer.health;
             bool tomandoDano = (_lastKnownHp != -1 && currentHp < _lastKnownHp);
@@ -244,29 +263,30 @@ namespace WildTerraBot
             }
             catch { }
 
+            // LÓGICA DE DEFESA
             if (tomandoDano || emCombateReal)
             {
                 if (_combatTarget == null) _combatTarget = PickAggressorSmart(wtPlayer, 8f);
 
                 if (_combatTarget != null || emCombateReal)
                 {
-                    if (!tomandoDano && _modoHunter && !string.IsNullOrEmpty(_armaPreferida))
+                    // Tenta equipar arma se definida
+                    if (!string.IsNullOrEmpty(_armaPreferida))
                     {
-                        if (!CheckAndEquipItem(wtPlayer, _armaPreferida, 0)) { }
+                        CheckAndEquipItem(wtPlayer, _armaPreferida, 0);
                     }
 
                     bool lutando = RunCombatLogic(wtPlayer, _modoHunter);
                     if (lutando)
                     {
                         if (!_reportouCombate) { EnviarCombateStatus(true); }
-                        return; // SAI DO UPDATE PARA NÃO PESCAR
+                        return; // SAI DO UPDATE
                     }
                 }
             }
 
             if (_reportouCombate) EnviarCombateStatus(false);
 
-            // [LÓGICA DE SOBREVIVÊNCIA ADICIONAL (SKINNING)]
             if (_combatTarget != null)
             {
                 if (!IsValidTarget(_combatTarget))
@@ -360,6 +380,149 @@ namespace WildTerraBot
             }
         }
 
+        // ===========================================
+        // ============= ROTINA DE DEPÓSITO ==========
+        // ===========================================
+        void IniciarDepositoProximo(string nomeAlvo = "")
+        {
+            if (_depositando) return;
+            WTPlayer wtPlayer = MeuPersonagem as WTPlayer;
+            if (wtPlayer == null) return;
+
+            // Busca baú próximo (raio 15m)
+            WTStructure bau = WTBankingUtils.FindBestBankChest(wtPlayer.transform.position, 15.0f, nomeAlvo);
+
+            if (bau != null)
+            {
+                WTSocketBot.PublicLogger.LogInfo($"[BANK] Alvo encontrado: {bau.name}. Iniciando depósito...");
+                StartCoroutine(RotinaDeposito(wtPlayer, bau));
+            }
+            else
+            {
+                WTSocketBot.PublicLogger.LogError($"[BANK] Erro: Baú '{nomeAlvo}' não encontrado próximo.");
+                EnviarMensagem("BANK_FINISH");
+            }
+        }
+
+        IEnumerator RotinaDeposito(WTPlayer wtPlayer, WTStructure bau)
+        {
+            _depositando = true;
+            WTSocketBot.PublicLogger.LogInfo("[BANK] Movendo até o baú...");
+
+            // 1. Vai até o baú
+            var agent = wtPlayer.agent;
+            if (agent != null && agent.enabled && agent.isOnNavMesh)
+            {
+                agent.isStopped = false;
+                agent.stoppingDistance = 0f;
+                agent.destination = bau.transform.position;
+            }
+
+            float timeout = Time.time + 10f;
+            while (Vector3.Distance(wtPlayer.transform.position, bau.transform.position) > 2.8f && Time.time < timeout)
+                yield return new WaitForSeconds(0.2f);
+
+            SafeStopAgent(wtPlayer);
+            wtPlayer.transform.LookAt(bau.transform); // Vira para o baú
+            yield return new WaitForSeconds(0.3f);
+
+            // 2. Tenta Abrir
+            ScriptableSkill openSkill = null;
+            if (bau.worldType?.actions != null)
+            {
+                foreach (var act in bau.worldType.actions)
+                {
+                    if (act?.actionSkill != null && act.actionSkill.name.Contains("OpenContainer"))
+                    {
+                        openSkill = act.actionSkill;
+                        break;
+                    }
+                }
+            }
+
+            if (openSkill == null && bau.actionSkills != null)
+            {
+                foreach (var s in bau.actionSkills)
+                {
+                    if (s.name == "OpenContainer") openSkill = s;
+                }
+            }
+
+            if (openSkill == null)
+            {
+                WTSocketBot.PublicLogger.LogError("[BANK] Erro: Skill 'OpenContainer' não encontrada no baú.");
+                _depositando = false;
+                EnviarMensagem("BANK_FINISH");
+                yield break;
+            }
+
+            wtPlayer.WorldObjectTryAction(bau, openSkill);
+
+            yield return new WaitForSeconds(1.0f);
+
+            // 3. Detecta Abas e Deposita (Lógica Restaurada)
+            int openedTab = 0;
+            if (GameManager.instance != null && GameManager.instance.IsContainerWindowOpen(out int t))
+            {
+                openedTab = t;
+            }
+
+            int tabsFromType = 0;
+            try { if (bau != null && bau.worldType != null) tabsFromType = bau.worldType.containerTabs; } catch { }
+
+            int totalTabs = (tabsFromType <= 0) ? 1 : tabsFromType;
+            int maxTabs = Math.Min(totalTabs, 6);
+            int baseCmdTab = openedTab;
+
+            if (tabsFromType > 0 && baseCmdTab <= 0)
+            {
+                baseCmdTab = 1;
+            }
+
+            WTSocketBot.PublicLogger.LogInfo($"[BANK] Abas: {totalTabs}. BaseTab: {baseCmdTab}.");
+
+            for (int tabOffset = 0; tabOffset < maxTabs; tabOffset++)
+            {
+                int cmdTab;
+                if (tabsFromType > 0)
+                {
+                    cmdTab = baseCmdTab + tabOffset;
+                    if (cmdTab > totalTabs) break;
+                }
+                else
+                {
+                    cmdTab = baseCmdTab;
+                }
+
+                if (wtPlayer.inventory != null)
+                {
+                    for (int i = wtPlayer.inventory.Count - 1; i >= 0; i--)
+                    {
+                        if (i >= wtPlayer.inventory.Count) continue;
+                        var slot = wtPlayer.inventory[i];
+
+                        if (slot.amount <= 0 || slot.item.data == null) continue;
+                        if (MotivoParaManter(slot.item) != null) continue;
+
+                        // Ação 2 = Store
+                        wtPlayer.CmdInventoryItemAction(i, (ItemActionType)2, cmdTab);
+                        yield return new WaitForSeconds(0.12f);
+                    }
+                }
+
+                if (tabsFromType > 0) yield return new WaitForSeconds(0.2f);
+            }
+
+            yield return new WaitForSeconds(0.5f);
+            wtPlayer.CloseContainer();
+
+            WTSocketBot.PublicLogger.LogInfo("[BANK] Depósito Finalizado.");
+            _depositando = false;
+            EnviarMensagem("BANK_FINISH");
+        }
+
+        // ===========================================
+
         private void RunFishingLogic(WTPlayer p)
         {
             if (Time.time < _nextCastCheck) return;
@@ -395,13 +558,11 @@ namespace WildTerraBot
             try { pescando = (bool)_isFishingMethod.Invoke(p, null); } catch { }
             if (pescando) return;
 
-            // 5. Arremessa
             Vector3 alvoAgua = p.transform.position + (p.transform.forward * 3.5f);
             WTSocketBot.PublicLogger.LogInfo("[PESCA] Arremessando...");
             CmdSkillToPoint(p, alvoAgua);
         }
 
-        // === HELPER DEBUG: DUMP EQUIPMENT ===
         private void DumpEquipment(WTPlayer p)
         {
             if (p.equipment == null) return;
@@ -498,7 +659,6 @@ namespace WildTerraBot
             return false;
         }
 
-        // MÉTODOS DE SUPORTE
         private void CmdSkillToPoint(WTPlayer p, Vector3 point) { if (_cmdSkillToPoint != null) try { _cmdSkillToPoint.Invoke(p, new object[] { point }); } catch { } }
         private bool CheckAmmo(WTPlayer p) { try { var rightHand = p.GetEquippedRightHand(); if (!rightHand.HasValue || rightHand.Value.data == null) return true; WTWeaponItem weapon = rightHand.Value.data as WTWeaponItem; if (weapon == null || weapon.requiredAmmo == null) return true; int count = p.InventoryCountGroup(weapon.requiredAmmo); return count > 0; } catch { return true; } }
         private bool IsValidTarget(WTMob mob) { if (mob == null) return false; if (!mob.gameObject.activeInHierarchy) return false; if (!mob.isActiveAndEnabled) return false; if (mob.health <= 0) return false; if (mob.state == "DEAD") return false; return true; }
@@ -522,9 +682,26 @@ namespace WildTerraBot
         private float ScoreFoodCandidate(WTUsableItem usable, int[] cur) { float score = 0f; foreach (var fv in usable.foods) { int t = (int)fv.type; int val = fv.value; if (t < 0 || t >= cur.Length || val <= 0) continue; int deficit = 100 - cur[t]; int gain = Math.Min(deficit, val); int overflow = Math.Max(0, val - deficit); score += gain; if (cur[t] == 0 && val > 0) score += 15f; score -= overflow * 1.5f; } if (usable.rawFoodType) score -= 2f; return score; }
         public void TryAutoEat(WTPlayer wtPlayer) { if (Time.time < nextEatCheck) return; nextEatCheck = Time.time + AUTO_EAT_COOLDOWN; if (itensComer.Count == 0 || _useMethod == null || _foodArrayField == null) return; int[] currentFoodLevels = (int[])_foodArrayField.GetValue(wtPlayer); if (currentFoodLevels == null) return; if (wtPlayer.inventory == null) return; for (int i = 0; i < wtPlayer.inventory.Count; i++) { var slot = wtPlayer.inventory[i]; if (slot.amount <= 0 || slot.item.data == null) continue; bool permitido = false; foreach (var permitidoNome in itensComer) { if (slot.item.data.name.IndexOf(permitidoNome, StringComparison.OrdinalIgnoreCase) >= 0) { permitido = true; break; } } if (!permitido) continue; if (!(slot.item.data is WTUsableItem usable)) continue; if (usable.foods == null || usable.foods.Length == 0) continue; bool precisaComer = false; foreach (var foodVal in usable.foods) { int typeIndex = (int)foodVal.type; if (typeIndex >= 0 && typeIndex < currentFoodLevels.Length && foodVal.value > 0) { int nivelAtual = currentFoodLevels[typeIndex]; if (nivelAtual < _eatThreshold) { precisaComer = true; break; } } } if (!precisaComer) continue; if (wtPlayer.IsFull(usable.foods, usable.rawFoodType)) continue; try { _useMethod.Invoke(wtPlayer, new object[] { i }); return; } catch { } } }
         void ProcessarDrops(WTPlayer wtPlayer) { if (itensDropar.Count == 0 || wtPlayer.inventory == null || _dropMethod == null) return; for (int i = 0; i < wtPlayer.inventory.Count; i++) { var slot = wtPlayer.inventory[i]; if (slot.amount > 0 && slot.item.data != null) { string nome = slot.item.data.name; foreach (var lixo in itensDropar) { if (nome.IndexOf(lixo, StringComparison.OrdinalIgnoreCase) >= 0) { try { _dropMethod.Invoke(wtPlayer, new object[] { i }); } catch { } return; } } } } }
-        void CheckBagFull() { try { var method = typeof(Entity).GetMethod("InventorySlotsFree", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic); if (method != null) { int slotsFree = (int)method.Invoke(MeuPersonagem, null); if (slotsFree == 0) EnviarMensagem("BAG_FULL"); } } catch { } }
-        void IniciarDepositoProximo(string nomeAlvo = "") { if (_depositando) return; WTPlayer wtPlayer = MeuPersonagem as WTPlayer; if (wtPlayer == null) return; WTStructure bau = WTBankingUtils.FindBestBankChest(wtPlayer.transform.position, 15.0f, nomeAlvo); if (bau != null) { WTSocketBot.PublicLogger.LogInfo($"[BANK] Alvo: {bau.name}. Iniciando..."); StartCoroutine(RotinaDeposito(wtPlayer, bau)); } else { WTSocketBot.PublicLogger.LogError($"[BANK] Erro: Baú '{nomeAlvo}' não encontrado."); EnviarMensagem("BANK_FINISH"); } }
-        IEnumerator RotinaDeposito(WTPlayer wtPlayer, WTStructure bau) { _depositando = true; WTSocketBot.PublicLogger.LogInfo("[BANK] Iniciando Movimento..."); var agent = wtPlayer.agent; if (agent != null && agent.enabled && agent.isOnNavMesh) { agent.isStopped = false; agent.stoppingDistance = 0f; agent.destination = bau.transform.position; } float timeout = Time.time + 10f; while (Vector3.Distance(wtPlayer.transform.position, bau.transform.position) > 2.8f && Time.time < timeout) yield return new WaitForSeconds(0.2f); SafeStopAgent(wtPlayer); ScriptableSkill openSkill = null; if (bau.worldType?.actions != null) foreach (var act in bau.worldType.actions) if (act?.actionSkill != null && act.actionSkill.name.Contains("OpenContainer")) { openSkill = act.actionSkill; break; } if (openSkill == null && bau.actionSkills != null) foreach (var s in bau.actionSkills) { if (s.name == "OpenContainer") openSkill = s; } if (openSkill == null) { _depositando = false; EnviarMensagem("BANK_FINISH"); yield break; } wtPlayer.WorldObjectTryAction(bau, openSkill); yield return new WaitForSeconds(1.0f); int openedTab = 0; if (GameManager.instance != null && GameManager.instance.IsContainerWindowOpen(out int t)) openedTab = t; int tabsFromType = 0; try { if (bau != null && bau.worldType != null) tabsFromType = bau.worldType.containerTabs; } catch { } int totalTabs = (tabsFromType > 0) ? tabsFromType : 1; int maxTabs = Math.Min(totalTabs, 6); int baseCmdTab = openedTab; if (tabsFromType > 0 && baseCmdTab <= 0) baseCmdTab = 1; for (int tabOffset = 0; tabOffset < maxTabs; tabOffset++) { int cmdTab; if (tabsFromType > 0) { cmdTab = baseCmdTab + tabOffset; if (cmdTab > totalTabs) break; } else { cmdTab = baseCmdTab; } if (wtPlayer.inventory != null) { for (int i = wtPlayer.inventory.Count - 1; i >= 0; i--) { if (i >= wtPlayer.inventory.Count) continue; var slot = wtPlayer.inventory[i]; if (slot.amount <= 0 || slot.item.data == null) continue; if (MotivoParaManter(slot.item) != null) continue; wtPlayer.CmdInventoryItemAction(i, (ItemActionType)2, cmdTab); yield return new WaitForSeconds(0.12f); } } if (tabsFromType > 0) yield return new WaitForSeconds(0.20f); } yield return new WaitForSeconds(0.5f); wtPlayer.CloseContainer(); _depositando = false; EnviarMensagem("BANK_FINISH"); }
+
+        void CheckBagFull()
+        {
+            try
+            {
+                if (Time.time < _nextBagFullAlert) return;
+                var method = typeof(Entity).GetMethod("InventorySlotsFree", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic);
+                if (method != null)
+                {
+                    int slotsFree = (int)method.Invoke(MeuPersonagem, null);
+                    if (slotsFree == 0)
+                    {
+                        EnviarMensagem("BAG_FULL");
+                        _nextBagFullAlert = Time.time + 5.0f;
+                    }
+                }
+            }
+            catch { }
+        }
+
         bool ShouldKeepItem(Item item) { if (item.data == null) return true; foreach (var s in itensSeguros) if (item.data.name.IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0) return true; return false; }
         string MotivoParaManter(Item item) { if (item.data == null) return "Nulo"; foreach (var s in itensSeguros) if (item.data.name.IndexOf(s, StringComparison.OrdinalIgnoreCase) >= 0) return "Safe"; return null; }
         void EnviarMensagem(string msg) { try { udpSender.Send(Encoding.ASCII.GetBytes(msg), msg.Length, "127.0.0.1", 8888); } catch { } }
