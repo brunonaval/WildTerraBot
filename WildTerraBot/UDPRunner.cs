@@ -196,7 +196,21 @@ namespace WildTerraBot
                     }
                     else if (p[0] == "MOUNT_CONFIG") { _useMount = (p[1] == "ON"); }
                     else if (p[0] == "TEST_MOUNT") { mainThreadActions.Enqueue(() => { if (MeuPersonagem is WTPlayer wtPlayer) ToggleMount(wtPlayer); }); }
-                    else if (p[0] == "SAFE_LIST") { string[] itens = p[1].Split('~'); mainThreadActions.Enqueue(() => { itensSeguros.Clear(); foreach (var i in itens) itensSeguros.Add(i.Trim()); }); }
+                    else if (p[0] == "SAFE_LIST")
+                    {
+                        string[] itens = p.Length >= 2 ? p[1].Split('~') : Array.Empty<string>();
+                        mainThreadActions.Enqueue(() =>
+                        {
+                            itensSeguros.Clear();
+                            foreach (var raw in itens)
+                            {
+                                var s = raw?.Trim();
+                                if (string.IsNullOrWhiteSpace(s)) continue;   // <-- FIX: ignora vazio
+                                itensSeguros.Add(s);
+                            }
+                        });
+                    }
+
                     else if (p[0] == "DROP_LIST") { string[] itens = p[1].Split('~'); mainThreadActions.Enqueue(() => { itensDropar.Clear(); foreach (var i in itens) if (!string.IsNullOrWhiteSpace(i)) itensDropar.Add(i.Trim()); }); }
                     else if (p[0] == "EAT_LIST") { string[] itens = p[1].Split('~'); mainThreadActions.Enqueue(() => { itensComer.Clear(); foreach (var i in itens) if (!string.IsNullOrWhiteSpace(i)) itensComer.Add(i.Trim()); }); }
                     else if (p[0] == "EAT_THRESHOLD") { if (int.TryParse(p[1], out int val)) _eatThreshold = val; }
