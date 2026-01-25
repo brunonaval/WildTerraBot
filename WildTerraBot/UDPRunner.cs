@@ -201,22 +201,33 @@ namespace WildTerraBot
                             _lastHuntLog = logMsg;
                         }
                     }
+                    // ... dentro do loop while(running) ...
                     else if (p[0] == "FISHING")
                     {
                         if (p.Length >= 2 && p[1] == "ON")
                         {
-                            ResetModes(); _modoPesca = true;
+                            ResetModes();
+                            _modoPesca = true;
+
+                            // Formato esperado: FISHING;ON;Vara;Isca;Local
                             _nomeVaraPesca = (p.Length >= 3) ? p[2].Trim() : "";
                             _nomeIscaPesca = (p.Length >= 4) ? p[3].Trim() : "";
+                            string localPesca = (p.Length >= 5) ? p[4].Trim() : "River"; // Padrão River
+
+                            // CONFIGURA O CÉREBRO
+                            FishBrain.SetContext(localPesca, _nomeIscaPesca);
+
                             WTSocketBot.IsFishingBotActive = true;
-                            WTSocketBot.PublicLogger.LogInfo($"[PESCA] ATIVADO. Vara: {_nomeVaraPesca}, Isca: {_nomeIscaPesca}");
+                            WTSocketBot.PublicLogger.LogInfo($"[PESCA] ATIVADO. Local: {localPesca} | Isca: {_nomeIscaPesca} | Perfis Carregados: {FishBrain.ActiveProfiles.Count}");
                         }
                         else
                         {
-                            _modoPesca = false; WTSocketBot.IsFishingBotActive = false;
+                            _modoPesca = false;
+                            WTSocketBot.IsFishingBotActive = false;
                             WTSocketBot.PublicLogger.LogInfo("[PESCA] DESATIVADO.");
                         }
                     }
+                    // ...
                     else if (p[0] == "RETURN_HOME")
                     {
                         ResetModes(); _returningHome = true; _botAtivo = true; _lastMoveTarget = null;
