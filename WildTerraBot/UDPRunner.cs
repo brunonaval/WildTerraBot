@@ -33,6 +33,15 @@ namespace WildTerraBot
         private string _armaPreferida = "";
         private string _nomeVaraPesca = "";
         private string _nomeIscaPesca = "";
+        private string _armaPescaDefensiva = "";
+
+        // Fishing anchor (posição/direção) para retomar exatamente após combate
+        private Vector3 _fishingAnchorPos = Vector3.zero;
+        private float _fishingAnchorYaw = 0f;
+        private bool _fishingAnchorValid = false;
+        private bool _resumeFishingAfterCombat = false;
+        private float _nextReturnToAnchorPulse = 0f;
+
         private WTMob _combatTarget = null;
         private float _nextAttackPulse = 0f;
         private float _nextEquipCheck = 0f;
@@ -209,10 +218,21 @@ namespace WildTerraBot
                             ResetModes();
                             _modoPesca = true;
 
-                            // Formato esperado: FISHING;ON;Vara;Isca;Local
+                            // Formato esperado: FISHING;ON;Vara;Isca;Local;ArmaDef
                             _nomeVaraPesca = (p.Length >= 3) ? p[2].Trim() : "";
                             _nomeIscaPesca = (p.Length >= 4) ? p[3].Trim() : "";
                             string localPesca = (p.Length >= 5) ? p[4].Trim() : "River"; // Padrão River
+                            _armaPescaDefensiva = (p.Length >= 6) ? p[5].Trim() : "";
+
+                            // Durante pesca, a arma defensiva é a do txtWeaponName (Dashboard)
+                            _armaPreferida = _armaPescaDefensiva;
+
+                            // Captura âncora imediatamente ao ativar (posição/direção atual do jogador)
+                            mainThreadActions.Enqueue(() =>
+                            {
+                                if (MeuPersonagem is WTPlayer wt) CaptureFishingAnchor(wt);
+                                _resumeFishingAfterCombat = false;
+                            });
 
                             // CONFIGURA O CÉREBRO
                             FishBrain.SetContext(localPesca, _nomeIscaPesca);
@@ -224,6 +244,9 @@ namespace WildTerraBot
                         {
                             _modoPesca = false;
                             WTSocketBot.IsFishingBotActive = false;
+                            _resumeFishingAfterCombat = false;
+                            _fishingAnchorValid = false;
+                            _armaPescaDefensiva = "";
                             WTSocketBot.PublicLogger.LogInfo("[PESCA] DESATIVADO.");
                         }
                     }
@@ -264,6 +287,7 @@ namespace WildTerraBot
             bool emCombateReal = CheckInCombat(wtPlayer);
             int currentHp = wtPlayer.health;
             bool tomandoDano = (_lastKnownHp != -1 && currentHp < _lastKnownHp);
+            if (tomandoDano) _lastDamageTime = Time.time;
             _lastKnownHp = currentHp;
 
             try
@@ -277,6 +301,17 @@ namespace WildTerraBot
             // LÓGICA DE DEFESA
             if (tomandoDano || emCombateReal)
             {
+                // Se estava pescando, precisamos retomar a pesca exatamente no mesmo ponto/direção após o combate
+                if (_modoPesca)
+                {
+                    _resumeFishingAfterCombat = true;
+                    _nextEquipCheck = 0f; // permite equipar arma imediatamente ao ser atacado durante a pesca
+                    if (!_fishingAnchorValid) CaptureFishingAnchor(wtPlayer);
+
+                    // Garante que a arma defensiva da pesca seja usada (txtWeaponName)
+                    if (!string.IsNullOrEmpty(_armaPescaDefensiva)) _armaPreferida = _armaPescaDefensiva;
+                }
+
                 if (_combatTarget == null) _combatTarget = PickAggressorSmart(wtPlayer, 8f);
 
                 if (_combatTarget != null || emCombateReal)
@@ -332,7 +367,22 @@ namespace WildTerraBot
                 _combatTarget = PickAggressorSmart(wtPlayer, range);
             }
 
-            if (_modoPesca) { RunFishingLogic(wtPlayer); return; }
+            if (_modoPesca)
+            {
+                // Se houve combate durante a pesca, volta para posição/direção e reequipa a vara antes de continuar.
+                if (_resumeFishingAfterCombat && !emCombateReal && !tomandoDano && (Time.time - _lastDamageTime) > 0.75f)
+                {
+                    bool ok = HandleReturnToFishingAnchor(wtPlayer);
+                    if (!ok) return;
+
+                    // Libera casting imediato após alinhar
+                    _resumeFishingAfterCombat = false;
+                    _nextCastCheck = 0f;
+                }
+
+                RunFishingLogic(wtPlayer);
+                return;
+            }
 
             if (!_botAtivo) return;
             if (_depositando) return;
@@ -534,6 +584,72 @@ namespace WildTerraBot
 
         // ===========================================
 
+
+        private void CaptureFishingAnchor(WTPlayer p)
+        {
+            if (p == null) return;
+            _fishingAnchorPos = p.transform.position;
+            _fishingAnchorYaw = p.transform.eulerAngles.y;
+            _fishingAnchorValid = true;
+        }
+
+        /// <summary>
+        /// Retorna para a posição e direção inicial da pesca.
+        /// Retorna true quando o jogador já está alinhado e com a vara equipada.
+        /// </summary>
+        private bool HandleReturnToFishingAnchor(WTPlayer p)
+        {
+            if (!_fishingAnchorValid) return true;
+            if (Time.time < _nextReturnToAnchorPulse) return false;
+            _nextReturnToAnchorPulse = Time.time + 0.15f;
+
+            Vector3 cur = p.transform.position;
+            Vector3 anchor = new Vector3(_fishingAnchorPos.x, cur.y, _fishingAnchorPos.z);
+
+            float dx = cur.x - anchor.x;
+            float dz = cur.z - anchor.z;
+            float distXZ = Mathf.Sqrt(dx * dx + dz * dz);
+
+            const float POS_TOL = 0.12f;
+            if (distXZ > POS_TOL)
+            {
+                MoveToXZ(p, anchor.x, anchor.z);
+                return false;
+            }
+
+            SafeStopAgent(p);
+
+            // Snap final (quando possível)
+            try
+            {
+                var agent = p.agent;
+                if (agent != null && agent.enabled && agent.isOnNavMesh)
+                    agent.Warp(anchor);
+                else
+                    p.transform.position = anchor;
+            }
+            catch { }
+
+            // Restaura direção
+            p.transform.eulerAngles = new Vector3(0f, _fishingAnchorYaw, 0f);
+
+            // Reequipa a vara antes de continuar
+            if (!string.IsNullOrEmpty(_nomeVaraPesca))
+            {
+                bool temVara = false;
+                try { temVara = (bool)_isFishingPoleEquippedMethod.Invoke(p, null); } catch { }
+
+                if (!temVara)
+                {
+                    _nextEquipCheck = 0f; // garante re-equip imediato da vara após combate
+                    bool ok = CheckAndEquipItem(p, _nomeVaraPesca, 0);
+                    if (!ok) return false; // aguardando equip
+                }
+            }
+
+            return true;
+        }
+
         private void RunFishingLogic(WTPlayer p)
         {
             if (Time.time < _nextCastCheck) return;
@@ -568,6 +684,12 @@ namespace WildTerraBot
             bool pescando = false;
             try { pescando = (bool)_isFishingMethod.Invoke(p, null); } catch { }
             if (pescando) return;
+
+            // Atualiza âncora da pesca em cada novo arremesso (somente quando não estamos retomando pós-combate)
+            if (!_resumeFishingAfterCombat)
+            {
+                CaptureFishingAnchor(p);
+            }
 
             Vector3 alvoAgua = p.transform.position + (p.transform.forward * 3.5f);
             WTSocketBot.PublicLogger.LogInfo("[PESCA] Arremessando...");
