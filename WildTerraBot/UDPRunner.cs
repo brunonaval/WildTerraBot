@@ -42,6 +42,15 @@ namespace WildTerraBot
         private bool _resumeFishingAfterCombat = false;
         private float _nextReturnToAnchorPulse = 0f;
 
+        // Pós-combate na pesca: priorizar esfolar/loot antes de retornar à âncora e retomar o arremesso
+        private enum PostCombatFishingState { None, MoveToCorpse, Skinning }
+        private PostCombatFishingState _postCombatFishingState = PostCombatFishingState.None;
+        private WTObject _postCombatCorpse = null;
+        private ScriptableSkill _postCombatSkinSkill = null;
+        private float _postCombatSkinFinishTime = 0f;
+        private float _postCombatCorpseTimeout = 0f;
+
+
         private WTMob _combatTarget = null;
         private float _nextAttackPulse = 0f;
         private float _nextEquipCheck = 0f;
@@ -54,6 +63,8 @@ namespace WildTerraBot
         private bool _isMountingRoutineActive = false;
         private float _pauseMovementUntil = 0f;
         private const float MOUNT_ANIMATION_TIME = 4.0f;
+        private const float HARVEST_MOUNT_DISTANCE = 15.0f;
+        private float _nextMountPulse = 0f; // evita spam de ToggleMount
         private Vector3? _lastMoveTarget = null;
         private float nextStatsSend = 0f;
         private float nextBagSend = 0f;
@@ -74,6 +85,8 @@ namespace WildTerraBot
         private HashSet<string> itensSeguros = new HashSet<string>();
         private HashSet<string> itensDropar = new HashSet<string>();
         private HashSet<string> itensComer = new HashSet<string>();
+        private HashSet<string> itensColeta = new HashSet<string>();
+        private string _lastHarvestListPayload = "";
         private ConcurrentQueue<Vector2> moveQueue = new ConcurrentQueue<Vector2>();
         private ConcurrentQueue<string> actionQueue = new ConcurrentQueue<string>();
         public ConcurrentQueue<Action> mainThreadActions = new ConcurrentQueue<Action>();
@@ -174,7 +187,13 @@ namespace WildTerraBot
                     string[] p = msg.Split(';');
 
                     if (p[0] == "DUMP") mainThreadActions.Enqueue(() => WTSocketBot.Instance.DumpFromScene("UDP-TRIGGER"));
-                    else if (p[0] == "MOVE") { moveQueue.Enqueue(new Vector2(float.Parse(p[1], CultureInfo.InvariantCulture), float.Parse(p[2], CultureInfo.InvariantCulture))); ResetModes(); }
+                    else if (p[0] == "MOVE")
+                    {
+                        moveQueue.Enqueue(new Vector2(float.Parse(p[1], CultureInfo.InvariantCulture), float.Parse(p[2], CultureInfo.InvariantCulture)));
+                        // MOVE é o baseline (rota). Não deve desligar caça/coleta; apenas cancela modos exclusivos.
+                        _returningHome = false;
+                        _modoPesca = false;
+                    }
                     else if (p[0] == "HARVEST")
                     {
                         while (actionQueue.TryDequeue(out _)) { }
@@ -232,6 +251,7 @@ namespace WildTerraBot
                             {
                                 if (MeuPersonagem is WTPlayer wt) CaptureFishingAnchor(wt);
                                 _resumeFishingAfterCombat = false;
+                                ClearPostCombatSkinning();
                             });
 
                             // CONFIGURA O CÉREBRO
@@ -245,6 +265,7 @@ namespace WildTerraBot
                             _modoPesca = false;
                             WTSocketBot.IsFishingBotActive = false;
                             _resumeFishingAfterCombat = false;
+                            ClearPostCombatSkinning();
                             _fishingAnchorValid = false;
                             _armaPescaDefensiva = "";
                             WTSocketBot.PublicLogger.LogInfo("[PESCA] DESATIVADO.");
@@ -267,6 +288,7 @@ namespace WildTerraBot
                     else if (p[0] == "SAFE_LIST") { string[] itens = p[1].Split('~'); mainThreadActions.Enqueue(() => { itensSeguros.Clear(); foreach (var i in itens) itensSeguros.Add(i.Trim()); }); }
                     else if (p[0] == "DROP_LIST") { string[] itens = p[1].Split('~'); mainThreadActions.Enqueue(() => { itensDropar.Clear(); foreach (var i in itens) if (!string.IsNullOrWhiteSpace(i)) itensDropar.Add(i.Trim()); }); }
                     else if (p[0] == "EAT_LIST") { string[] itens = p[1].Split('~'); mainThreadActions.Enqueue(() => { itensComer.Clear(); foreach (var i in itens) if (!string.IsNullOrWhiteSpace(i)) itensComer.Add(i.Trim()); }); }
+                    else if (p[0] == "HARVEST_LIST") { string payload = (p.Length >= 2) ? p[1] : ""; string[] itens = payload.Split('~'); mainThreadActions.Enqueue(() => { string normPayload = payload ?? ""; if (normPayload != _lastHarvestListPayload) { _lastHarvestListPayload = normPayload; itensColeta.Clear(); foreach (var i in itens) { var tok = NormalizeListToken(i); if (!string.IsNullOrWhiteSpace(tok)) itensColeta.Add(tok); } try { WTSocketBot.PublicLogger.LogInfo($"[COLETA] Lista recebida: {itensColeta.Count} item(ns). Ex.: {string.Join(", ", itensColeta.Take(10))}"); } catch { WTSocketBot.PublicLogger.LogInfo($"[COLETA] Lista recebida: {itensColeta.Count} item(ns)."); } } }); }
                     else if (p[0] == "EAT_THRESHOLD") { if (int.TryParse(p[1], out int val)) _eatThreshold = val; }
                     else if (p[0] == "DEPOSIT_ALL") { string alvo = p.Length >= 2 ? p[1] : ""; mainThreadActions.Enqueue(() => IniciarDepositoProximo(alvo)); }
                 }
@@ -340,27 +362,56 @@ namespace WildTerraBot
                     if (_fiWorldObject != null)
                     {
                         WTObject corpse = _fiWorldObject.GetValue(_combatTarget) as WTObject;
-                        if (corpse != null && corpse.isActiveAndEnabled) TrySkinCorpse(wtPlayer, corpse);
+                        if (corpse != null && corpse.isActiveAndEnabled)
+                        {
+                            // Se o combate aconteceu durante a pesca, priorizamos esfolar antes de voltar à âncora
+                            if (_modoPesca && _resumeFishingAfterCombat)
+                            {
+                                if (ShouldSkinDuringFishing(corpse))
+                                {
+                                    TryStartPostCombatSkinning(wtPlayer, corpse);
+                                }
+                                else
+                                {
+                                    WTSocketBot.PublicLogger.LogInfo($"[PESCA] Pós-combate: corpse '{corpse.name}' ignorado (não está em txtListaColeta). Retomando pesca...");
+                                }
+                            }
+                            else
+                            {
+                                TrySkinCorpse(wtPlayer, corpse);
+                            }
+                        }
                     }
                     _combatTarget = null;
                 }
             }
             else if (_modoHunter)
             {
-                if (!CheckAmmo(wtPlayer))
-                {
-                    WTSocketBot.PublicLogger.LogWarning("[HUNTER] SEM MUNIÇÃO! Voltando para casa...");
-                    _modoHunter = false; _returningHome = true;
-                    if (_homeCoordsBackup == Vector3.zero && wtPlayer.claimPoint == Vector3.zero) { _returningHome = false; _botAtivo = false; }
-                    return;
-                }
-
+                
                 bool alvoValido = _combatTarget != null && IsValidTarget(_combatTarget);
                 if (!alvoValido || !IsMobType(_combatTarget, _alvoHunterTipo))
                 {
                     _combatTarget = BuscarMobPorTipo(wtPlayer, _alvoHunterTipo);
                 }
             }
+
+            // CAÇA PROATIVA: se estamos em modo hunter e já temos um alvo válido, engajar mesmo sem tomar dano.
+            // Isso evita o cenário do arco/flecha onde o bot só começa a atirar depois do primeiro hit manual.
+            if (_modoHunter && _combatTarget != null && IsValidTarget(_combatTarget))
+            {
+                if (!string.IsNullOrEmpty(_armaPreferida))
+                {
+                    CheckAndEquipItem(wtPlayer, _armaPreferida, 0);
+                }
+
+                bool lutandoHunter = RunCombatLogic(wtPlayer, true);
+                if (lutandoHunter)
+                {
+                    if (!_reportouCombate) { EnviarCombateStatus(true); }
+                    return;
+                }
+            }
+
             else if (_combatTarget == null)
             {
                 float range = _modoPesca ? 5f : 12f;
@@ -369,9 +420,24 @@ namespace WildTerraBot
 
             if (_modoPesca)
             {
+                // Pós-combate na pesca: se houver esfolagem pendente, priorize isso imediatamente
+                if (_postCombatFishingState != PostCombatFishingState.None && !emCombateReal && !tomandoDano)
+                {
+                    bool doneSkinNow = HandlePostCombatSkinning(wtPlayer);
+                    if (!doneSkinNow) return;
+                }
+
+
                 // Se houve combate durante a pesca, volta para posição/direção e reequipa a vara antes de continuar.
                 if (_resumeFishingAfterCombat && !emCombateReal && !tomandoDano && (Time.time - _lastDamageTime) > 0.75f)
                 {
+                    // Prioridade: se houver corpse para esfolar (pós-combate), faça isso ANTES de retornar à âncora.
+                    if (_postCombatFishingState != PostCombatFishingState.None)
+                    {
+                        bool doneSkin = HandlePostCombatSkinning(wtPlayer);
+                        if (!doneSkin) return; // ainda movendo/esfolando
+                    }
+
                     bool ok = HandleReturnToFishingAnchor(wtPlayer);
                     if (!ok) return;
 
@@ -799,9 +865,255 @@ namespace WildTerraBot
         private bool IsMobType(WTMob mob, string typeKey) { string key = GetMobTypeKey(mob); return key != null && string.Equals(key, typeKey, StringComparison.OrdinalIgnoreCase); }
         private WTMob BuscarMobPorTipo(WTPlayer me, string typeKey) { WTMob best = null; float menorDist = 9999f; foreach (var mob in FindObjectsOfType<WTMob>()) { if (!IsValidTarget(mob)) continue; if (IsMobType(mob, typeKey)) { float d = Vector3.Distance(me.transform.position, mob.transform.position); if (d < menorDist && d < 80) { menorDist = d; best = mob; } } } return best; }
         private void TrySkinCorpse(WTPlayer player, WTObject corpse) { if (corpse == null) return; var gather = corpse.worldType?.gatherSettings; if (gather == null || gather.skill == null) return; if (gather.bonusRequired != null) { bool tem = false; var mao = player.GetEquippedRightHand(); if (mao.HasValue && ItemTemBonus(mao.Value, gather.bonusRequired.name)) tem = true; if (!tem && player.inventory != null) foreach (var slot in player.inventory) if (slot.amount > 0 && ItemTemBonus(slot.item, gather.bonusRequired.name)) { tem = true; break; } if (!tem) return; } WTSocketBot.PublicLogger.LogInfo($"[HUNTER] Esfolando {corpse.name}..."); player.WorldObjectTryAction(corpse, gather.skill); }
-        private bool RunCombatLogic(WTPlayer me, bool isHunting) { if (_combatTarget == null) return false; float dist = Vector3.Distance(me.transform.position, _combatTarget.transform.position); bool isFleeing = (_combatTarget.state == "RUNNING"); if (dist > 2.5f) { if (!isHunting && !isFleeing) { if (Time.time - _lastDamageTime > 5.0f) return false; me.transform.LookAt(_combatTarget.transform); SafeStopAgent(me); return true; } if (isHunting || isFleeing) { Vector3 targetPos = _combatTarget.transform.position; if (isFleeing && _combatTarget.agent != null) targetPos += _combatTarget.agent.velocity * 0.5f; MoveToXZ(me, targetPos.x, targetPos.z); return true; } } SafeStopAgent(me); if (CheckIsMounted(me)) { if (Time.time >= _nextAttackPulse) { ToggleMount(me); _nextAttackPulse = Time.time + 0.5f; } return true; } try { var nid = _combatTarget.netIdentity ?? _combatTarget.GetComponent<NetworkIdentity>(); if (me.target != _combatTarget && nid != null) CmdSetTarget(me, nid); } catch { } if (Time.time >= _nextAttackPulse) { me.transform.LookAt(_combatTarget.transform); me.transform.eulerAngles = new Vector3(0, me.transform.eulerAngles.y, 0); Vector3 miraFinal; var col = _combatTarget.GetComponent<Collider>(); if (col != null) miraFinal = col.bounds.center; else miraFinal = _combatTarget.transform.position + (Vector3.up * 1.2f); CmdSkillToPoint(me, miraFinal); _nextAttackPulse = Time.time + ATTACK_PULSE; } return true; }
+
+
+        private static string NormalizeListToken(string s)
+        {
+            if (s == null) return "";
+            // Trim normal whitespace first
+            s = s.Trim();
+
+            // Remove common invisible characters (BOM / zero-width / bidi marks / NBSP)
+            s = s.Replace("\uFEFF", "")   // BOM
+                 .Replace("\u200B", "")   // zero-width space
+                 .Replace("\u200E", "")   // LRM
+                 .Replace("\u200F", "")   // RLM
+                 .Replace("\u00A0", " "); // NBSP -> space
+
+            s = s.Trim();
+
+            return s;
+        }
+
+        private bool ShouldSkinDuringFishing(WTObject corpse)
+        {
+            if (corpse == null) return false;
+            if (itensColeta == null || itensColeta.Count == 0) return false;
+
+            // Nome do corpse geralmente vem como "CrabCorpse", etc.
+            string nome = NormalizeListToken(corpse.name ?? "");
+            if (string.IsNullOrWhiteSpace(nome)) return false;
+
+            foreach (var token in itensColeta)
+            {
+                if (string.IsNullOrWhiteSpace(token)) continue;
+                if (nome.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0) return true;
+            }
+
+            return false;
+        }
+
+        private void ClearPostCombatSkinning()
+        {
+            _postCombatFishingState = PostCombatFishingState.None;
+            _postCombatCorpse = null;
+            _postCombatSkinSkill = null;
+            _postCombatSkinFinishTime = 0f;
+            _postCombatCorpseTimeout = 0f;
+        }
+
+        private bool TryStartPostCombatSkinning(WTPlayer player, WTObject corpse)
+        {
+            if (_postCombatFishingState != PostCombatFishingState.None) return true;
+            if (corpse == null || !corpse.isActiveAndEnabled) return false;
+
+            var gather = corpse.worldType?.gatherSettings;
+            if (gather == null || gather.skill == null) return false;
+
+            // Verifica se temos o bônus/ferramenta necessária para esfolar
+            if (gather.bonusRequired != null)
+            {
+                bool tem = false;
+                var mao = player.GetEquippedRightHand();
+                if (mao.HasValue && ItemTemBonus(mao.Value, gather.bonusRequired.name)) tem = true;
+
+                if (!tem && player.inventory != null)
+                {
+                    foreach (var slot in player.inventory)
+                    {
+                        if (slot.amount > 0 && ItemTemBonus(slot.item, gather.bonusRequired.name)) { tem = true; break; }
+                    }
+                }
+
+                if (!tem) return false;
+            }
+
+            _postCombatCorpse = corpse;
+            _postCombatSkinSkill = gather.skill;
+            _postCombatFishingState = PostCombatFishingState.MoveToCorpse;
+            _postCombatCorpseTimeout = Time.time + 10.0f;
+
+            WTSocketBot.PublicLogger.LogInfo($"[PESCA] Pós-combate: tentando esfolar {corpse.name} antes de retomar a pesca...");
+            return true;
+        }
+
+        /// <summary>
+        /// Executa a lógica de pós-combate na pesca: ir até o corpse, esfolar e aguardar terminar.
+        /// Retorna true quando concluir/abortar e liberar o retorno à âncora.
+        /// </summary>
+        private bool HandlePostCombatSkinning(WTPlayer player)
+        {
+            if (_postCombatFishingState == PostCombatFishingState.None) return true;
+
+            if (Time.time > _postCombatCorpseTimeout)
+            {
+                WTSocketBot.PublicLogger.LogWarning("[PESCA] Pós-combate: timeout ao tentar esfolar. Retomando pesca.");
+                ClearPostCombatSkinning();
+                return true;
+            }
+
+            if (_postCombatCorpse == null || !_postCombatCorpse.isActiveAndEnabled)
+            {
+                ClearPostCombatSkinning();
+                return true;
+            }
+
+            float dist = Vector3.Distance(player.transform.position, _postCombatCorpse.transform.position);
+
+            if (_postCombatFishingState == PostCombatFishingState.MoveToCorpse)
+            {
+                if (dist > 2.8f)
+                {
+                    MoveToXZ(player, _postCombatCorpse.transform.position.x, _postCombatCorpse.transform.position.z);
+                    return false;
+                }
+
+                SafeStopAgent(player);
+                try { player.transform.LookAt(_postCombatCorpse.transform); } catch { }
+
+                WTSocketBot.PublicLogger.LogInfo($"[HUNTER] Esfolando {_postCombatCorpse.name}...");
+                player.WorldObjectTryAction(_postCombatCorpse, _postCombatSkinSkill);
+
+                _postCombatSkinFinishTime = Time.time + 2.8f;
+                _postCombatFishingState = PostCombatFishingState.Skinning;
+                return false;
+            }
+
+            if (_postCombatFishingState == PostCombatFishingState.Skinning)
+            {
+                if (Time.time < _postCombatSkinFinishTime) return false;
+                ClearPostCombatSkinning();
+                return true;
+            }
+
+            ClearPostCombatSkinning();
+            return true;
+        }
+
+        private bool TryGetRangedWeaponRange(WTPlayer me, out float range)
+        {
+            range = 0f;
+            try
+            {
+                var rightHand = me.GetEquippedRightHand();
+                if (!rightHand.HasValue || rightHand.Value.data == null) return false;
+
+                // Regra do próprio jogo: arma ranged geralmente é a que exige munição (requiredAmmo != null)
+                WTWeaponItem weapon = rightHand.Value.data as WTWeaponItem;
+                if (weapon == null) return false;
+                if (weapon.requiredAmmo == null) return false;
+
+                if (weapon.damageSkill != null)
+                {
+                    range = weapon.damageSkill.baseCastRange;
+                }
+
+                // Fallback seguro caso algum item não tenha damageSkill configurado
+                if (range <= 0f) range = 10f;
+
+                return true;
+            }
+            catch { return false; }
+        }
+
+        private bool RunCombatLogic(WTPlayer me, bool isHunting)
+        {
+            if (_combatTarget == null) return false;
+
+            float dist = Vector3.Distance(me.transform.position, _combatTarget.transform.position);
+            bool isFleeing = (_combatTarget.state == "RUNNING");
+
+            // Se arma for ranged, usamos o alcance real do skill para decidir quando aproximar.
+            bool isRanged = TryGetRangedWeaponRange(me, out float rangedRange);
+
+            // Queremos apenas garantir que estamos dentro do alcance máximo.
+            // Não fazemos "kite": se o alvo encostar, continuamos atacando.
+            float engageDist = isRanged ? Mathf.Max(2.5f, rangedRange - 0.4f) : 2.5f;
+
+            // DEFESA (não-caça): evita perseguir eternamente um agressor quando não estamos caçando.
+            if (!isHunting && !isFleeing && dist > engageDist)
+            {
+                if (Time.time - _lastDamageTime > 5.0f) return false;
+                me.transform.LookAt(_combatTarget.transform);
+                SafeStopAgent(me);
+                return true;
+            }
+
+            // Se está fora do alcance (ou melee longe), aproxima.
+            if (dist > engageDist)
+            {
+                Vector3 targetPos = _combatTarget.transform.position;
+                if (isFleeing && _combatTarget.agent != null)
+                    targetPos += _combatTarget.agent.velocity * 0.5f;
+
+                MoveToXZ(me, targetPos.x, targetPos.z);
+                return true;
+            }
+
+            SafeStopAgent(me);
+
+            // Se estiver montado, desmonta para atacar.
+            if (CheckIsMounted(me))
+            {
+                if (Time.time >= _nextAttackPulse)
+                {
+                    ToggleMount(me);
+                    _nextAttackPulse = Time.time + 0.5f;
+                }
+                return true;
+            }
+
+            // Seta alvo (target) no servidor.
+            try
+            {
+                var nid = _combatTarget.netIdentity ?? _combatTarget.GetComponent<NetworkIdentity>();
+                if (me.target != _combatTarget && nid != null) CmdSetTarget(me, nid);
+            }
+            catch { }
+
+            // Ataca no pulso.
+            if (Time.time >= _nextAttackPulse)
+            {
+                me.transform.LookAt(_combatTarget.transform);
+                me.transform.eulerAngles = new Vector3(0, me.transform.eulerAngles.y, 0);
+
+                Vector3 miraFinal;
+                var col = _combatTarget.GetComponent<Collider>();
+                if (col != null) miraFinal = col.bounds.center;
+                else miraFinal = _combatTarget.transform.position + (Vector3.up * 1.2f);
+
+                CmdSkillToPoint(me, miraFinal);
+                _nextAttackPulse = Time.time + ATTACK_PULSE;
+            }
+
+            return true;
+        }
         private WTMob PickAggressorSmart(WTPlayer me, float radius) { Vector3 myPos = me.transform.position; float bestSqr = radius * radius; WTMob best = null; int bestAggroVal = -1; int myId = me.worldId; if (me.target is WTMob tMob && IsValidTarget(tMob)) { float sqr = (tMob.transform.position - myPos).sqrMagnitude; if (sqr <= bestSqr) return tMob; } var mobs = FindObjectsOfType<WTMob>(); foreach (var mob in mobs) { if (!IsValidTarget(mob)) continue; float sqr = (mob.transform.position - myPos).sqrMagnitude; if (sqr > bestSqr) continue; bool isTargetingMe = (mob.target == me); int currentAggro = -1; if (_aggroByIdField != null) { try { var dict = _aggroByIdField.GetValue(mob) as IDictionary; if (dict != null && dict.Contains(myId)) { object aggroObj = dict[myId]; FieldInfo valField = aggroObj.GetType().GetField("value"); if (valField != null) currentAggro = (int)valField.GetValue(aggroObj); } } catch { } } if (currentAggro > bestAggroVal) { bestAggroVal = currentAggro; best = mob; } else if (currentAggro == bestAggroVal) { if (isTargetingMe || (sqr < 9.0f && mob.entityType?.mobBehaviour?.type == WTMobBehaviour.Mode.Aggressive)) { if (best == null || sqr < (best.transform.position - myPos).sqrMagnitude) { best = mob; } } } } return best; }
-        void EnviarCombateStatus(bool emCombate) { try { string msg = $"COMBAT_FLAG;{(emCombate ? "ON" : "OFF")}"; byte[] dados = Encoding.ASCII.GetBytes(msg); udpSender.Send(dados, dados.Length, "127.0.0.1", 8888); } catch { } }
+        void EnviarCombateStatus(bool emCombate)
+        {
+            // Evita spam: só envia se mudou.
+            if (_reportouCombate == emCombate) return;
+            _reportouCombate = emCombate;
+
+            try
+            {
+                string msg = $"COMBAT_FLAG;{(emCombate ? "ON" : "OFF")}";
+                byte[] dados = Encoding.ASCII.GetBytes(msg);
+                udpSender.Send(dados, dados.Length, "127.0.0.1", 8888);
+            }
+            catch { }
+        }
+
         IEnumerator MountSequence(WTPlayer p) { _isMountingRoutineActive = true; SafeStopAgent(p); yield return new WaitForSeconds(0.25f); ToggleMount(p); _pauseMovementUntil = Time.time + MOUNT_ANIMATION_TIME; _isMountingRoutineActive = false; }
         void SafeStopAgent(WTPlayer p) { if (p.agent != null && p.agent.enabled) { if (p.agent.isOnNavMesh) p.agent.isStopped = true; p.agent.velocity = Vector3.zero; p.agent.ResetPath(); } }
         void SafeResumeAgent(WTPlayer p) { if (p.agent != null && p.agent.enabled) { if (p.agent.isOnNavMesh) p.agent.isStopped = false; } }
@@ -858,7 +1170,18 @@ namespace WildTerraBot
                 }
             }
             if (alvo == null) return;
-            if (menorDist > 3.0f) { MoveToXZ(wtPlayer, alvo.transform.position.x, alvo.transform.position.z); return; }
+            if (menorDist > 3.0f)
+            {
+                // Se o alvo de coleta está longe, monta (se permitido)
+                if (_useMount && menorDist > HARVEST_MOUNT_DISTANCE && !CheckIsMounted(wtPlayer) && !_isMountingRoutineActive)
+                {
+                    StartCoroutine(MountSequence(wtPlayer));
+                }
+
+                MoveToXZ(wtPlayer, alvo.transform.position.x, alvo.transform.position.z);
+                return;
+            }
+
             var gather = alvo.worldType?.gatherSettings;
             if (gather == null || gather.skill == null) return;
             if (gather.bonusRequired != null)

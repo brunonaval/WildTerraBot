@@ -22,7 +22,16 @@ namespace WildTerraBot
     public static class FishBrain
     {
         public static List<FishProfile> ActiveProfiles = new List<FishProfile>();
-        public static List<int> SessionVisualHistory = new List<int>();
+        // Histórico por passo: visuais observados (verde e vermelho)
+        private static readonly Dictionary<int, int> ObservedVisualByStep = new Dictionary<int, int>();
+        // Passos confirmados (verde): visual + ação correta
+        private struct ConfirmedStep { public int Visual; public int Action; public ConfirmedStep(int v, int a) { Visual = v; Action = a; } }
+        private static readonly Dictionary<int, ConfirmedStep> ConfirmedByStep = new Dictionary<int, ConfirmedStep>();
+        // Índice do passo atual na sessão de pesca (0-based)
+        private static int SessionStepIndex = 0;
+        // Se não for nulo, significa que já deduzimos o peixe e estamos seguindo a sequência inteira
+        public static FishProfile LockedProfile = null;
+        public static bool IsLocked => LockedProfile != null;
 
         // Constantes Visuais
         private const int BITE = 0, LIFT = 1, SIDE = 2, DOWN = 3, DRAG = 4;
@@ -30,14 +39,130 @@ namespace WildTerraBot
         private const int E = 0, R = 1, T = 2, WAIT = 3;
 
         public static void Initialize() { ActiveProfiles.Clear(); }
-        public static void ResetSession() { SessionVisualHistory.Clear(); }
+        public static void ResetSession()
+        {
+            ObservedVisualByStep.Clear();
+            ConfirmedByStep.Clear();
+            SessionStepIndex = 0;
+            LockedProfile = null;
+        }
+
+        /// <summary>
+        /// Registra o passo atual (visual observado) e avança o contador de passos.
+        /// Retorna o índice do passo (0-based) referente ao evento recebido.
+        /// </summary>
+        public static int BeginStep(int visualID)
+        {
+            int step = SessionStepIndex;
+            ObservedVisualByStep[step] = visualID;
+            SessionStepIndex++;
+            return step;
+        }
+
+        /// <summary>
+        /// Registra um passo confirmado (verde): visual + ação correta (a dica do jogo era verdadeira).
+        /// </summary>
+        public static void RecordConfirmedStep(int stepIndex, int visualID, int actionID)
+        {
+            ObservedVisualByStep[stepIndex] = visualID;
+            ConfirmedByStep[stepIndex] = new ConfirmedStep(visualID, actionID);
+        }
+
+        /// <summary>
+        /// Retorna a ação prevista pelo peixe travado (LOCK). Se o passo exceder a sequência, retorna WAIT.
+        /// </summary>
+        public static int GetLockedAction(int stepIndex)
+        {
+            if (LockedProfile == null) return WAIT;
+            if (stepIndex < 0 || stepIndex >= LockedProfile.ActionSequence.Length) return WAIT;
+            return LockedProfile.ActionSequence[stepIndex];
+        }
+
+        private static void TryLockIfUnique(List<FishProfile> candidates, ManualLogSource logger)
+        {
+            if (LockedProfile != null) return;
+            if (candidates != null && candidates.Count == 1)
+            {
+                LockedProfile = candidates[0];
+                logger.LogWarning($"[IA] LOCK: Peixe deduzido com certeza: '{LockedProfile.Name}'. A partir de agora seguirei a sequência completa (E/R/T/Wait) sem depender das dicas do UI.");
+            }
+        }
+
+        private static List<FishProfile> GetCandidates(int currentStepIndex, int currentVisualID, int? expectedAction, int? forbiddenAction)
+        {
+            var result = new List<FishProfile>();
+
+            foreach (var fish in ActiveProfiles)
+            {
+                // Deve ter passos suficientes para o passo atual
+                if (currentStepIndex >= fish.VisualSequence.Length) continue;
+                if (currentStepIndex >= fish.ActionSequence.Length) continue;
+
+                // Visual do passo atual sempre é um dado real do peixe
+                if (fish.VisualSequence[currentStepIndex] != currentVisualID) continue;
+
+                // Todos os visuais observados (inclusive passos vermelhos) devem bater
+                bool ok = true;
+                foreach (var kv in ObservedVisualByStep)
+                {
+                    int step = kv.Key;
+                    int vis = kv.Value;
+
+                    if (step >= fish.VisualSequence.Length) { ok = false; break; }
+                    if (fish.VisualSequence[step] != vis) { ok = false; break; }
+                }
+                if (!ok) continue;
+
+                // Todos os passos confirmados (verde) precisam bater em visual + ação
+                foreach (var kv in ConfirmedByStep)
+                {
+                    int step = kv.Key;
+                    var conf = kv.Value;
+
+                    if (step >= fish.VisualSequence.Length || step >= fish.ActionSequence.Length) { ok = false; break; }
+                    if (fish.VisualSequence[step] != conf.Visual) { ok = false; break; }
+                    if (fish.ActionSequence[step] != conf.Action) { ok = false; break; }
+                }
+                if (!ok) continue;
+
+                // Restrições do passo atual:
+                if (expectedAction.HasValue && fish.ActionSequence[currentStepIndex] != expectedAction.Value) continue;
+                if (forbiddenAction.HasValue && fish.ActionSequence[currentStepIndex] == forbiddenAction.Value) continue;
+
+                result.Add(fish);
+            }
+
+            return result;
+        }
+
+        private static int ChooseActionFromCandidates(List<FishProfile> candidates, int stepIndex)
+        {
+            if (candidates == null || candidates.Count == 0) return WAIT;
+            if (candidates.Count == 1) return candidates[0].ActionSequence[stepIndex];
+
+            // Se todas as opções restantes pedem a mesma tecla neste passo, podemos executar com segurança
+            var uniqueActions = candidates.Select(c => c.ActionSequence[stepIndex]).Distinct().ToList();
+            if (uniqueActions.Count == 1) return uniqueActions[0];
+
+            // Caso ambíguo: escolhe a ação mais frequente; em empate, prefere WAIT (mais conservador)
+            var grouped = candidates
+                .GroupBy(c => c.ActionSequence[stepIndex])
+                .Select(g => new { Action = g.Key, Count = g.Count() })
+                .OrderByDescending(x => x.Count)
+                .ThenBy(x => x.Action == WAIT ? 0 : 1)
+                .ToList();
+
+            return grouped[0].Action;
+        }
+
 
         // --- CONFIGURA O CONTEXTO (RIO, OCEANO OU DESERTO) ---
         public static void SetContext(string location, string bait)
         {
             ActiveProfiles.Clear();
-            location = location.Trim().ToLower();
-            bait = bait.Trim().ToLower();
+            ResetSession();
+            location = NormalizeToken(location);
+            bait = NormalizeBait(bait);
 
             if (location == "river")
             {
@@ -51,6 +176,48 @@ namespace WildTerraBot
             {
                 LoadDesertProfiles(bait);
             }
+        }
+
+        // --- NORMALIZAÇÃO DE STRINGS (evita falhas por variação de UI/idioma/plural) ---
+        private static string NormalizeToken(string s)
+        {
+            if (string.IsNullOrWhiteSpace(s)) return "";
+            s = s.Trim().ToLowerInvariant();
+            // Normaliza múltiplos espaços
+            while (s.Contains("  ")) s = s.Replace("  ", " ");
+            return s;
+        }
+
+        /// <summary>
+        /// Normaliza o nome da isca vindo do Dashboard/UI.
+        /// Ex.: "Worm" -> "worms", "Maggot" -> "maggots".
+        /// Isso é crítico: se não bater com as chaves do switch, ActiveProfiles fica vazio e a IA sempre falha no Vermelho.
+        /// </summary>
+        private static string NormalizeBait(string bait)
+        {
+            bait = NormalizeToken(bait);
+            if (bait == "") return "";
+
+            // Correções comuns (singular/plural)
+            if (bait == "worm" || bait == "worms") return "worms";
+            if (bait == "maggot" || bait == "maggots") return "maggots";
+            if (bait == "pea" || bait == "peas") return "peas";
+            if (bait == "shrimp" || bait == "shrimps") return "shrimp";
+            if (bait == "corn seed" || bait == "corn seeds" || bait == "corn") return "corn seeds";
+
+            // Alguns itens do jogo podem vir com variações de capitalização/espacos
+            if (bait == "featherfishing spoon" || bait == "feather fishing spoon") return "feather fishing spoon";
+
+            // Perfis que usam o nome do próprio peixe como isca (pike bait)
+            if (bait == "crucian") return "crucian";
+            if (bait == "roach") return "roach";
+            if (bait == "alburnus") return "alburnus";
+            if (bait == "sprat") return "sprat";
+            if (bait == "capelin") return "capelin";
+            if (bait == "grave beetle") return "grave beetle";
+            if (bait == "mussel") return "mussel";
+
+            return bait; // fallback (mantém o texto, pode ser que já esteja correto)
         }
 
         // === PERFIS DO RIO ===
@@ -184,89 +351,56 @@ namespace WildTerraBot
         }
 
         // === LÓGICA DE INTELIGÊNCIA ARTIFICIAL (ELIMINAÇÃO COM RETROCESSO) ===
-        public static int PredictMoveWithElimination(int wrongActionID, ManualLogSource logger)
+        public static void EvaluateLockOnGreen(int stepIndex, int visualID, int correctActionID, ManualLogSource logger)
         {
-            int currentIndex = SessionVisualHistory.Count;
+            // Já registramos o passo confirmado fora; aqui apenas tentamos travar se ficar único
+            var candidates = GetCandidates(stepIndex, visualID, correctActionID, null);
+            TryLockIfUnique(candidates, logger);
+        }
 
-            logger.LogInfo($"[IA] Analisando Vermelho. Passo: {currentIndex}. Erro sugerido: {GetKeyName(wrongActionID)}");
+        /// <summary>
+        /// Vermelho: a dica do jogo (wrongActionID) é garantidamente ERRADA.
+        /// Deduzimos a ação correta eliminando peixes incompatíveis e, se o peixe ficar único, travamos nele.
+        /// </summary>
+        public static int PredictMoveWithElimination(int stepIndex, int visualID, int wrongActionID, ManualLogSource logger)
+        {
+            logger.LogInfo($"[IA] Analisando Vermelho. Passo: {stepIndex}. Visual: {visualID} ({GetVisualName(visualID)}). Erro sugerido: {GetKeyName(wrongActionID)}");
 
-            // 1. Tenta resolver no passo atual
-            int result = RunElimination(currentIndex, wrongActionID, logger);
+            // 1) Filtra candidatos usando: visuais observados + passos verdes confirmados + (ação do passo atual != dica vermelha)
+            var candidates = GetCandidates(stepIndex, visualID, null, wrongActionID);
 
-            // 2. Se falhou (Wait) e temos histórico, assume que o último "Verde" foi falso positivo (Backtracking)
-            if (result == WAIT && currentIndex > 0)
+            // Se ficar vazio, tentamos sem a restrição "forbiddenAction" (perfil/local/isca pode estar divergente)
+            if (candidates.Count == 0)
             {
-                logger.LogWarning($"[IA] Falha no Passo {currentIndex}. Tentando Retrocesso para Passo {currentIndex - 1}...");
-
-                // Tenta rodar a eliminação como se estivéssemos um passo atrás
-                result = RunElimination(currentIndex - 1, wrongActionID, logger);
-
-                if (result != WAIT)
-                {
-                    logger.LogWarning("[IA] Retrocesso BEM SUCEDIDO! O último 'Verde' era uma armadilha. Corrigindo histórico...");
-                    // Corrige o histórico removendo a mentira (o último visual adicionado)
-                    SessionVisualHistory.RemoveAt(currentIndex - 1);
-                }
+                logger.LogWarning($"[IA] Nenhum candidato após filtrar pela dica vermelha. Tentando apenas com visuais/histórico (sem eliminar pela dica)...");
+                candidates = GetCandidates(stepIndex, visualID, null, null);
             }
 
-            return result;
-        }
-
-        // Método auxiliar que roda a lógica de eliminação para um índice específico
-        private static int RunElimination(int stepIndex, int wrongActionID, ManualLogSource logger)
-        {
-            foreach (var fish in ActiveProfiles)
+            if (candidates.Count == 0)
             {
-                // Verifica se o histórico bate (até o limite do stepIndex)
-                if (!IsMatchingHistory(fish.VisualSequence, SessionVisualHistory.ToArray(), stepIndex)) continue;
-
-                // Verifica se o peixe tem passos suficientes
-                if (stepIndex >= fish.ActionSequence.Length) continue;
-
-                // Descobre o que esse peixe pediria nesse passo
-                int actionThisFishWants = fish.ActionSequence[stepIndex];
-
-                // Se o peixe pede EXATAMENTE a ação que deu ERRO, ele é eliminado
-                if (actionThisFishWants == wrongActionID)
-                {
-                    // logger.LogInfo($"[IA] Eliminando '{fish.Name}' pois pediria '{GetKeyName(wrongActionID)}' (Mentira).");
-                    continue;
-                }
-
-                // Se chegamos aqui, achamos um peixe que pede algo DIFERENTE da mentira
-                logger.LogWarning($"[IA] DEDUÇÃO (Passo {stepIndex}): Só pode ser '{fish.Name}'! Executando: {GetKeyName(actionThisFishWants)}");
-                return actionThisFishWants;
+                logger.LogWarning($"[IA] Ainda sem candidatos. Usando WAIT como fallback.");
+                return WAIT;
             }
-            return WAIT;
-        }
 
-        // Função de suporte para compatibilidade
-        public static int PredictFinalMove(ManualLogSource logger)
-        {
-            return PredictMoveWithElimination(3, logger);
-        }
+            TryLockIfUnique(candidates, logger);
 
-        // Verifica o histórico até um limite específico (necessário para o Backtracking)
-        private static bool IsMatchingHistory(int[] fishSeq, int[] history, int limit)
-        {
-            if (limit > fishSeq.Length) return false;
+            int chosen = ChooseActionFromCandidates(candidates, stepIndex);
 
-            // Verifica apenas até o limite (ignorando itens extras se estivermos retrocedendo)
-            for (int i = 0; i < limit; i++)
+            if (candidates.Count == 1)
             {
-                if (i >= history.Length) break;
-                if (fishSeq[i] != history[i]) return false;
+                logger.LogWarning($"[IA] DEDUÇÃO (Passo {stepIndex}): '{candidates[0].Name}'. Executando: {GetKeyName(chosen)}");
             }
-            return true;
+            else
+            {
+                var actions = candidates.Select(c => GetKeyName(c.ActionSequence[stepIndex])).Distinct().ToList();
+                logger.LogWarning($"[IA] Ambíguo (Passo {stepIndex}): {candidates.Count} candidatos. Ações possíveis: {string.Join(", ", actions)}. Executando: {GetKeyName(chosen)}");
+            }
+
+            return chosen;
         }
 
-        // Sobrecarga para verificar histórico completo (usado internamente em outras partes se necessário)
-        private static bool IsMatchingHistory(int[] fishSeq, int[] history)
-        {
-            return IsMatchingHistory(fishSeq, history, history.Length);
-        }
-
-        public static void AddToHistory(int visualID) => SessionVisualHistory.Add(visualID);
+        // Compatibilidade (mantido para não quebrar chamadas antigas)
+        public static int PredictFinalMove(ManualLogSource logger) => WAIT;
 
         public static string GetKeyName(int val)
         {
@@ -275,6 +409,16 @@ namespace WildTerraBot
             if (val == 2) return "T";
             if (val == 3) return "Wait";
             return val.ToString();
+        }
+
+        public static string GetVisualName(int visualID)
+        {
+            if (visualID == BITE) return "BITE";
+            if (visualID == LIFT) return "LIFT";
+            if (visualID == SIDE) return "SIDE";
+            if (visualID == DOWN) return "DOWN";
+            if (visualID == DRAG) return "DRAG";
+            return visualID.ToString();
         }
     }
 }
