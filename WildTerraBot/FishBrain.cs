@@ -176,6 +176,17 @@ namespace WildTerraBot
             {
                 LoadDesertProfiles(bait);
             }
+
+            else if (
+                location == "battle field island" ||
+                location == "battlefield island" ||
+                location == "abandonedbattlefield" ||
+                location == "abandoned battlefield")
+            {
+                LoadBattleFieldIslandProfiles(bait);
+            }
+
+
         }
 
         // --- NORMALIZAÇÃO DE STRINGS (evita falhas por variação de UI/idioma/plural) ---
@@ -230,7 +241,7 @@ namespace WildTerraBot
             var pAlburnus = new FishProfile("Alburnus", new[] { DRAG }, new[] { E });
             var pIde = new FishProfile("Ide", new[] { BITE, BITE, DRAG }, new[] { WAIT, WAIT, E });
             var pPike = new FishProfile("Pike", new[] { DRAG, SIDE, DRAG, DRAG }, new[] { WAIT, T, R, E });
-            var pCatFish = new FishProfile("CatFish", new[] { SIDE, DOWN, DRAG, DRAG, LIFT }, new[] { WAIT, R, R, WAIT, E });
+            var pCatFish = new FishProfile("CatFish", new[] { SIDE, DOWN, DRAG, DRAG, LIFT }, new[] { WAIT, R, R, WAIT, R });
 
             switch (bait)
             {
@@ -264,6 +275,11 @@ namespace WildTerraBot
                     break;
             }
         }
+
+
+
+
+
 
         // === PERFIS DO OCEANO ===
         private static void LoadOceanProfiles(string bait)
@@ -349,6 +365,76 @@ namespace WildTerraBot
                     break;
             }
         }
+
+
+
+        // === PERFIS DO BATTLE FIELD ISLAND / ABANDONED BATTLEFIELD ===
+        private static void LoadBattleFieldIslandProfiles(string bait)
+        {
+            var pJellyFish = new FishProfile("JellyFish", new[] { SIDE }, new[] { E });
+            var pPiranha = new FishProfile("Piranha", new[] { LIFT, LIFT, DRAG }, new[] { WAIT, WAIT, T });
+            var pPufferfish = new FishProfile("Pufferfish", new[] { BITE, BITE, SIDE, BITE, BITE }, new[] { WAIT, WAIT, T, WAIT, R });
+            var pBlackHalibut = new FishProfile("Black Halibut", new[] { BITE, LIFT, SIDE, DOWN }, new[] { WAIT, R, R, E });
+            var pWhiteHalibut = new FishProfile("White Halibut", new[] { BITE, LIFT, SIDE, DOWN, DOWN }, new[] { WAIT, R, R, WAIT, E });
+            var pMussel = new FishProfile("Mussel", new[] { LIFT, SIDE }, new[] { T, R });
+            var pSeaBass = new FishProfile("SeaBass", new[] { DOWN, LIFT, DRAG }, new[] { WAIT, T, R });
+            var pFlounder = new FishProfile("Flounder", new[] { DOWN, DRAG, DRAG, LIFT, DRAG }, new[] { R, T, WAIT, T, T });
+            var pWolffish = new FishProfile("Wolffish", new[] { BITE, DOWN, SIDE, DOWN, LIFT, LIFT }, new[] { R, T, R, WAIT, T, R });
+            var pCod = new FishProfile("Cod", new[] { DOWN, SIDE, DOWN }, new[] { WAIT, WAIT, E });
+
+            switch (bait)
+            {
+                case "worms":
+                    ActiveProfiles.Add(pJellyFish);
+                    break;
+
+                case "maggots":
+                    ActiveProfiles.Add(pJellyFish);
+                    break;
+
+                case "grave beetle":
+                    ActiveProfiles.Add(pJellyFish);
+                    ActiveProfiles.Add(pPiranha);
+                    ActiveProfiles.Add(pPufferfish);
+                    break;
+
+                case "feather fishing spoon":
+                    ActiveProfiles.Add(pJellyFish);
+                    ActiveProfiles.Add(pBlackHalibut);
+                    ActiveProfiles.Add(pWhiteHalibut);
+                    break;
+
+                case "corn seeds":
+                    ActiveProfiles.Add(pJellyFish);
+                    ActiveProfiles.Add(pMussel);
+                    ActiveProfiles.Add(pSeaBass);
+                    ActiveProfiles.Add(pFlounder);
+                    break;
+
+                case "mussel":
+                    ActiveProfiles.Add(pJellyFish);
+                    ActiveProfiles.Add(pWolffish);
+                    break;
+
+                case "sprat":
+                    ActiveProfiles.Add(pSeaBass);
+                    ActiveProfiles.Add(pCod);
+                    break;
+
+                case "capelin":
+                    ActiveProfiles.Add(pSeaBass);
+                    ActiveProfiles.Add(pCod);
+                    break;
+
+                case "shrimp":
+                    ActiveProfiles.Add(pCod);
+                    break;
+            }
+        }
+
+
+
+
 
         // === LÓGICA DE INTELIGÊNCIA ARTIFICIAL (ELIMINAÇÃO COM RETROCESSO) ===
         public static void EvaluateLockOnGreen(int stepIndex, int visualID, int correctActionID, ManualLogSource logger)

@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using BepInEx.Logging;
 using HarmonyLib;
 using System;
@@ -17,8 +18,16 @@ namespace WildTerraBot
     [BepInPlugin("com.seunick.wildterra.socket", "WT UDP Final 126", "9.126.0")]
     public class WTSocketBot : BaseUnityPlugin
     {
+        public const string PluginVersion = "1.0.0";
         public static WTSocketBot Instance;
         public static ManualLogSource PublicLogger;
+        // ====== LICENSING (API) ======
+        internal static ConfigEntry<bool> EnableLicensing;
+        internal static ConfigEntry<string> ApiBaseUrl;
+        internal static ConfigEntry<string> LicenseKey;
+        internal static ConfigEntry<string> DeviceId;
+        internal static ConfigEntry<string> AppName;
+        internal static ConfigEntry<string> AppVersion;
         public static bool IsFishingBotActive = false; // Começa FALSO para permitir jogo manual
         public static MethodInfo CmdFishingUseMethod = null;
         public static bool HasDumped = false;
@@ -30,6 +39,52 @@ namespace WildTerraBot
             DontDestroyOnLoad(this.gameObject);
             PublicLogger = Logger;
 
+
+            // ====== LICENSING (API) ======
+            EnableLicensing = Config.Bind("Licensing", "EnableLicensing", true,
+                "If true, the bot requires a valid license (POST /license/verify) before starting.");
+
+            ApiBaseUrl = Config.Bind("Licensing", "ApiBaseUrl", "https://wildterralicensing.onrender.com",
+                "Licensing API base URL.");
+
+            LicenseKey = Config.Bind("Licensing", "LicenseKey", "",
+                "Paste your license key here (WTB-XXXX-XXXX-XXXX-XXXX).");
+
+            DeviceId = Config.Bind("Licensing", "DeviceId", "",
+                "Auto-generated device id (leave blank). One license = one device binding.");
+
+            AppName = Config.Bind("Licensing", "AppName", "wildterra-bot",
+                "App name sent to /license/verify.");
+
+            AppVersion = Config.Bind("Licensing", "AppVersion", PluginVersion,
+                "App version sent to /license/verify.");
+
+            // gera/persiste DeviceId 1x
+            if (string.IsNullOrWhiteSpace(DeviceId.Value))
+            {
+                DeviceId.Value = LicenseGate.MakeDeviceId();
+                Config.Save();
+            }
+
+            // --- LICENÇA PRIMEIRO ---
+            if (EnableLicensing.Value)
+            {
+                if (!LicenseGate.Validar(Logger))
+                {
+                    Logger.LogError(">>> LICENÇA INVÁLIDA - BOT DESATIVADO <<<");
+                    Destroy(this.gameObject);
+                    return;
+                }
+            }
+            else
+            {
+                Logger.LogWarning("[LICENSING] EnableLicensing=false (modo dev).");
+            }
+
+            // Só depois de licenciado
+
+            DontDestroyOnLoad(this.gameObject);
+
             FishBrain.Initialize();
 
             try
@@ -40,7 +95,9 @@ namespace WildTerraBot
 
                 Harmony.CreateAndPatchAll(typeof(PlayerHooks));
                 Harmony.CreateAndPatchAll(typeof(FishingHooks));
-                Logger.LogInfo(">>> BOT 9.126: MANUAL MODE SUPPORT + SCENE DUMP <<<");
+                Harmony.CreateAndPatchAll(typeof(SkillUseLogger));
+                Harmony.CreateAndPatchAll(typeof(HarvestHooks));
+                Logger.LogInfo(">>> BOT 9.126: LICENÇA OK & HARMONY ATIVO <<<");
             }
             catch (Exception ex) { Logger.LogError($"[CRITICAL] {ex.Message}"); }
         }
