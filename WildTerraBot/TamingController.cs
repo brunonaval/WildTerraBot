@@ -115,14 +115,14 @@ namespace WildTerraBot
             CleanupExpiredBlacklist();
             ResetRun(clearBlacklist: false);
             IsEnabled = true;
-            _log($"[TAMING] ON mode={_config.Mode} trap='{_config.TrapName}' weapon='{_config.CombatWeaponName}' targets={string.Join(", ", _config.TargetNames)}");
+            _log(string.Format(WildTerraBot.Properties.Resources.TamingEnabledFormat, _config.Mode, _config.TrapName, _config.CombatWeaponName, string.Join(", ", _config.TargetNames)));
         }
 
         public void Disable()
         {
             if (IsEnabled || _target != null)
             {
-                _log("[TAMING] OFF");
+                _log(WildTerraBot.Properties.Resources.TamingDisabled);
             }
             IsEnabled = false;
             ResetRun(clearBlacklist: false);
@@ -131,7 +131,7 @@ namespace WildTerraBot
         public void AbortCurrent(string reason)
         {
             if (!IsEnabled || (_state == TamingState.Patrol && _target == null)) return;
-            _log($"[TAMING] abort: {reason}");
+            _log(string.Format(WildTerraBot.Properties.Resources.TamingAbortFormat, reason));
             BlacklistCurrentTarget(12f);
             CleanupActorContext(success: false);
             ResetRun(clearBlacklist: false);
@@ -157,7 +157,7 @@ namespace WildTerraBot
             }
             catch { }
 
-            _log($"[TAMING-DEF] pause state='{_state}' tameTarget='{SafeName(_target)}' reason='{_pauseReason}'");
+            _log(string.Format(WildTerraBot.Properties.Resources.TamingDefensePauseFormat, _state, SafeName(_target), _pauseReason));
         }
 
         public void ResumeAfterDefense(WTPlayer me)
@@ -185,7 +185,7 @@ namespace WildTerraBot
 
             if (!IsValidTarget(_target))
             {
-                _log("[TAMING-DEF] resume falhou: alvo da doma não é mais válido. voltando para patrulha.");
+                _log(WildTerraBot.Properties.Resources.TamingDefenseResumeInvalidTarget);
                 ResetRun(clearBlacklist: false);
                 return;
             }
@@ -194,7 +194,7 @@ namespace WildTerraBot
             {
                 _state = TamingState.ApproachCatch;
                 _stateUntil = Time.time + 8.0f;
-                _log($"[TAMING-DEF] resume -> ApproachCatch target='{SafeName(_target)}' effects=[{effects}]");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingDefenseResumeApproachCatchFormat, SafeName(_target), effects));
                 return;
             }
 
@@ -205,19 +205,19 @@ namespace WildTerraBot
                 {
                     _state = TamingState.ApproachTrapRange;
                     _stateUntil = Time.time + 10.0f;
-                    _log($"[TAMING-DEF] resume -> ApproachTrapRange target='{SafeName(_target)}' (fuga confirmada)");
+                    _log(string.Format(WildTerraBot.Properties.Resources.TamingDefenseResumeApproachTrapRangeFleeFormat, SafeName(_target)));
                     return;
                 }
 
                 _state = TamingState.EquipCombatWeapon;
                 _stateUntil = Time.time + 8.0f;
-                _log($"[TAMING-DEF] resume -> EquipCombatWeapon target='{SafeName(_target)}'");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingDefenseResumeEquipCombatWeaponFormat, SafeName(_target)));
                 return;
             }
 
             _state = TamingState.ApproachTrapRange;
             _stateUntil = Time.time + 10.0f;
-            _log($"[TAMING-DEF] resume -> ApproachTrapRange target='{SafeName(_target)}'");
+            _log(string.Format(WildTerraBot.Properties.Resources.TamingDefenseResumeApproachTrapRangeFormat, SafeName(_target)));
         }
 
         public bool Tick(WTPlayer me)
@@ -302,7 +302,7 @@ namespace WildTerraBot
                 if (Time.time >= _nextStatusLogAt)
                 {
                     _nextStatusLogAt = Time.time + 4.0f;
-                    _log($"[TAMING] modo '{_config.Mode}' ainda não implementado nesta etapa.");
+                    _log(string.Format(WildTerraBot.Properties.Resources.TamingModeNotImplementedFormat, _config.Mode));
                 }
                 return false;
             }
@@ -331,10 +331,10 @@ namespace WildTerraBot
             _combatRange = GetCombatWeaponRange(me, _config.CombatWeaponName, 2.0f, out _combatIsRanged);
 
             TrySetTarget(me, _target);
-            _log($"[TAMING] alvo travado '{SafeName(_target)}' dist={DistanceToTarget(me, _target):F1} trapRange={_trapRange:F1} catchRange={_catchRange:F1} expectedPet='{_expectedCatchItemName}' countBefore={_expectedCatchItemCount}");
+            _log(string.Format(WildTerraBot.Properties.Resources.TamingTargetLockedFormat, SafeName(_target), DistanceToTarget(me, _target), _trapRange, _catchRange, _expectedCatchItemName, _expectedCatchItemCount));
             if (agressivo)
             {
-                _log($"[TAMING-AGGRO] triggerHp={_fleeHpThreshold:P0} combatWeapon='{_config.CombatWeaponName}' combatRange={_combatRange:F1}");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingAggroTriggerFormat, _fleeHpThreshold, _config.CombatWeaponName, _combatRange));
             }
             return true;
         }
@@ -352,7 +352,7 @@ namespace WildTerraBot
                 _state = TamingState.ApproachCombatRange;
                 _stateUntil = Time.time + 18f;
                 _nextMoveLogAt = 0f;
-                _log($"[TAMING-AGGRO] combat weapon equipada '{_config.CombatWeaponName}'. hand={handInfo} range={_combatRange:F1} ranged={_combatIsRanged}");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingAggroCombatWeaponEquippedFormat, _config.CombatWeaponName, handInfo, _combatRange, _combatIsRanged));
                 return true;
             }
 
@@ -360,7 +360,7 @@ namespace WildTerraBot
             {
                 _nextActionAt = Time.time + 0.20f;
                 bool alreadyEquipped = _checkAndEquipItem(me, _config.CombatWeaponName, 0);
-                _log($"[TAMING-AGGRO] equip combat weapon='{_config.CombatWeaponName}' alreadyEquipped={alreadyEquipped} hand={handInfo}");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingAggroEquipCombatWeaponFormat, _config.CombatWeaponName, alreadyEquipped, handInfo));
             }
             return true;
         }
@@ -377,7 +377,7 @@ namespace WildTerraBot
                 if (Time.time >= _nextMoveLogAt)
                 {
                     _nextMoveLogAt = Time.time + 0.8f;
-                    _log($"[TAMING-AGGRO] aproximando combate alvo='{SafeName(_target)}' dist={dist:F1} desired<={desired:F1}");
+                    _log(string.Format(WildTerraBot.Properties.Resources.TamingAggroApproachingCombatFormat, SafeName(_target), dist, desired));
                 }
                 _moveToXZ(me, _target.transform.position.x, _target.transform.position.z);
                 return true;

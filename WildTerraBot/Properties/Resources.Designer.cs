@@ -890,5 +890,95 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("TrainingModeAutoAttackErrorFormat", resourceCulture);
             }
         }
+
+        internal static string TamingEnabledFormat {
+            get {
+                return ResourceManager.GetString("TamingEnabledFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingDisabled {
+            get {
+                return ResourceManager.GetString("TamingDisabled", resourceCulture);
+            }
+        }
+
+        internal static string TamingAbortFormat {
+            get {
+                return ResourceManager.GetString("TamingAbortFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingDefensePauseFormat {
+            get {
+                return ResourceManager.GetString("TamingDefensePauseFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingDefenseResumeInvalidTarget {
+            get {
+                return ResourceManager.GetString("TamingDefenseResumeInvalidTarget", resourceCulture);
+            }
+        }
+
+        internal static string TamingDefenseResumeApproachCatchFormat {
+            get {
+                return ResourceManager.GetString("TamingDefenseResumeApproachCatchFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingDefenseResumeApproachTrapRangeFleeFormat {
+            get {
+                return ResourceManager.GetString("TamingDefenseResumeApproachTrapRangeFleeFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingDefenseResumeEquipCombatWeaponFormat {
+            get {
+                return ResourceManager.GetString("TamingDefenseResumeEquipCombatWeaponFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingDefenseResumeApproachTrapRangeFormat {
+            get {
+                return ResourceManager.GetString("TamingDefenseResumeApproachTrapRangeFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingModeNotImplementedFormat {
+            get {
+                return ResourceManager.GetString("TamingModeNotImplementedFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingTargetLockedFormat {
+            get {
+                return ResourceManager.GetString("TamingTargetLockedFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroTriggerFormat {
+            get {
+                return ResourceManager.GetString("TamingAggroTriggerFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroCombatWeaponEquippedFormat {
+            get {
+                return ResourceManager.GetString("TamingAggroCombatWeaponEquippedFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroEquipCombatWeaponFormat {
+            get {
+                return ResourceManager.GetString("TamingAggroEquipCombatWeaponFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroApproachingCombatFormat {
+            get {
+                return ResourceManager.GetString("TamingAggroApproachingCombatFormat", resourceCulture);
+            }
+        }
     }
 }

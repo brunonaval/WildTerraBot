@@ -300,4 +300,49 @@
   <data name="TrainingModeAutoAttackErrorFormat" xml:space="preserve">
     <value>[TRAINING] auto attack error target='{0}' ex={1}:{2}</value>
   </data>
+  <data name="TamingEnabledFormat" xml:space="preserve">
+    <value>[TAMING] ON mode={0} trap='{1}' weapon='{2}' targets={3}</value>
+  </data>
+  <data name="TamingDisabled" xml:space="preserve">
+    <value>[TAMING] OFF</value>
+  </data>
+  <data name="TamingAbortFormat" xml:space="preserve">
+    <value>[TAMING] abort: {0}</value>
+  </data>
+  <data name="TamingDefensePauseFormat" xml:space="preserve">
+    <value>[TAMING-DEF] pause state='{0}' tameTarget='{1}' reason='{2}'</value>
+  </data>
+  <data name="TamingDefenseResumeInvalidTarget" xml:space="preserve">
+    <value>[TAMING-DEF] resume failed: taming target is no longer valid. returning to patrol.</value>
+  </data>
+  <data name="TamingDefenseResumeApproachCatchFormat" xml:space="preserve">
+    <value>[TAMING-DEF] resume -&gt; ApproachCatch target='{0}' effects=[{1}]</value>
+  </data>
+  <data name="TamingDefenseResumeApproachTrapRangeFleeFormat" xml:space="preserve">
+    <value>[TAMING-DEF] resume -&gt; ApproachTrapRange target='{0}' (flee confirmed)</value>
+  </data>
+  <data name="TamingDefenseResumeEquipCombatWeaponFormat" xml:space="preserve">
+    <value>[TAMING-DEF] resume -&gt; EquipCombatWeapon target='{0}'</value>
+  </data>
+  <data name="TamingDefenseResumeApproachTrapRangeFormat" xml:space="preserve">
+    <value>[TAMING-DEF] resume -&gt; ApproachTrapRange target='{0}'</value>
+  </data>
+  <data name="TamingModeNotImplementedFormat" xml:space="preserve">
+    <value>[TAMING] mode '{0}' is not yet implemented at this stage.</value>
+  </data>
+  <data name="TamingTargetLockedFormat" xml:space="preserve">
+    <value>[TAMING] target locked '{0}' dist={1:F1} trapRange={2:F1} catchRange={3:F1} expectedPet='{4}' countBefore={5}</value>
+  </data>
+  <data name="TamingAggroTriggerFormat" xml:space="preserve">
+    <value>[TAMING-AGGRO] triggerHp={0:P0} combatWeapon='{1}' combatRange={2:F1}</value>
+  </data>
+  <data name="TamingAggroCombatWeaponEquippedFormat" xml:space="preserve">
+    <value>[TAMING-AGGRO] combat weapon equipped '{0}'. hand={1} range={2:F1} ranged={3}</value>
+  </data>
+  <data name="TamingAggroEquipCombatWeaponFormat" xml:space="preserve">
+    <value>[TAMING-AGGRO] equip combat weapon='{0}' alreadyEquipped={1} hand={2}</value>
+  </data>
+  <data name="TamingAggroApproachingCombatFormat" xml:space="preserve">
+    <value>[TAMING-AGGRO] approaching combat target='{0}' dist={1:F1} desired&lt;={2:F1}</value>
+  </data>
 </root>
