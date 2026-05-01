@@ -237,4 +237,34 @@
   <data name="InspectErrorPlayerNotFoundFormat" xml:space="preserve">
     <value>Player '{0}' was not found among nearby/visible players.</value>
   </data>
+  <data name="HealTrainingEnabledFormat" xml:space="preserve">
+    <value>[CURA] HealTraining ENABLED mode={0}</value>
+  </data>
+  <data name="HealTrainingDisabled" xml:space="preserve">
+    <value>[CURA] HealTraining DISABLED</value>
+  </data>
+  <data name="HealTrainingSelfRecoveryListEmpty" xml:space="preserve">
+    <value>[CURA] Follow Heal: HP low, but the self-recovery item list is empty</value>
+  </data>
+  <data name="HealTrainingSelfRecoveryUseFormat" xml:space="preserve">
+    <value>[CURA] self recovery use {0} idx={1} hp={2:F0}%</value>
+  </data>
+  <data name="HealTrainingSelfRecoveryErrorFormat" xml:space="preserve">
+    <value>[CURA] self recovery error item='{0}' idx={1} ex={2}:{3}</value>
+  </data>
+  <data name="HealTrainingSelfRecoveryItemMissingFormat" xml:space="preserve">
+    <value>[CURA] Follow Heal: HP={0:F0}% below safe threshold, but no configured item was found in inventory</value>
+  </data>
+  <data name="HealTrainingFollowMoveFormat" xml:space="preserve">
+    <value>[CURA] follow move target='{0}' dist={1:F1} desired={2:F1}</value>
+  </data>
+  <data name="HealTrainingMountSyncFormat" xml:space="preserve">
+    <value>[CURA] follow mount sync target='{0}' action={1}</value>
+  </data>
+  <data name="HealTrainingMountSyncErrorFormat" xml:space="preserve">
+    <value>[CURA] follow mount sync error target='{0}' ex={1}:{2}</value>
+  </data>
+  <data name="HealTrainingAntiAfkStepFormat" xml:space="preserve">
+    <value>[CURA] anti-afk step target='{0}' angle={1:F0} dist={2:F1}</value>
+  </data>
 </root>

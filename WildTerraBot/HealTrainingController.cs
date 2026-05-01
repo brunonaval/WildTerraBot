@@ -102,7 +102,7 @@ namespace WildTerraBot
             if (_enabled)
             {
                 string mode = IsFollowModeActive() ? "FOLLOW_HEAL" : "DEFAULT";
-                _logInfo($"[CURA] HealTraining ENABLED mode={mode}");
+                _logInfo(string.Format(WildTerraBot.Properties.Resources.HealTrainingEnabledFormat, mode));
             }
         }
 
@@ -124,7 +124,7 @@ namespace WildTerraBot
             _antiAfkMoveActive = false;
             _antiAfkDestination = Vector3.zero;
             _antiAfkMoveUntil = 0f;
-            _logInfo("[CURA] HealTraining DISABLED");
+            _logInfo(WildTerraBot.Properties.Resources.HealTrainingDisabled);
         }
 
         public void Tick(WTPlayer me)
@@ -242,7 +242,7 @@ namespace WildTerraBot
                 if (Time.time >= _nextRecoveryWarnAt)
                 {
                     _nextRecoveryWarnAt = Time.time + 5f;
-                    _logWarn("[CURA] Follow Heal: HP baixo, mas a lista de itens de autocura está vazia");
+                    _logWarn(WildTerraBot.Properties.Resources.HealTrainingSelfRecoveryListEmpty);
                 }
                 return true;
             }
@@ -264,13 +264,13 @@ namespace WildTerraBot
                 {
                     me.CmdUseInventoryItem(inventoryIndex);
                     _nextActionAt = Time.time + ITEM_ACTION_COOLDOWN;
-                    _logInfo($"[CURA] self recovery use {usable.name} idx={inventoryIndex} hp={myHpPct:F0}%");
+                    _logInfo(string.Format(WildTerraBot.Properties.Resources.HealTrainingSelfRecoveryUseFormat, usable.name, inventoryIndex, myHpPct));
                     return true;
                 }
                 catch (Exception ex)
                 {
                     _nextActionAt = Time.time + DEFAULT_ACTION_COOLDOWN;
-                    _logWarn($"[CURA] self recovery error item='{itemName}' idx={inventoryIndex} ex={ex.GetType().Name}:{ex.Message}");
+                    _logWarn(string.Format(WildTerraBot.Properties.Resources.HealTrainingSelfRecoveryErrorFormat, itemName, inventoryIndex, ex.GetType().Name, ex.Message));
                     return true;
                 }
             }
@@ -278,7 +278,7 @@ namespace WildTerraBot
             if (Time.time >= _nextRecoveryWarnAt)
             {
                 _nextRecoveryWarnAt = Time.time + 5f;
-                _logWarn($"[CURA] Follow Heal: HP={myHpPct:F0}% abaixo do seguro, mas nenhum item configurado foi encontrado no inventário");
+                _logWarn(string.Format(WildTerraBot.Properties.Resources.HealTrainingSelfRecoveryItemMissingFormat, myHpPct));
             }
 
             _nextActionAt = Time.time + DEFAULT_ACTION_COOLDOWN;
@@ -341,7 +341,7 @@ namespace WildTerraBot
             if (Time.time >= _nextFollowMoveLogAt)
             {
                 _nextFollowMoveLogAt = Time.time + 1.5f;
-                _logInfo($"[CURA] follow move target='{SafeEntityName(target)}' dist={distance:F1} desired={desiredDistance:F1}");
+                _logInfo(string.Format(WildTerraBot.Properties.Resources.HealTrainingFollowMoveFormat, SafeEntityName(target), distance, desiredDistance));
             }
 
             _nextActionAt = Time.time + DEFAULT_ACTION_COOLDOWN;
@@ -486,13 +486,13 @@ namespace WildTerraBot
                 _antiAfkMoveActive = false;
                 _antiAfkDestination = Vector3.zero;
                 _antiAfkMoveUntil = 0f;
-                _logInfo($"[CURA] follow mount sync target='{SafeEntityName(target)}' action={(targetMounted ? "MONTAR" : "DESMONTAR")}");
+                _logInfo(string.Format(WildTerraBot.Properties.Resources.HealTrainingMountSyncFormat, SafeEntityName(target), (targetMounted ? "MONTAR" : "DESMONTAR")));
                 return true;
             }
             catch (Exception ex)
             {
                 _nextMountSyncAt = Time.time + DEFAULT_ACTION_COOLDOWN;
-                _logWarn($"[CURA] follow mount sync error target='{SafeEntityName(target)}' ex={ex.GetType().Name}:{ex.Message}");
+                _logWarn(string.Format(WildTerraBot.Properties.Resources.HealTrainingMountSyncErrorFormat, SafeEntityName(target), ex.GetType().Name, ex.Message));
                 return false;
             }
         }
@@ -540,7 +540,7 @@ namespace WildTerraBot
             _nextAntiAfkAt = Time.time + ANTI_AFK_IDLE_SECONDS;
             _nextActionAt = Time.time + DEFAULT_ACTION_COOLDOWN;
 
-            _logInfo($"[CURA] anti-afk step target='{SafeEntityName(target)}' angle={signedAngle:F0} dist={desiredDistance:F1}");
+            _logInfo(string.Format(WildTerraBot.Properties.Resources.HealTrainingAntiAfkStepFormat, SafeEntityName(target), signedAngle, desiredDistance));
             return true;
         }
 

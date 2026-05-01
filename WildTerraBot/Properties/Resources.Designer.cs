@@ -734,5 +734,95 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("InspectValueYes", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a [CURA] HealTraining ENABLED mode={0}.
+        /// </summary>
+        internal static string HealTrainingEnabledFormat {
+            get {
+                return ResourceManager.GetString("HealTrainingEnabledFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a [CURA] HealTraining DISABLED.
+        /// </summary>
+        internal static string HealTrainingDisabled {
+            get {
+                return ResourceManager.GetString("HealTrainingDisabled", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a [CURA] Follow Heal: HP baixo, mas a lista de itens de autocura está vazia.
+        /// </summary>
+        internal static string HealTrainingSelfRecoveryListEmpty {
+            get {
+                return ResourceManager.GetString("HealTrainingSelfRecoveryListEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a [CURA] self recovery use {0} idx={1} hp={2:F0}%.
+        /// </summary>
+        internal static string HealTrainingSelfRecoveryUseFormat {
+            get {
+                return ResourceManager.GetString("HealTrainingSelfRecoveryUseFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a [CURA] self recovery error item='{0}' idx={1} ex={2}:{3}.
+        /// </summary>
+        internal static string HealTrainingSelfRecoveryErrorFormat {
+            get {
+                return ResourceManager.GetString("HealTrainingSelfRecoveryErrorFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a [CURA] Follow Heal: HP={0:F0}% abaixo do seguro, mas nenhum item configurado foi encontrado no inventário.
+        /// </summary>
+        internal static string HealTrainingSelfRecoveryItemMissingFormat {
+            get {
+                return ResourceManager.GetString("HealTrainingSelfRecoveryItemMissingFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a [CURA] follow move target='{0}' dist={1:F1} desired={2:F1}.
+        /// </summary>
+        internal static string HealTrainingFollowMoveFormat {
+            get {
+                return ResourceManager.GetString("HealTrainingFollowMoveFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a [CURA] follow mount sync target='{0}' action={1}.
+        /// </summary>
+        internal static string HealTrainingMountSyncFormat {
+            get {
+                return ResourceManager.GetString("HealTrainingMountSyncFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a [CURA] follow mount sync error target='{0}' ex={1}:{2}.
+        /// </summary>
+        internal static string HealTrainingMountSyncErrorFormat {
+            get {
+                return ResourceManager.GetString("HealTrainingMountSyncErrorFormat", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Consulta uma cadeia de caracteres localizada semelhante a [CURA] anti-afk step target='{0}' angle={1:F0} dist={2:F1}.
+        /// </summary>
+        internal static string HealTrainingAntiAfkStepFormat {
+            get {
+                return ResourceManager.GetString("HealTrainingAntiAfkStepFormat", resourceCulture);
+            }
+        }
     }
 }
