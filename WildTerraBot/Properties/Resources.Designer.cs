@@ -1262,5 +1262,311 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("TamingTargetLost", resourceCulture);
             }
         }
+
+        internal static string UdpRunnerUdpConfiguredFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerUdpConfiguredFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerUdpPortErrorFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerUdpPortErrorFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerReflectionErrorFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerReflectionErrorFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCmdMoveClearingModesFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCmdMoveClearingModesFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCmdMoveToFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCmdMoveToFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCmdHarvestBeforeFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCmdHarvestBeforeFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCmdHarvestIgnoredBusyFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCmdHarvestIgnoredBusyFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestTargetFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestTargetFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCmdHarvestAfterFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCmdHarvestAfterFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHunterTargetFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHunterTargetFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerFishingEnabledFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerFishingEnabledFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerFishingDisabled {
+            get {
+                return ResourceManager.GetString("UdpRunnerFishingDisabled", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHomeCoordinatesReceivedFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHomeCoordinatesReceivedFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHomeReturningClaimPoint {
+            get {
+                return ResourceManager.GetString("UdpRunnerHomeReturningClaimPoint", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusListReceivedFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusListReceivedFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCollectListReceivedWithExampleFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCollectListReceivedWithExampleFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCollectListReceivedFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCollectListReceivedFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerTrainingInvalidConfigFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerTrainingInvalidConfigFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerResetModesBeforeFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerResetModesBeforeFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerResetModesAfterFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerResetModesAfterFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerMountStateFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerMountStateFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerMounted {
+            get {
+                return ResourceManager.GetString("UdpRunnerMounted", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerDismounted {
+            get {
+                return ResourceManager.GetString("UdpRunnerDismounted", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHomeArrivedPaused {
+            get {
+                return ResourceManager.GetString("UdpRunnerHomeArrivedPaused", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoMountCheckFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoMountCheckFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoMountSuppressCombatFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoMountSuppressCombatFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerBankTargetFoundFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerBankTargetFoundFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerBankChestNotFoundFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerBankChestNotFoundFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerBankMovingToChest {
+            get {
+                return ResourceManager.GetString("UdpRunnerBankMovingToChest", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerBankOpenContainerSkillNotFound {
+            get {
+                return ResourceManager.GetString("UdpRunnerBankOpenContainerSkillNotFound", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerBankTabsFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerBankTabsFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerBankDepositFinished {
+            get {
+                return ResourceManager.GetString("UdpRunnerBankDepositFinished", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerFishingWaitingRod {
+            get {
+                return ResourceManager.GetString("UdpRunnerFishingWaitingRod", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerFishingWaitingBaitFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerFishingWaitingBaitFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerFishingCasting {
+            get {
+                return ResourceManager.GetString("UdpRunnerFishingCasting", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerDebugEquipFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerDebugEquipFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerEquipBaitFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerEquipBaitFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerFishingBaitNotFoundFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerFishingBaitNotFoundFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerEquipRodFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerEquipRodFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusConfiguredFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusConfiguredFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusItemNotFoundFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusItemNotFoundFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusNoMonitorableUseEffectsFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusNoMonitorableUseEffectsFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusKeepingFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusKeepingFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusUsingFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusUsingFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusUseFailedFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusUseFailedFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusNoMonitorableEffects {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusNoMonitorableEffects", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusEffectMissingFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusEffectMissingFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusEffectEndingFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusEffectEndingFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusItemNoMonitorableEffects {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusItemNoMonitorableEffects", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusNoActiveEffectByName {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusNoActiveEffectByName", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAutoEatStatusActiveBuffRemainingFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAutoEatStatusActiveBuffRemainingFormat", resourceCulture);
+            }
+        }
     }
 }

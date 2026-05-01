@@ -486,4 +486,157 @@
   <data name="TamingTargetLost" xml:space="preserve">
     <value>target lost</value>
   </data>
+  <data name="UdpRunnerUdpConfiguredFormat" xml:space="preserve">
+    <value>[SUCCESS] UDP configured. Commands={0} Telemetry={1}.</value>
+  </data>
+  <data name="UdpRunnerUdpPortErrorFormat" xml:space="preserve">
+    <value>[ERROR] UDP port: {0}</value>
+  </data>
+  <data name="UdpRunnerReflectionErrorFormat" xml:space="preserve">
+    <value>[INIT] Reflection Error: {0}</value>
+  </data>
+  <data name="UdpRunnerCmdMoveClearingModesFormat" xml:space="preserve">
+    <value>[CMD MOVE] clearing modes (coleta={0}, hunter={1}) to free mount</value>
+  </data>
+  <data name="UdpRunnerCmdMoveToFormat" xml:space="preserve">
+    <value>[CMD MOVE] to=({0},{1}) useMount={2} coleta={3} hunter={4} pesca={5} home={6}</value>
+  </data>
+  <data name="UdpRunnerCmdHarvestBeforeFormat" xml:space="preserve">
+    <value>[CMD HARVEST] alvo={0} wid={1} (before) coleta={2} hunter={3} pesca={4} home={5}</value>
+  </data>
+  <data name="UdpRunnerCmdHarvestIgnoredBusyFormat" xml:space="preserve">
+    <value>[CMD HARVEST] ignored: harvest already active alvoAtual={0} activeWid={1} novoAlvo={2} novoWid={3}</value>
+  </data>
+  <data name="UdpRunnerHarvestTargetFormat" xml:space="preserve">
+    <value>[HARVEST] Alvo: {0} | Arma Defensiva: {1} | worldId={2}</value>
+  </data>
+  <data name="UdpRunnerCmdHarvestAfterFormat" xml:space="preserve">
+    <value>[CMD HARVEST] alvo={0} wid={1} (after) coleta={2} hunter={3} pesca={4} home={5}</value>
+  </data>
+  <data name="UdpRunnerHunterTargetFormat" xml:space="preserve">
+    <value>[HUNTER] Alvo: {0} | Arma: {1}</value>
+  </data>
+  <data name="UdpRunnerFishingEnabledFormat" xml:space="preserve">
+    <value>[PESCA] ENABLED. Local: {0} | Bait: {1} | Loaded Profiles: {2}</value>
+  </data>
+  <data name="UdpRunnerFishingDisabled" xml:space="preserve">
+    <value>[PESCA] DISABLED.</value>
+  </data>
+  <data name="UdpRunnerHomeCoordinatesReceivedFormat" xml:space="preserve">
+    <value>[HOME] Coordinates Received: {0}, {1}</value>
+  </data>
+  <data name="UdpRunnerHomeReturningClaimPoint" xml:space="preserve">
+    <value>[HOME] Returning (Using ClaimPoint)...</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusListReceivedFormat" xml:space="preserve">
+    <value>[AUTO-EAT-STATUS] list received: {0} item(s): {1}</value>
+  </data>
+  <data name="UdpRunnerCollectListReceivedWithExampleFormat" xml:space="preserve">
+    <value>[COLETA] List received: {0} item(s). Ex.: {1}</value>
+  </data>
+  <data name="UdpRunnerCollectListReceivedFormat" xml:space="preserve">
+    <value>[COLETA] List received: {0} item(s).</value>
+  </data>
+  <data name="UdpRunnerTrainingInvalidConfigFormat" xml:space="preserve">
+    <value>[TRAINING] invalid config: {0}</value>
+  </data>
+  <data name="UdpRunnerResetModesBeforeFormat" xml:space="preserve">
+    <value>[ResetModes] BEFORE coleta={0} hunter={1} pesca={2} home={3}</value>
+  </data>
+  <data name="UdpRunnerResetModesAfterFormat" xml:space="preserve">
+    <value>[ResetModes] AFTER  coleta={0} hunter={1} pesca={2} home={3}</value>
+  </data>
+  <data name="UdpRunnerMountStateFormat" xml:space="preserve">
+    <value>[MOUNT STATE] {0} | coleta={1} hunter={2} useMount={3} lastMoveTarget={4}</value>
+  </data>
+  <data name="UdpRunnerMounted" xml:space="preserve">
+    <value>MOUNTED</value>
+  </data>
+  <data name="UdpRunnerDismounted" xml:space="preserve">
+    <value>DISMOUNTED</value>
+  </data>
+  <data name="UdpRunnerHomeArrivedPaused" xml:space="preserve">
+    <value>[HOME] Arrived home. Bot Paused.</value>
+  </data>
+  <data name="UdpRunnerAutoMountCheckFormat" xml:space="preserve">
+    <value>[AUTO-MOUNT CHECK] dist={0:0.0} motivo={1}</value>
+  </data>
+  <data name="UdpRunnerAutoMountSuppressCombatFormat" xml:space="preserve">
+    <value>[AUTO-MOUNT SUPPRESS] in combat/recent damage -&gt; do not mount | dmgAgo={0:0.0}s combat={1} alvo={2}</value>
+  </data>
+  <data name="UdpRunnerBankTargetFoundFormat" xml:space="preserve">
+    <value>[BANK] Target found: {0}. Starting deposit...</value>
+  </data>
+  <data name="UdpRunnerBankChestNotFoundFormat" xml:space="preserve">
+    <value>[BANK] Error: Chest '{0}' not found nearby.</value>
+  </data>
+  <data name="UdpRunnerBankMovingToChest" xml:space="preserve">
+    <value>[BANK] Moving to chest...</value>
+  </data>
+  <data name="UdpRunnerBankOpenContainerSkillNotFound" xml:space="preserve">
+    <value>[BANK] Error: Skill 'OpenContainer' not found in chest.</value>
+  </data>
+  <data name="UdpRunnerBankTabsFormat" xml:space="preserve">
+    <value>[BANK] Tabs: {0}. BaseTab: {1}.</value>
+  </data>
+  <data name="UdpRunnerBankDepositFinished" xml:space="preserve">
+    <value>[BANK] Deposit Finished.</value>
+  </data>
+  <data name="UdpRunnerFishingWaitingRod" xml:space="preserve">
+    <value>[PESCA] Waiting Rod...</value>
+  </data>
+  <data name="UdpRunnerFishingWaitingBaitFormat" xml:space="preserve">
+    <value>[PESCA] Waiting Bait ({0})...</value>
+  </data>
+  <data name="UdpRunnerFishingCasting" xml:space="preserve">
+    <value>[PESCA] Casting...</value>
+  </data>
+  <data name="UdpRunnerDebugEquipFormat" xml:space="preserve">
+    <value>[DEBUG EQUIP] </value>
+  </data>
+  <data name="UdpRunnerEquipBaitFormat" xml:space="preserve">
+    <value>[EQUIP] Equipping Bait '{0}' in Slot {1} (Auto-Detected)...</value>
+  </data>
+  <data name="UdpRunnerFishingBaitNotFoundFormat" xml:space="preserve">
+    <value>[PESCA] Bait '{0}' not found!</value>
+  </data>
+  <data name="UdpRunnerEquipRodFormat" xml:space="preserve">
+    <value>[EQUIP] Equipping Rod {0} in Slot {1}...</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusConfiguredFormat" xml:space="preserve">
+    <value>[AUTO-EAT-STATUS] configured: {0}</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusItemNotFoundFormat" xml:space="preserve">
+    <value>[AUTO-EAT-STATUS] configured item not found in inventory: '{0}'</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusNoMonitorableUseEffectsFormat" xml:space="preserve">
+    <value>[AUTO-EAT-STATUS] item '{0}' found, but without monitorable useEffects.</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusKeepingFormat" xml:space="preserve">
+    <value>[AUTO-EAT-STATUS] keeping '{0}': {1}</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusUsingFormat" xml:space="preserve">
+    <value>[AUTO-EAT-STATUS] using '{0}' idx={1} motivo={2}</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusUseFailedFormat" xml:space="preserve">
+    <value>[AUTO-EAT-STATUS] failed to use '{0}' idx={1}: {2}</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusNoMonitorableEffects" xml:space="preserve">
+    <value>no monitorable effects</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusEffectMissingFormat" xml:space="preserve">
+    <value>effect '{0}' missing</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusEffectEndingFormat" xml:space="preserve">
+    <value>effect '{0}' ending ({1:0.0}s &lt;= {2:0.0}s)</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusItemNoMonitorableEffects" xml:space="preserve">
+    <value>item without monitorable effects</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusNoActiveEffectByName" xml:space="preserve">
+    <value>no active effect found by name</value>
+  </data>
+  <data name="UdpRunnerAutoEatStatusActiveBuffRemainingFormat" xml:space="preserve">
+    <value>active buff '{0}' with {1:0.0}s remaining</value>
+  </data>
 </root>

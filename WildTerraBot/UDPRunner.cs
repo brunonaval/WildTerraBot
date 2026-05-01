@@ -429,9 +429,9 @@ namespace WildTerraBot
                 listenThread = new Thread(() => ListenLoop(udpListener));
                 listenThread.IsBackground = true;
                 listenThread.Start();
-                WTSocketBot.PublicLogger.LogInfo($"[SUCESSO] UDP configurado. Comandos={_portaEscutaComandos} Telemetria={_portaEnvioTelemetria}.");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerUdpConfiguredFormat, _portaEscutaComandos, _portaEnvioTelemetria));
             }
-            catch (Exception ex) { WTSocketBot.PublicLogger.LogError("[ERRO] Porta UDP: " + ex.Message); }
+            catch (Exception ex) { WTSocketBot.PublicLogger.LogError(string.Format(WildTerraBot.Properties.Resources.UdpRunnerUdpPortErrorFormat, ex.Message)); }
 
 
             Type tipoWT = typeof(WTPlayer);
@@ -465,7 +465,7 @@ namespace WildTerraBot
                 if (tipoBaseEquip != null) _findEquipableSlotForMethod = tipoBaseEquip.GetMethod("FindEquipableSlotFor", BindingFlags.Instance | BindingFlags.Public);
                 _useSkillWhenCloserField = tipoPlayer.GetField("useSkillWhenCloser", BindingFlags.Instance | BindingFlags.NonPublic);
             }
-            catch (Exception ex) { WTSocketBot.PublicLogger.LogError($"[INIT] Reflection Error: {ex.Message}"); }
+            catch (Exception ex) { WTSocketBot.PublicLogger.LogError(string.Format(WildTerraBot.Properties.Resources.UdpRunnerReflectionErrorFormat, ex.Message)); }
 
             // Heal trainer (usa somente APIs do jogo: CmdSetTarget / TryUseSkill)
             _healTrainer = new HealTrainingController(
@@ -537,7 +537,7 @@ namespace WildTerraBot
                         // isso bloqueia o auto-mount de rota. Então limpamos os modos aqui.
                         if (_modoColeta || _modoHunter)
                         {
-                            if (DBG_MOUNT) DbgMount($"[CMD MOVE] limpando modos (coleta={_modoColeta}, hunter={_modoHunter}) para liberar montaria");
+                            if (DBG_MOUNT) DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCmdMoveClearingModesFormat, _modoColeta, _modoHunter));
                             ResetModes();
                         }
 
@@ -547,7 +547,7 @@ namespace WildTerraBot
                             if (now >= _dbgNextMoveCmdLogAt)
                             {
                                 _dbgNextMoveCmdLogAt = now + DBG_MOVE_CMD_THROTTLE_MS;
-                                DbgMount($"[CMD MOVE] to=({p[1]},{p[2]}) useMount={_useMount} coleta={_modoColeta} hunter={_modoHunter} pesca={_modoPesca} home={_returningHome}");
+                                DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCmdMoveToFormat, p[1], p[2], _useMount, _modoColeta, _modoHunter, _modoPesca, _returningHome));
                             }
                         }
                         // MOVE é o baseline (rota). Não deve desligar caça/coleta; apenas cancela modos exclusivos.
@@ -560,7 +560,7 @@ namespace WildTerraBot
                         if (p.Length >= 4) int.TryParse(p[3], out requestedWorldId);
 
                         if (DBG_MOUNT)
-                            DbgMount($"[CMD HARVEST] alvo={p[1]} wid={requestedWorldId} (antes) coleta={_modoColeta} hunter={_modoHunter} pesca={_modoPesca} home={_returningHome}");
+                            DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCmdHarvestBeforeFormat, p[1], requestedWorldId, _modoColeta, _modoHunter, _modoPesca, _returningHome));
 
                         if (HasHarvestInFlightUnsafe())
                         {
@@ -568,7 +568,7 @@ namespace WildTerraBot
                             if (now >= _dbgNextHarvestBusyLogAt)
                             {
                                 _dbgNextHarvestBusyLogAt = now + 1500;
-                                DbgMount($"[CMD HARVEST] ignorado: harvest já ativo alvoAtual={SafeName(_harvestTarget)} activeWid={_activeHarvestWorldId} novoAlvo={p[1]} novoWid={requestedWorldId}");
+                                DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCmdHarvestIgnoredBusyFormat, SafeName(_harvestTarget), _activeHarvestWorldId, p[1], requestedWorldId));
                             }
                             continue;
                         }
@@ -580,7 +580,7 @@ namespace WildTerraBot
                         if (p.Length >= 3)
                         {
                             _armaPreferida = p[2].Trim();
-                            string logMsg = $"[HARVEST] Alvo: {p[1]} | Arma Defensiva: {_armaPreferida} | worldId={requestedWorldId}";
+                            string logMsg = string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestTargetFormat, p[1], _armaPreferida, requestedWorldId);
                             if (_lastHarvestLog != logMsg)
                             {
                                 WTSocketBot.PublicLogger.LogInfo(logMsg);
@@ -592,7 +592,7 @@ namespace WildTerraBot
                         _modoColeta = true;
 
                         if (DBG_MOUNT)
-                            DbgMount($"[CMD HARVEST] alvo={p[1]} wid={requestedWorldId} (depois) coleta={_modoColeta} hunter={_modoHunter} pesca={_modoPesca} home={_returningHome}");
+                            DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCmdHarvestAfterFormat, p[1], requestedWorldId, _modoColeta, _modoHunter, _modoPesca, _returningHome));
                     }
                     else if (p[0] == "HUNT" && p.Length >= 2)
                     {
@@ -602,7 +602,7 @@ namespace WildTerraBot
                         _modoHunter = true;
 
                         // --- CORREÇÃO: ANTI-SPAM DE LOG ---
-                        string logMsg = $"[HUNTER] Alvo: {_alvoHunterTipo} | Arma: {_armaPreferida}";
+                        string logMsg = string.Format(WildTerraBot.Properties.Resources.UdpRunnerHunterTargetFormat, _alvoHunterTipo, _armaPreferida);
                         if (_lastHuntLog != logMsg)
                         {
                             WTSocketBot.PublicLogger.LogInfo(logMsg);
@@ -638,7 +638,7 @@ namespace WildTerraBot
                             FishBrain.SetContext(localPesca, _nomeIscaPesca);
 
                             WTSocketBot.IsFishingBotActive = true;
-                            WTSocketBot.PublicLogger.LogInfo($"[PESCA] ATIVADO. Local: {localPesca} | Isca: {_nomeIscaPesca} | Perfis Carregados: {FishBrain.ActiveProfiles.Count}");
+                            WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerFishingEnabledFormat, localPesca, _nomeIscaPesca, FishBrain.ActiveProfiles.Count));
                         }
                         else
                         {
@@ -648,7 +648,7 @@ namespace WildTerraBot
                             ClearPostCombatSkinning();
                             _fishingAnchorValid = false;
                             _armaPescaDefensiva = "";
-                            WTSocketBot.PublicLogger.LogInfo("[PESCA] DESATIVADO.");
+                            WTSocketBot.PublicLogger.LogInfo(WildTerraBot.Properties.Resources.UdpRunnerFishingDisabled);
                         }
 
 
@@ -660,8 +660,8 @@ namespace WildTerraBot
                     else if (p[0] == "RETURN_HOME")
                     {
                         ResetModes(); _returningHome = true; _botAtivo = true; _lastMoveTarget = null;
-                        if (p.Length >= 3) { try { float hx = float.Parse(p[1], CultureInfo.InvariantCulture); float hz = float.Parse(p[2], CultureInfo.InvariantCulture); _homeCoordsBackup = new Vector3(hx, 0, hz); WTSocketBot.PublicLogger.LogInfo($"[HOME] Coordenadas Recebidas: {hx}, {hz}"); } catch { } }
-                        else { WTSocketBot.PublicLogger.LogInfo("[HOME] Voltando (Usando ClaimPoint)..."); }
+                        if (p.Length >= 3) { try { float hx = float.Parse(p[1], CultureInfo.InvariantCulture); float hz = float.Parse(p[2], CultureInfo.InvariantCulture); _homeCoordsBackup = new Vector3(hx, 0, hz); WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHomeCoordinatesReceivedFormat, hx, hz)); } catch { } }
+                        else { WTSocketBot.PublicLogger.LogInfo(WildTerraBot.Properties.Resources.UdpRunnerHomeReturningClaimPoint); }
                     }
                     else if (p[0] == "BOT_STATUS")
                     {
@@ -731,8 +731,8 @@ namespace WildTerraBot
                         });
                     }
                     else if (p[0] == "EAT_LIST") { string[] itens = p[1].Split('~'); mainThreadActions.Enqueue(() => { itensComer.Clear(); foreach (var i in itens) if (!string.IsNullOrWhiteSpace(i)) itensComer.Add(i.Trim()); }); }
-                    else if (p[0] == "EAT_STATUS_LIST") { string payload = (p.Length >= 2) ? p[1] : ""; string[] itens = payload.Split('~'); mainThreadActions.Enqueue(() => { itensComerStatus.Clear(); foreach (var i in itens) if (!string.IsNullOrWhiteSpace(i)) itensComerStatus.Add(i.Trim()); _autoStatusFood.ReplaceConfiguredItems(itensComerStatus); try { WTSocketBot.PublicLogger.LogInfo($"[AUTO-EAT-STATUS] lista recebida: {itensComerStatus.Count} item(ns): {string.Join(", ", itensComerStatus)}"); } catch { } }); }
-                    else if (p[0] == "HARVEST_LIST") { string payload = (p.Length >= 2) ? p[1] : ""; string[] itens = payload.Split('~'); mainThreadActions.Enqueue(() => { string normPayload = payload ?? ""; if (normPayload != _lastHarvestListPayload) { _lastHarvestListPayload = normPayload; itensColeta.Clear(); foreach (var i in itens) { var tok = NormalizeListToken(i); if (!string.IsNullOrWhiteSpace(tok)) itensColeta.Add(tok); } try { WTSocketBot.PublicLogger.LogInfo($"[COLETA] Lista recebida: {itensColeta.Count} item(ns). Ex.: {string.Join(", ", itensColeta.Take(10))}"); } catch { WTSocketBot.PublicLogger.LogInfo($"[COLETA] Lista recebida: {itensColeta.Count} item(ns)."); } } }); }
+                    else if (p[0] == "EAT_STATUS_LIST") { string payload = (p.Length >= 2) ? p[1] : ""; string[] itens = payload.Split('~'); mainThreadActions.Enqueue(() => { itensComerStatus.Clear(); foreach (var i in itens) if (!string.IsNullOrWhiteSpace(i)) itensComerStatus.Add(i.Trim()); _autoStatusFood.ReplaceConfiguredItems(itensComerStatus); try { WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusListReceivedFormat, itensComerStatus.Count, string.Join(", ", itensComerStatus))); } catch { } }); }
+                    else if (p[0] == "HARVEST_LIST") { string payload = (p.Length >= 2) ? p[1] : ""; string[] itens = payload.Split('~'); mainThreadActions.Enqueue(() => { string normPayload = payload ?? ""; if (normPayload != _lastHarvestListPayload) { _lastHarvestListPayload = normPayload; itensColeta.Clear(); foreach (var i in itens) { var tok = NormalizeListToken(i); if (!string.IsNullOrWhiteSpace(tok)) itensColeta.Add(tok); } try { WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCollectListReceivedWithExampleFormat, itensColeta.Count, string.Join(", ", itensColeta.Take(10)))); } catch { WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCollectListReceivedFormat, itensColeta.Count)); } } }); }
                     else if (p[0] == "EAT_THRESHOLD") { if (int.TryParse(p[1], out int val)) _eatThreshold = val; }
                     else if (p[0] == "DEPOSIT_ALL") { string alvo = p.Length >= 2 ? p[1] : ""; mainThreadActions.Enqueue(() => IniciarDepositoProximo(alvo)); }
                     else if (p[0] == "TAMING")
@@ -789,7 +789,7 @@ namespace WildTerraBot
                                     string error;
                                     if (!cfg.Validate(out error))
                                     {
-                                        try { WTSocketBot.PublicLogger.LogWarning("[TRAINING] config inválida: " + error); } catch { }
+                                        try { WTSocketBot.PublicLogger.LogWarning(string.Format(WildTerraBot.Properties.Resources.UdpRunnerTrainingInvalidConfigFormat, error)); } catch { }
                                         return;
                                     }
 
@@ -928,7 +928,7 @@ namespace WildTerraBot
         private void ResetModes()
         {
             if (DBG_MOUNT)
-                DbgMount($"[ResetModes] BEFORE coleta={_modoColeta} hunter={_modoHunter} pesca={_modoPesca} home={_returningHome}");
+                DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerResetModesBeforeFormat, _modoColeta, _modoHunter, _modoPesca, _returningHome));
 
             _modoColeta = false;
             _modoHunter = false;
@@ -936,7 +936,7 @@ namespace WildTerraBot
             _modoPesca = false;
 
             if (DBG_MOUNT)
-                DbgMount($"[ResetModes] AFTER  coleta={_modoColeta} hunter={_modoHunter} pesca={_modoPesca} home={_returningHome}");
+                DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerResetModesAfterFormat, _modoColeta, _modoHunter, _modoPesca, _returningHome));
         }
 
         void Update()
@@ -950,7 +950,7 @@ namespace WildTerraBot
                 bool mounted = CheckIsMounted(wtPlayer);
                 if (_dbgLastMounted == null || mounted != _dbgLastMounted.Value)
                 {
-                    DbgMount($"[MOUNT STATE] {(mounted ? "MONTADO" : "DESMONTADO")} | coleta={_modoColeta} hunter={_modoHunter} useMount={_useMount} lastMoveTarget={(_lastMoveTarget.HasValue ? _lastMoveTarget.Value.ToString() : "null")}");
+                    DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerMountStateFormat, (mounted ? WildTerraBot.Properties.Resources.UdpRunnerMounted : WildTerraBot.Properties.Resources.UdpRunnerDismounted), _modoColeta, _modoHunter, _useMount, (_lastMoveTarget.HasValue ? _lastMoveTarget.Value.ToString() : "null")));
                     _dbgLastMounted = mounted;
                 }
             }
@@ -1328,7 +1328,7 @@ namespace WildTerraBot
                     }
                     else
                     {
-                        WTSocketBot.PublicLogger.LogInfo("[HOME] Cheguei em casa. Bot Pausado.");
+                        WTSocketBot.PublicLogger.LogInfo(WildTerraBot.Properties.Resources.UdpRunnerHomeArrivedPaused);
                         _returningHome = false; _botAtivo = false;
                         EnviarMensagem("BOT_STATUS;OFF");
                     }
@@ -1354,7 +1354,7 @@ namespace WildTerraBot
                         (dist <= 5.0f) ? $"DIST_CURTA({dist:0.0})" :
                         "OK_DISPARARIA";
 
-                    DbgMount($"[AUTO-MOUNT CHECK] dist={dist:0.0} motivo={motivo}");
+                    DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerAutoMountCheckFormat, dist, motivo));
                 }
             }
 
@@ -1373,7 +1373,7 @@ namespace WildTerraBot
                     if (DBG_MOUNT && Time.time > _dbgNextAutoMountLog)
                     {
                         _dbgNextAutoMountLog = Time.time + 2.0f;
-                        DbgMount($"[AUTO-MOUNT SUPPRESS] em combate/dano recente -> não montar | dmgAgo={(Time.time - _lastDamageTime):0.0}s combat={CheckInCombat(wtPlayer)} alvo={(_combatTarget != null ? MobDbg(_combatTarget) : "null")}");
+                        DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerAutoMountSuppressCombatFormat, (Time.time - _lastDamageTime), CheckInCombat(wtPlayer), (_combatTarget != null ? MobDbg(_combatTarget) : "null")));
                     }
                     // deixa o Update seguir; a lógica de defesa vai rodar acima
                 }
@@ -1429,7 +1429,7 @@ namespace WildTerraBot
                 bool mounted = CheckIsMounted(wtPlayer);
                 if (_dbgLastMounted == null || mounted != _dbgLastMounted.Value)
                 {
-                    DbgMount($"[MOUNT STATE] {(mounted ? "MONTADO" : "DESMONTADO")} | coleta={_modoColeta} hunter={_modoHunter} useMount={_useMount} lastMoveTarget={(_lastMoveTarget.HasValue ? _lastMoveTarget.Value.ToString() : "null")}");
+                    DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerMountStateFormat, (mounted ? WildTerraBot.Properties.Resources.UdpRunnerMounted : WildTerraBot.Properties.Resources.UdpRunnerDismounted), _modoColeta, _modoHunter, _useMount, (_lastMoveTarget.HasValue ? _lastMoveTarget.Value.ToString() : "null")));
                     _dbgLastMounted = mounted;
                 }
             }
@@ -1439,12 +1439,12 @@ namespace WildTerraBot
 
             if (bau != null)
             {
-                WTSocketBot.PublicLogger.LogInfo($"[BANK] Alvo encontrado: {bau.name}. Iniciando depósito...");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerBankTargetFoundFormat, bau.name));
                 StartCoroutine(RotinaDeposito(wtPlayer, bau));
             }
             else
             {
-                WTSocketBot.PublicLogger.LogError($"[BANK] Erro: Baú '{nomeAlvo}' não encontrado próximo.");
+                WTSocketBot.PublicLogger.LogError(string.Format(WildTerraBot.Properties.Resources.UdpRunnerBankChestNotFoundFormat, nomeAlvo));
                 EnviarMensagem("BANK_FINISH");
             }
         }
@@ -1452,7 +1452,7 @@ namespace WildTerraBot
         IEnumerator RotinaDeposito(WTPlayer wtPlayer, WTStructure bau)
         {
             _depositando = true;
-            WTSocketBot.PublicLogger.LogInfo("[BANK] Movendo até o baú...");
+            WTSocketBot.PublicLogger.LogInfo(WildTerraBot.Properties.Resources.UdpRunnerBankMovingToChest);
 
             // 1. Vai até o baú
             var agent = wtPlayer.agent;
@@ -1495,7 +1495,7 @@ namespace WildTerraBot
 
             if (openSkill == null)
             {
-                WTSocketBot.PublicLogger.LogError("[BANK] Erro: Skill 'OpenContainer' não encontrada no baú.");
+                WTSocketBot.PublicLogger.LogError(WildTerraBot.Properties.Resources.UdpRunnerBankOpenContainerSkillNotFound);
                 _depositando = false;
                 EnviarMensagem("BANK_FINISH");
                 yield break;
@@ -1524,7 +1524,7 @@ namespace WildTerraBot
                 baseCmdTab = 1;
             }
 
-            WTSocketBot.PublicLogger.LogInfo($"[BANK] Abas: {totalTabs}. BaseTab: {baseCmdTab}.");
+            WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerBankTabsFormat, totalTabs, baseCmdTab));
 
             for (int tabOffset = 0; tabOffset < maxTabs; tabOffset++)
             {
@@ -1561,7 +1561,7 @@ namespace WildTerraBot
             yield return new WaitForSeconds(0.5f);
             wtPlayer.CloseContainer();
 
-            WTSocketBot.PublicLogger.LogInfo("[BANK] Depósito Finalizado.");
+            WTSocketBot.PublicLogger.LogInfo(WildTerraBot.Properties.Resources.UdpRunnerBankDepositFinished);
             _depositando = false;
             EnviarMensagem("BANK_FINISH");
         }
@@ -1661,9 +1661,9 @@ namespace WildTerraBot
             }
 
             try { gameDizTemVara = (bool)_isFishingPoleEquippedMethod.Invoke(p, null); } catch { }
-            if (!gameDizTemVara) { WTSocketBot.PublicLogger.LogWarning("[PESCA] Aguardando Vara..."); return; }
+            if (!gameDizTemVara) { WTSocketBot.PublicLogger.LogWarning(WildTerraBot.Properties.Resources.UdpRunnerFishingWaitingRod); return; }
 
-            if (!IsBaitEquippedAnywhere(p, _nomeIscaPesca)) { WTSocketBot.PublicLogger.LogWarning($"[PESCA] Aguardando Isca ({_nomeIscaPesca})..."); return; }
+            if (!IsBaitEquippedAnywhere(p, _nomeIscaPesca)) { WTSocketBot.PublicLogger.LogWarning(string.Format(WildTerraBot.Properties.Resources.UdpRunnerFishingWaitingBaitFormat, _nomeIscaPesca)); return; }
 
             bool pescando = false;
             try { pescando = (bool)_isFishingMethod.Invoke(p, null); } catch { }
@@ -1676,14 +1676,14 @@ namespace WildTerraBot
             }
 
             Vector3 alvoAgua = p.transform.position + (p.transform.forward * 3.5f);
-            WTSocketBot.PublicLogger.LogInfo("[PESCA] Arremessando...");
+            WTSocketBot.PublicLogger.LogInfo(WildTerraBot.Properties.Resources.UdpRunnerFishingCasting);
             CmdSkillToPoint(p, alvoAgua);
         }
 
         private void DumpEquipment(WTPlayer p)
         {
             if (p.equipment == null) return;
-            string log = "[DEBUG EQUIP] ";
+            string log = WildTerraBot.Properties.Resources.UdpRunnerDebugEquipFormat;
             for (int i = 0; i < p.equipment.Count; i++)
             {
                 var slot = p.equipment[i];
@@ -1730,13 +1730,13 @@ namespace WildTerraBot
                         int targetSlot = -1;
                         if (_findEquipableSlotForMethod != null) { try { targetSlot = (int)_findEquipableSlotForMethod.Invoke(slot.item.data, new object[] { p, i }); } catch { } }
                         if (targetSlot == -1) targetSlot = 1;
-                        WTSocketBot.PublicLogger.LogInfo($"[EQUIP] Equipando Isca '{slot.item.data.name}' no Slot {targetSlot} (Auto-Detectado)...");
+                        WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerEquipBaitFormat, slot.item.data.name, targetSlot));
                         if (_swapEquipMethod != null) try { _swapEquipMethod.Invoke(p, new object[] { i, targetSlot }); } catch { }
                         return false;
                     }
                 }
             }
-            WTSocketBot.PublicLogger.LogWarning($"[PESCA] Isca '{itemName}' não encontrada!");
+            WTSocketBot.PublicLogger.LogWarning(string.Format(WildTerraBot.Properties.Resources.UdpRunnerFishingBaitNotFoundFormat, itemName));
             return false;
         }
 
@@ -1877,7 +1877,7 @@ namespace WildTerraBot
             if (bestIndex >= 0)
             {
                 var slot = p.inventory[bestIndex];
-                WTSocketBot.PublicLogger.LogInfo($"[EQUIP] Equipando Vara {slot.item.data.name} no Slot {targetSlot}...");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerEquipRodFormat, slot.item.data.name, targetSlot));
                 if (_swapEquipMethod != null) try { _swapEquipMethod.Invoke(p, new object[] { bestIndex, targetSlot }); } catch { }
                 return false;
             }
@@ -3497,7 +3497,7 @@ namespace WildTerraBot
                 _configuredItems.Add(name);
             }
 
-            try { WTSocketBot.PublicLogger.LogInfo($"[AUTO-EAT-STATUS] configurados: {string.Join(", ", _configuredItems)}"); } catch { }
+            try { WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusConfiguredFormat, string.Join(", ", _configuredItems))); } catch { }
         }
 
         public bool TryUseStatusFood(WTPlayer me, MethodInfo useMethod)
@@ -3512,32 +3512,32 @@ namespace WildTerraBot
                 WTUsableItem usable;
                 if (!TryFindUsableInventoryItem(me, itemName, out inventoryIndex, out usable))
                 {
-                    try { WTSocketBot.PublicLogger.LogInfo($"[AUTO-EAT-STATUS] item configurado não encontrado no inventário: '{itemName}'"); } catch { }
+                    try { WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusItemNotFoundFormat, itemName)); } catch { }
                     continue;
                 }
 
                 if (usable == null || usable.useEffects == null || usable.useEffects.Length == 0)
                 {
-                    try { WTSocketBot.PublicLogger.LogInfo($"[AUTO-EAT-STATUS] item '{itemName}' encontrado, mas sem useEffects monitoráveis."); } catch { }
+                    try { WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusNoMonitorableUseEffectsFormat, itemName)); } catch { }
                     continue;
                 }
 
                 string reason;
                 if (!NeedsRefresh(me, usable, STATUS_REFRESH_SECONDS, out reason))
                 {
-                    try { WTSocketBot.PublicLogger.LogInfo($"[AUTO-EAT-STATUS] mantendo '{usable.name}': {reason}"); } catch { }
+                    try { WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusKeepingFormat, usable.name, reason)); } catch { }
                     continue;
                 }
 
                 try
                 {
                     useMethod.Invoke(me, new object[] { inventoryIndex });
-                    try { WTSocketBot.PublicLogger.LogInfo($"[AUTO-EAT-STATUS] usando '{usable.name}' idx={inventoryIndex} motivo={reason}"); } catch { }
+                    try { WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusUsingFormat, usable.name, inventoryIndex, reason)); } catch { }
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    try { WTSocketBot.PublicLogger.LogInfo($"[AUTO-EAT-STATUS] falha ao usar '{usable.name}' idx={inventoryIndex}: {ex.Message}"); } catch { }
+                    try { WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusUseFailedFormat, usable.name, inventoryIndex, ex.Message)); } catch { }
                 }
             }
 
@@ -3546,7 +3546,7 @@ namespace WildTerraBot
 
         private static bool NeedsRefresh(WTPlayer me, WTUsableItem usable, float refreshSeconds, out string reason)
         {
-            reason = "sem efeitos monitoráveis";
+            reason = WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusNoMonitorableEffects;
             if (me == null || usable == null || usable.useEffects == null || usable.useEffects.Length == 0)
                 return false;
 
@@ -3574,30 +3574,30 @@ namespace WildTerraBot
                 }
                 else
                 {
-                    reason = $"efeito '{effectName}' ausente";
+                    reason = string.Format(WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusEffectMissingFormat, effectName);
                     return true;
                 }
 
                 if (remaining <= refreshSeconds)
                 {
-                    reason = $"efeito '{effectName}' acabando ({remaining:0.0}s <= {refreshSeconds:0.0}s)";
+                    reason = string.Format(WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusEffectEndingFormat, effectName, remaining, refreshSeconds);
                     return true;
                 }
             }
 
             if (!hasAnyMonitoredEffect)
             {
-                reason = "item sem efeitos monitoráveis";
+                reason = WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusItemNoMonitorableEffects;
                 return false;
             }
 
             if (!foundActiveEffect)
             {
-                reason = "nenhum efeito ativo encontrado por nome";
+                reason = WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusNoActiveEffectByName;
                 return true;
             }
 
-            reason = $"buff ativo '{bestEffectName ?? "?"}' com {bestRemaining:0.0}s restantes";
+            reason = string.Format(WildTerraBot.Properties.Resources.UdpRunnerAutoEatStatusActiveBuffRemainingFormat, bestEffectName ?? "?", bestRemaining);
             return false;
         }
 
