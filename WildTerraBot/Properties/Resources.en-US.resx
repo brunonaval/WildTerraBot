@@ -900,4 +900,25 @@
   <data name="PlayerHooksWtRunnerCreated" xml:space="preserve">
     <value>WTRunner created.</value>
   </data>
+  <data name="LicenseGateLicenseKeyEmpty" xml:space="preserve">
+    <value>[LICENSING] LicenseKey is empty. Open the BepInEx config file and paste your key.</value>
+  </data>
+  <data name="LicenseGateHttpValidationErrorFormat" xml:space="preserve">
+    <value>[LICENSING] HTTP {0} while validating license. Response: {1}</value>
+  </data>
+  <data name="LicenseGateEmptyServerResponse" xml:space="preserve">
+    <value>[LICENSING] Empty server response while validating license.</value>
+  </data>
+  <data name="LicenseGateJsonParseErrorFormat" xml:space="preserve">
+    <value>[LICENSING] Failed to parse server JSON. Body: {0}</value>
+  </data>
+  <data name="LicenseGateOkFormat" xml:space="preserve">
+    <value>[LICENSING] OK ({0}) — valid until {1} (UTC).</value>
+  </data>
+  <data name="LicenseGateDeniedFormat" xml:space="preserve">
+    <value>[LICENSING] DENIED ({0}): {1}</value>
+  </data>
+  <data name="LicenseGateUnexpectedValidationError" xml:space="preserve">
+    <value>[LICENSING] Unexpected error while validating license:</value>
+  </data>
 </root>

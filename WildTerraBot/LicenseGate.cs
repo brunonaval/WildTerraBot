@@ -78,7 +78,7 @@ namespace WildTerraBot
 
                 if (string.IsNullOrWhiteSpace(licenseKey))
                 {
-                    log.LogError("[LICENSING] LicenseKey vazio. Abra o arquivo de config do BepInEx e cole sua chave.");
+                    log.LogError(WildTerraBot.Properties.Resources.LicenseGateLicenseKeyEmpty);
                     return false;
                 }
 
@@ -112,13 +112,13 @@ namespace WildTerraBot
 
                 if (!resp.IsSuccessStatusCode)
                 {
-                    log.LogError($"[LICENSING] HTTP {(int)resp.StatusCode} ao validar licença. Resposta: {body}");
+                    log.LogError(string.Format(WildTerraBot.Properties.Resources.LicenseGateHttpValidationErrorFormat, (int)resp.StatusCode, body));
                     return false;
                 }
 
                 if (string.IsNullOrWhiteSpace(body))
                 {
-                    log.LogError("[LICENSING] Resposta vazia do servidor ao validar licença.");
+                    log.LogError(WildTerraBot.Properties.Resources.LicenseGateEmptyServerResponse);
                     return false;
                 }
 
@@ -129,25 +129,25 @@ namespace WildTerraBot
                 }
                 catch (Exception ex)
                 {
-                    log.LogError($"[LICENSING] Falha ao interpretar JSON do servidor. Body: {body}");
+                    log.LogError(string.Format(WildTerraBot.Properties.Resources.LicenseGateJsonParseErrorFormat, body));
                     log.LogError(ex);
                     return false;
                 }
 
                 if (data != null && data.active)
                 {
-                    log.LogInfo($"[LICENSING] OK ({data.reason ?? "ok"}) — válida até {data.validUntilUtc} (UTC).");
+                    log.LogInfo(string.Format(WildTerraBot.Properties.Resources.LicenseGateOkFormat, data.reason ?? "ok", data.validUntilUtc));
                     return true;
                 }
 
                 var reason = data?.reason ?? "unknown";
                 var msg = data?.message ?? "License invalid";
-                log.LogError($"[LICENSING] NEGADO ({reason}): {msg}");
+                log.LogError(string.Format(WildTerraBot.Properties.Resources.LicenseGateDeniedFormat, reason, msg));
                 return false;
             }
             catch (Exception ex)
             {
-                log.LogError("[LICENSING] Erro inesperado ao validar licença:");
+                log.LogError(WildTerraBot.Properties.Resources.LicenseGateUnexpectedValidationError);
                 log.LogError(ex);
                 return false;
             }

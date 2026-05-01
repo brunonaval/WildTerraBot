@@ -2090,5 +2090,47 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("PlayerHooksWtRunnerCreated", resourceCulture);
             }
         }
+
+        internal static string LicenseGateLicenseKeyEmpty {
+            get {
+                return ResourceManager.GetString("LicenseGateLicenseKeyEmpty", resourceCulture);
+            }
+        }
+
+        internal static string LicenseGateHttpValidationErrorFormat {
+            get {
+                return ResourceManager.GetString("LicenseGateHttpValidationErrorFormat", resourceCulture);
+            }
+        }
+
+        internal static string LicenseGateEmptyServerResponse {
+            get {
+                return ResourceManager.GetString("LicenseGateEmptyServerResponse", resourceCulture);
+            }
+        }
+
+        internal static string LicenseGateJsonParseErrorFormat {
+            get {
+                return ResourceManager.GetString("LicenseGateJsonParseErrorFormat", resourceCulture);
+            }
+        }
+
+        internal static string LicenseGateOkFormat {
+            get {
+                return ResourceManager.GetString("LicenseGateOkFormat", resourceCulture);
+            }
+        }
+
+        internal static string LicenseGateDeniedFormat {
+            get {
+                return ResourceManager.GetString("LicenseGateDeniedFormat", resourceCulture);
+            }
+        }
+
+        internal static string LicenseGateUnexpectedValidationError {
+            get {
+                return ResourceManager.GetString("LicenseGateUnexpectedValidationError", resourceCulture);
+            }
+        }
     }
 }
