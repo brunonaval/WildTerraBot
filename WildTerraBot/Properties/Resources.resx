@@ -157,7 +157,7 @@
     <value>Gerado em</value>
   </data>
   <data name="InspectLabelGuild" xml:space="preserve">
-    <value>Guild</value>
+    <value>Guilda</value>
   </data>
   <data name="InspectLabelGold" xml:space="preserve">
     <value>Ouro</value>
@@ -166,7 +166,7 @@
     <value>HP</value>
   </data>
   <data name="InspectLabelLevel" xml:space="preserve">
-    <value>Level</value>
+    <value>N&#237;vel</value>
   </data>
   <data name="InspectLabelMoney" xml:space="preserve">
     <value>Dinheiro</value>
@@ -226,10 +226,10 @@
     <value>Sem dados de cosméticos.</value>
   </data>
   <data name="InspectNoProfSkillsData" xml:space="preserve">
-    <value>Sem dados de profSkills.</value>
+    <value>Sem dados de habilidades de profiss&#227;o.</value>
   </data>
   <data name="InspectNoSkillsData" xml:space="preserve">
-    <value>Sem dados de skills.</value>
+    <value>Sem dados de habilidades.</value>
   </data>
   <data name="InspectObservationClientData" xml:space="preserve">
     <value>Os dados dependem do que o cliente recebeu do servidor.</value>
@@ -301,7 +301,7 @@
     <value>Pet ativo</value>
   </data>
   <data name="InspectLabelCast" xml:space="preserve">
-    <value>Cast</value>
+    <value>Conjura&#231;&#227;o</value>
   </data>
   <data name="InspectLabelCooldown" xml:space="preserve">
     <value>CD</value>
@@ -310,16 +310,16 @@
     <value>Valores extras</value>
   </data>
   <data name="InspectLabelLevelInline" xml:space="preserve">
-    <value>Level</value>
+    <value>N&#237;vel</value>
   </data>
   <data name="InspectLabelProfSkill" xml:space="preserve">
-    <value>ProfSkill</value>
+    <value>Hab. Prof.</value>
   </data>
   <data name="InspectLabelRemainingTime" xml:space="preserve">
     <value>Restante</value>
   </data>
   <data name="InspectLabelReqProfLevel" xml:space="preserve">
-    <value>ReqProfLevel</value>
+    <value>N&#237;vel Prof. Req.</value>
   </data>
   <data name="InspectLabelXpInline" xml:space="preserve">
     <value>XP</value>
@@ -418,7 +418,7 @@
     <value>[TAMING-DEF] pausa state='{0}' tameTarget='{1}' reason='{2}'</value>
   </data>
   <data name="TamingDefenseResumeInvalidTarget" xml:space="preserve">
-    <value>[TAMING-DEF] resume falhou: alvo da doma não é mais válido. voltando para patrulha.</value>
+    <value>[TAMING-DEF] retomada falhou: alvo da doma n&#227;o &#233; mais v&#225;lido. voltando para patrulha.</value>
   </data>
   <data name="TamingDefenseResumeApproachCatchFormat" xml:space="preserve">
     <value>[TAMING-DEF] retomando -&gt; ApproachCatch target='{0}' effects=[{1}]</value>
