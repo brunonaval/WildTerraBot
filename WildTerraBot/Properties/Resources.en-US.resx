@@ -15,6 +15,9 @@
   <data name="InspectLabelAvatar" xml:space="preserve">
     <value>Avatar</value>
   </data>
+  <data name="InspectLabelBorder" xml:space="preserve">
+    <value>Border</value>
+  </data>
   <data name="InspectLabelCurrentSkill" xml:space="preserve">
     <value>Current skill</value>
   </data>
@@ -57,20 +60,53 @@
   <data name="InspectLabelTitleRaw" xml:space="preserve">
     <value>Title (raw)</value>
   </data>
+  <data name="InspectLabelTitleLocalized" xml:space="preserve">
+    <value>Title (localized)</value>
+  </data>
+  <data name="InspectNoEquipmentData" xml:space="preserve">
+    <value>No equipment data.</value>
+  </data>
   <data name="InspectNoCosmeticsData" xml:space="preserve">
     <value>No cosmetics data.</value>
+  </data>
+  <data name="InspectNoProfSkillsData" xml:space="preserve">
+    <value>No profSkills data.</value>
+  </data>
+  <data name="InspectNoSkillsData" xml:space="preserve">
+    <value>No skills data.</value>
   </data>
   <data name="InspectReportTitle" xml:space="preserve">
     <value>PLAYER INSPECT</value>
   </data>
+  <data name="InspectSectionAttributes" xml:space="preserve">
+    <value>[ATTRIBUTES]</value>
+  </data>
+  <data name="InspectSectionBuffs" xml:space="preserve">
+    <value>[BUFFS]</value>
+  </data>
   <data name="InspectSectionCosmetics" xml:space="preserve">
     <value>[COSMETICS]</value>
+  </data>
+  <data name="InspectSectionEconomy" xml:space="preserve">
+    <value>[ECONOMY]</value>
+  </data>
+  <data name="InspectSectionObservations" xml:space="preserve">
+    <value>[OBSERVATIONS]</value>
   </data>
   <data name="InspectSectionEquipment" xml:space="preserve">
     <value>[EQUIPMENT]</value>
   </data>
   <data name="InspectSectionGeneral" xml:space="preserve">
     <value>[GENERAL]</value>
+  </data>
+  <data name="InspectSectionProfSkills" xml:space="preserve">
+    <value>[PROF_SKILLS]</value>
+  </data>
+  <data name="InspectSectionProgression" xml:space="preserve">
+    <value>[PROGRESSION]</value>
+  </data>
+  <data name="InspectSectionSkills" xml:space="preserve">
+    <value>[SKILLS]</value>
   </data>
   <data name="InspectValueFemale" xml:space="preserve">
     <value>Female</value>

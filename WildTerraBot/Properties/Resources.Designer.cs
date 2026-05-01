@@ -70,6 +70,14 @@ namespace WildTerraBot.Properties
             }
         }
 
+        internal static string InspectLabelBorder
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelBorder", resourceCulture);
+            }
+        }
+
         internal static string InspectLabelCurrentSkill
         {
             get
@@ -174,11 +182,43 @@ namespace WildTerraBot.Properties
             }
         }
 
+        internal static string InspectLabelTitleLocalized
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelTitleLocalized", resourceCulture);
+            }
+        }
+
         internal static string InspectNoCosmeticsData
         {
             get
             {
                 return ResourceManager.GetString("InspectNoCosmeticsData", resourceCulture);
+            }
+        }
+
+        internal static string InspectNoEquipmentData
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectNoEquipmentData", resourceCulture);
+            }
+        }
+
+        internal static string InspectNoProfSkillsData
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectNoProfSkillsData", resourceCulture);
+            }
+        }
+
+        internal static string InspectNoSkillsData
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectNoSkillsData", resourceCulture);
             }
         }
 
@@ -211,6 +251,62 @@ namespace WildTerraBot.Properties
             get
             {
                 return ResourceManager.GetString("InspectSectionGeneral", resourceCulture);
+            }
+        }
+
+        internal static string InspectSectionAttributes
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectSectionAttributes", resourceCulture);
+            }
+        }
+
+        internal static string InspectSectionBuffs
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectSectionBuffs", resourceCulture);
+            }
+        }
+
+        internal static string InspectSectionEconomy
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectSectionEconomy", resourceCulture);
+            }
+        }
+
+        internal static string InspectSectionObservations
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectSectionObservations", resourceCulture);
+            }
+        }
+
+        internal static string InspectSectionProfSkills
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectSectionProfSkills", resourceCulture);
+            }
+        }
+
+        internal static string InspectSectionProgression
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectSectionProgression", resourceCulture);
+            }
+        }
+
+        internal static string InspectSectionSkills
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectSectionSkills", resourceCulture);
             }
         }
 

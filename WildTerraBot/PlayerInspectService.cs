@@ -153,12 +153,12 @@ namespace WildTerraBot
             catch { }
 
             sb.AppendLine();
-            sb.AppendLine("[ECONOMIA]");
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionEconomy);
             sb.AppendLine("Money: " + target.money);
             sb.AppendLine("Gold: " + target.gold);
             sb.AppendLine();
 
-            sb.AppendLine("[PROGRESSAO]");
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionProgression);
             sb.AppendLine("Experience: " + target.experience);
             sb.AppendLine("Experience Max: " + target.experienceMax);
             sb.AppendLine("SkillExperience: " + target.skillExperience);
@@ -169,7 +169,7 @@ namespace WildTerraBot
             sb.AppendLine("Boost Progress: " + FormatPercent(target.boost, target.boostMax));
             sb.AppendLine();
 
-            sb.AppendLine("[ATRIBUTOS]");
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionAttributes);
             sb.AppendLine("Strength: " + target.strength);
             sb.AppendLine("Intelligence: " + target.intelligence);
             sb.AppendLine();
@@ -178,19 +178,19 @@ namespace WildTerraBot
             AppendEquipmentSection(sb, target);
             sb.AppendLine();
 
-            sb.AppendLine("[PROF_SKILLS]");
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionProfSkills);
             AppendProfSkillsSection(sb, wtTarget);
             sb.AppendLine();
 
-            sb.AppendLine("[SKILLS]");
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionSkills);
             AppendSkillsSection(sb, target);
             sb.AppendLine();
 
-            sb.AppendLine("[BUFFS]");
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionBuffs);
             AppendBuffsSection(sb, target);
             sb.AppendLine();
 
-            sb.AppendLine("[OBSERVACOES]");
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionObservations);
             sb.AppendLine("- Os dados dependem do que o cliente recebeu do servidor.");
             sb.AppendLine("- A inspeção é limitada a players próximos/visíveis no cliente.");
             sb.AppendLine("- Os nomes localizados dependem da tradução ativa no cliente do jogo.");
@@ -203,7 +203,7 @@ namespace WildTerraBot
         {
             if (target == null || target.equipment == null || target.equipment.Count == 0)
             {
-                sb.AppendLine("Sem dados de equipamento.");
+                sb.AppendLine(WildTerraBot.Properties.Resources.InspectNoEquipmentData);
                 return;
             }
 
@@ -254,7 +254,7 @@ namespace WildTerraBot
         {
             if (target == null || target.profSkills == null || target.profSkills.Count == 0)
             {
-                sb.AppendLine("Sem dados de profSkills.");
+                sb.AppendLine(WildTerraBot.Properties.Resources.InspectNoProfSkillsData);
                 return;
             }
 
@@ -268,7 +268,7 @@ namespace WildTerraBot
         {
             if (target == null || target.skills == null || target.skills.Count == 0)
             {
-                sb.AppendLine("Sem dados de skills.");
+                sb.AppendLine(WildTerraBot.Properties.Resources.InspectNoSkillsData);
                 return;
             }
 
@@ -340,9 +340,9 @@ namespace WildTerraBot
                 string titleLocalized = Safe(GetLocalizedTitle(target));
 
                 sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelTitleRaw + ": " + titleRaw);
-                sb.AppendLine("Titulo (localizado): " + titleLocalized);
+                sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelTitleLocalized + ": " + titleLocalized);
                 sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelAvatar + ": " + Safe(target.view.avatar));
-                sb.AppendLine("Border: " + Safe(target.view.border));
+                sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelBorder + ": " + Safe(target.view.border));
                 sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelSex + ": " + (target.view.isMale ? WildTerraBot.Properties.Resources.InspectValueMale : WildTerraBot.Properties.Resources.InspectValueFemale));
             }
             catch
