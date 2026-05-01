@@ -114,11 +114,11 @@ namespace WildTerraBot
         {
             try
             {
-                if (me == null || me.agent == null) return "agent=null";
+                if (me == null || me.agent == null) return WildTerraBot.Properties.Resources.UdpRunnerAgentNull;
                 var a = me.agent;
-                return $"agent[enabled={a.enabled} hasPath={a.hasPath} rem={a.remainingDistance:F2} vel={a.velocity.magnitude:F2} pathStatus={a.pathStatus}]";
+                return string.Format(WildTerraBot.Properties.Resources.UdpRunnerAgentDebugFormat, a.enabled, a.hasPath, a.remainingDistance, a.velocity.magnitude, a.pathStatus);
             }
-            catch { return "agent=?"; }
+            catch { return WildTerraBot.Properties.Resources.UdpRunnerAgentUnknown; }
         }
 
 
@@ -132,7 +132,7 @@ namespace WildTerraBot
             {
                 if (me == null)
                 {
-                    DbgCombat("[AGGRO] me=null");
+                    DbgCombat(WildTerraBot.Properties.Resources.UdpRunnerAggroMeNull);
                     return;
                 }
 
@@ -179,7 +179,7 @@ namespace WildTerraBot
                 {
                     float dmgAgo = Time.time - _lastDamageTime;
                     string tname = (me.target != null ? me.target.name : "null");
-                    DbgCombat($"[AGGRO] nenhum agressor em {radius:F1}m | dmgAgo={dmgAgo:F1}s me.target={tname}");
+                    DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerAggroNoneFormat, radius, dmgAgo, tname));
                     return;
                 }
 
@@ -187,7 +187,7 @@ namespace WildTerraBot
                 cand = cand.OrderByDescending(c => c.aggro).ThenBy(c => c.dist).Take(Mathf.Max(1, max)).ToList();
 
                 var sb = new StringBuilder();
-                sb.Append($"[AGGRO] candidatos top={cand.Count} (radius={radius:F1}): ");
+                sb.Append(string.Format(WildTerraBot.Properties.Resources.UdpRunnerAggroCandidatesHeaderFormat, cand.Count, radius));
                 for (int i = 0; i < cand.Count; i++)
                 {
                     var c = cand[i];
@@ -197,7 +197,7 @@ namespace WildTerraBot
             }
             catch (Exception ex)
             {
-                try { DbgCombat($"[AGGRO-ERR] {ex.GetType().Name}: {ex.Message}"); } catch { }
+                try { DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerAggroErrorFormat, ex.GetType().Name, ex.Message)); } catch { }
             }
         }
 
@@ -1142,7 +1142,7 @@ namespace WildTerraBot
                     if (Time.time >= _dbgNextDefenseOffWarn)
                     {
                         _dbgNextDefenseOffWarn = Time.time + 3.0f;
-                        DbgCombat($"[DEFESA] ATIVOU com BOT OFF | tomandoDano={tomandoDano} emCombateReal={emCombateReal} hp={currentHp} lastDamageAgo={(Time.time - _lastDamageTime):F1}s target={(wtPlayer.target != null ? wtPlayer.target.name : "null")}");
+                        DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerDefenseActivatedBotOffFormat, tomandoDano, emCombateReal, currentHp, (Time.time - _lastDamageTime), (wtPlayer.target != null ? wtPlayer.target.name : "null")));
                     }
                 }
                 // Se estava pescando, precisamos retomar a pesca exatamente no mesmo ponto/direção após o combate
@@ -1163,7 +1163,7 @@ namespace WildTerraBot
                     if (DBG_COMBAT && Time.time >= _dbgNextPickAggressorLog)
                     {
                         _dbgNextPickAggressorLog = Time.time + 1.0f;
-                        DbgCombat($"[COMBAT] PickAggressorSmart -> {(_combatTarget != null ? MobDbg(_combatTarget) : "null")} | tomandoDano={tomandoDano} emCombateReal={emCombateReal} me.target={(wtPlayer.target != null ? wtPlayer.target.name : "null")}");
+                        DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatPickAggressorFormat, (_combatTarget != null ? MobDbg(_combatTarget) : "null"), tomandoDano, emCombateReal, (wtPlayer.target != null ? wtPlayer.target.name : "null")));
                     }
 
                     // Se estamos tomando dano/em combate mas não achou agressor, dumpa candidatos para diagnóstico.
@@ -1193,7 +1193,7 @@ namespace WildTerraBot
                         if (DBG_COMBAT && _combatTarget != null && !IsValidTarget(_combatTarget) && Time.time >= _dbgNextInvalidTargetWarn)
                         {
                             _dbgNextInvalidTargetWarn = Time.time + 0.8f;
-                            DbgCombat($"[COMBAT-WARN] Update retornando com alvo inválido (limpeza será pulada neste tick) | tomandoDano={tomandoDano} emCombateReal={emCombateReal} hp={currentHp} alvo={MobDbg(_combatTarget)}");
+                            DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatWarnUpdateInvalidTargetFormat, tomandoDano, emCombateReal, currentHp, MobDbg(_combatTarget)));
                             DbgDumpAggressors(wtPlayer, 8f, 4);
                         }
 
@@ -1224,7 +1224,7 @@ namespace WildTerraBot
                                 }
                                 else
                                 {
-                                    WTSocketBot.PublicLogger.LogInfo($"[PESCA] Pós-combate: corpse '{corpse.name}' ignorado (não está em txtListaColeta). Retomando pesca...");
+                                    WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerFishingPostCombatCorpseIgnoredFormat, corpse.name));
                                 }
                             }
                             else
@@ -1893,7 +1893,7 @@ namespace WildTerraBot
                 if (DBG_COMBAT && Time.time >= _dbgNextCmdErrLog)
                 {
                     _dbgNextCmdErrLog = Time.time + 1.0f;
-                    DbgCombat($"[COMBAT-ERR] CmdSkillToPoint exception: {ex.GetType().Name}: {ex.Message}");
+                    DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatSkillToPointExceptionFormat, ex.GetType().Name, ex.Message));
                 }
             }
         }
@@ -1902,7 +1902,7 @@ namespace WildTerraBot
         private string GetMobTypeKey(WTMob mob) { if (mob == null || _fiEntityType == null) return null; var et = _fiEntityType.GetValue(mob) as WTEntityType; return et != null ? et.name : null; }
         private bool IsMobType(WTMob mob, string typeKey) { string key = GetMobTypeKey(mob); return key != null && string.Equals(key, typeKey, StringComparison.OrdinalIgnoreCase); }
         private WTMob BuscarMobPorTipo(WTPlayer me, string typeKey) { WTMob best = null; float menorDist = 9999f; foreach (var mob in FindObjectsOfType<WTMob>()) { if (!IsValidTarget(mob)) continue; if (IsMobType(mob, typeKey)) { float d = Vector3.Distance(me.transform.position, mob.transform.position); if (d < menorDist && d < 80) { menorDist = d; best = mob; } } } return best; }
-        private void TrySkinCorpse(WTPlayer player, WTObject corpse) { if (corpse == null) return; var gather = corpse.worldType?.gatherSettings; if (gather == null || gather.skill == null) return; if (gather.bonusRequired != null) { bool tem = false; var mao = player.GetEquippedRightHand(); if (mao.HasValue && ItemTemBonus(mao.Value, gather.bonusRequired.name)) tem = true; if (!tem && player.inventory != null) foreach (var slot in player.inventory) if (slot.amount > 0 && ItemTemBonus(slot.item, gather.bonusRequired.name)) { tem = true; break; } if (!tem) return; } WTSocketBot.PublicLogger.LogInfo($"[HUNTER] Esfolando {corpse.name}..."); player.WorldObjectTryAction(corpse, gather.skill); }
+        private void TrySkinCorpse(WTPlayer player, WTObject corpse) { if (corpse == null) return; var gather = corpse.worldType?.gatherSettings; if (gather == null || gather.skill == null) return; if (gather.bonusRequired != null) { bool tem = false; var mao = player.GetEquippedRightHand(); if (mao.HasValue && ItemTemBonus(mao.Value, gather.bonusRequired.name)) tem = true; if (!tem && player.inventory != null) foreach (var slot in player.inventory) if (slot.amount > 0 && ItemTemBonus(slot.item, gather.bonusRequired.name)) { tem = true; break; } if (!tem) return; } WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHunterSkinningFormat, corpse.name)); player.WorldObjectTryAction(corpse, gather.skill); }
 
 
         private static string NormalizeListToken(string s)
@@ -1981,7 +1981,7 @@ namespace WildTerraBot
             _postCombatFishingState = PostCombatFishingState.MoveToCorpse;
             _postCombatCorpseTimeout = Time.time + 10.0f;
 
-            WTSocketBot.PublicLogger.LogInfo($"[PESCA] Pós-combate: tentando esfolar {corpse.name} antes de retomar a pesca...");
+            WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerFishingPostCombatTrySkinningFormat, corpse.name));
             return true;
         }
 
@@ -1995,7 +1995,7 @@ namespace WildTerraBot
 
             if (Time.time > _postCombatCorpseTimeout)
             {
-                WTSocketBot.PublicLogger.LogWarning("[PESCA] Pós-combate: timeout ao tentar esfolar. Retomando pesca.");
+                WTSocketBot.PublicLogger.LogWarning(WildTerraBot.Properties.Resources.UdpRunnerFishingPostCombatSkinningTimeout);
                 ClearPostCombatSkinning();
                 return true;
             }
@@ -2019,7 +2019,7 @@ namespace WildTerraBot
                 SafeStopAgent(player);
                 try { player.transform.LookAt(_postCombatCorpse.transform); } catch { }
 
-                WTSocketBot.PublicLogger.LogInfo($"[HUNTER] Esfolando {_postCombatCorpse.name}...");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHunterSkinningFormat, _postCombatCorpse.name));
                 player.WorldObjectTryAction(_postCombatCorpse, _postCombatSkinSkill);
 
                 _postCombatSkinFinishTime = Time.time + 2.8f;
@@ -2125,7 +2125,7 @@ namespace WildTerraBot
             if (DBG_COMBAT && Time.time >= _dbgNextCombatDecisionLog)
             {
                 _dbgNextCombatDecisionLog = Time.time + 0.6f;
-                DbgCombat($"[COMBAT] tick | hunting={isHunting} valid={validTarget} distT={dist:F2} distC={distCollider:F2} engageDist={engageDist:F2} ranged={isRanged} range={weaponRange:F2} fleeing={isFleeing} pulseWait={Mathf.Max(0f, _nextAttackPulse - Time.time):F2}s alvo={MobDbg(_combatTarget)} {AgentDbg(me)}");
+                DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatTickFormat, isHunting, validTarget, dist, distCollider, engageDist, isRanged, weaponRange, isFleeing, Mathf.Max(0f, _nextAttackPulse - Time.time), MobDbg(_combatTarget), AgentDbg(me)));
             }
 
             if (!validTarget && DBG_COMBAT && Time.time >= _dbgNextInvalidTargetWarn)
@@ -2140,7 +2140,7 @@ namespace WildTerraBot
                 try { inHierarchy = _combatTarget.gameObject.activeInHierarchy; } catch { }
                 try { enabled = _combatTarget.isActiveAndEnabled; } catch { }
 
-                DbgCombat($"[COMBAT-WARN] alvo inválido dentro de RunCombatLogic (Update pode retornar antes de limpar) | inCombat={inCombat} dmgAgo={dmgAgo:F1}s me.target={meTargetName} mob.activeSelf={activeSelf} inHierarchy={inHierarchy} enabled={enabled} alvo={MobDbg(_combatTarget)}");
+                DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatWarnInvalidTargetInLogicFormat, inCombat, dmgAgo, meTargetName, activeSelf, inHierarchy, enabled, MobDbg(_combatTarget)));
                 DbgDumpAggressors(me, 8f, 4);
             }
 
@@ -2169,7 +2169,7 @@ namespace WildTerraBot
                         if (closeDist <= retargetThreshold && (dist > closeDist + RETARGET_CLOSER_MARGIN))
                         {
                             if (DBG_COMBAT)
-                                DbgCombat($"[COMBAT-RETARGET] dano recente e atacante próximo -> troca alvo | curDist={dist:F1} newDist={closeDist:F1} thresh={retargetThreshold:F1} cur={MobDbg(_combatTarget)} new={MobDbg(closeAttacker)}");
+                                DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatRetargetSwitchFormat, dist, closeDist, retargetThreshold, MobDbg(_combatTarget), MobDbg(closeAttacker)));
 
                             _combatTarget = closeAttacker;
                             _dbgCombatLastDist = -1f;
@@ -2216,7 +2216,7 @@ namespace WildTerraBot
                 if (DBG_COMBAT && Time.time >= _dbgNextCombatMoveLog)
                 {
                     _dbgNextCombatMoveLog = Time.time + 0.8f;
-                    DbgCombat($"[COMBAT-DEFESA] dist>{engageDist:F1} e não caçando | dist={dist:F1} dmgAgo={dmgAgo:F1}s targetMe={targetMe} inCombat={inCombat} -> {(underAttack ? "ENGAGE" : "DESISTE")} alvo={MobDbg(_combatTarget)}");
+                    DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatDefenseDecisionFormat, engageDist, dist, dmgAgo, targetMe, inCombat, (underAttack ? "ENGAGE" : "DESISTE"), MobDbg(_combatTarget)));
                 }
 
                 // Sem sinais de ataque: não persegue (mantém o bot focado na coleta).
@@ -2245,7 +2245,7 @@ namespace WildTerraBot
                 if (DBG_COMBAT && Time.time >= _dbgNextCombatMoveLog)
                 {
                     _dbgNextCombatMoveLog = Time.time + 0.7f;
-                    DbgCombat($"[COMBAT-MOVE] aprox | dist={dist:F1} engageDist={engageDist:F1} alvo={MobDbg(_combatTarget)} {AgentDbg(me)}");
+                    DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatMoveApproachFormat, dist, engageDist, MobDbg(_combatTarget), AgentDbg(me)));
                 }
 
                 // Diagnóstico de "fica atacando de longe" / "travado": dist não diminui mesmo tentando mover.
@@ -2266,7 +2266,7 @@ namespace WildTerraBot
                     {
                         float vel = 0f;
                         try { if (me.agent != null) vel = me.agent.velocity.magnitude; } catch { }
-                        DbgCombat($"[COMBAT-STUCK?] dist não diminui há {(Time.time - _dbgCombatLastDistTime):F1}s | dist={dist:F1} last={_dbgCombatLastDist:F1} vel={vel:F2} alvo={MobDbg(_combatTarget)} {AgentDbg(me)}");
+                        DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatStuckDistanceNotReducingFormat, (Time.time - _dbgCombatLastDistTime), dist, _dbgCombatLastDist, vel, MobDbg(_combatTarget), AgentDbg(me)));
                         _dbgCombatLastDistTime = Time.time;
                     }
                 }
@@ -2286,7 +2286,7 @@ namespace WildTerraBot
                 if (DBG_COMBAT && Time.time >= _dbgNextCombatAttackLog)
                 {
                     _dbgNextCombatAttackLog = Time.time + 1.2f;
-                    DbgCombat($"[COMBAT] desmontando para atacar | dist={dist:F1} alvo={MobDbg(_combatTarget)}");
+                    DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatDismountToAttackFormat, dist, MobDbg(_combatTarget)));
                 }
 
                 if (Time.time >= _nextAttackPulse)
@@ -2319,7 +2319,7 @@ namespace WildTerraBot
                 if (DBG_COMBAT && Time.time >= _dbgNextCombatAttackLog)
                 {
                     _dbgNextCombatAttackLog = Time.time + 0.9f;
-                    DbgCombat($"[COMBAT-ATK] skill | dist={dist:F1} engageDist={engageDist:F1} mira=({miraFinal.x:F1},{miraFinal.z:F1}) alvo={MobDbg(_combatTarget)}");
+                    DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatAttackSkillFormat, dist, engageDist, miraFinal.x, miraFinal.z, MobDbg(_combatTarget)));
                 }
 
                 CmdSkillToPoint(me, miraFinal);
@@ -2328,7 +2328,7 @@ namespace WildTerraBot
             else if (DBG_COMBAT && Time.time >= _dbgNextPulseWaitLog)
             {
                 _dbgNextPulseWaitLog = Time.time + 1.0f;
-                DbgCombat($"[COMBAT-PULSE] aguardando pulse | wait={(_nextAttackPulse - Time.time):F2}s distT={dist:F2} distC={distCollider:F2} alvo={MobDbg(_combatTarget)}");
+                DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatPulseWaitingFormat, (_nextAttackPulse - Time.time), dist, distCollider, MobDbg(_combatTarget)));
             }
 
 
@@ -2504,7 +2504,7 @@ namespace WildTerraBot
                 if (DBG_COMBAT && Time.time >= _dbgNextCmdErrLog)
                 {
                     _dbgNextCmdErrLog = Time.time + 1.0f;
-                    DbgCombat($"[COMBAT-ERR] CmdSetTarget exception: {ex.GetType().Name}: {ex.Message}");
+                    DbgCombat(string.Format(WildTerraBot.Properties.Resources.UdpRunnerCombatSetTargetExceptionFormat, ex.GetType().Name, ex.Message));
                 }
             }
         }

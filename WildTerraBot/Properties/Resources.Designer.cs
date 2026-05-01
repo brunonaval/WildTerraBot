@@ -1568,5 +1568,155 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("UdpRunnerAutoEatStatusActiveBuffRemainingFormat", resourceCulture);
             }
         }
+
+        internal static string UdpRunnerAgentNull {
+            get {
+                return ResourceManager.GetString("UdpRunnerAgentNull", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAgentDebugFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAgentDebugFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAgentUnknown {
+            get {
+                return ResourceManager.GetString("UdpRunnerAgentUnknown", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAggroMeNull {
+            get {
+                return ResourceManager.GetString("UdpRunnerAggroMeNull", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAggroNoneFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAggroNoneFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAggroCandidatesHeaderFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAggroCandidatesHeaderFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerAggroErrorFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerAggroErrorFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerDefenseActivatedBotOffFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerDefenseActivatedBotOffFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatPickAggressorFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatPickAggressorFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatWarnUpdateInvalidTargetFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatWarnUpdateInvalidTargetFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerFishingPostCombatCorpseIgnoredFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerFishingPostCombatCorpseIgnoredFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatSkillToPointExceptionFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatSkillToPointExceptionFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHunterSkinningFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHunterSkinningFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerFishingPostCombatTrySkinningFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerFishingPostCombatTrySkinningFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerFishingPostCombatSkinningTimeout {
+            get {
+                return ResourceManager.GetString("UdpRunnerFishingPostCombatSkinningTimeout", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatTickFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatTickFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatWarnInvalidTargetInLogicFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatWarnInvalidTargetInLogicFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatRetargetSwitchFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatRetargetSwitchFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatDefenseDecisionFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatDefenseDecisionFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatMoveApproachFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatMoveApproachFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatStuckDistanceNotReducingFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatStuckDistanceNotReducingFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatDismountToAttackFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatDismountToAttackFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatAttackSkillFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatAttackSkillFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatPulseWaitingFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatPulseWaitingFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerCombatSetTargetExceptionFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerCombatSetTargetExceptionFormat", resourceCulture);
+            }
+        }
     }
 }
