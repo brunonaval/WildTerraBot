@@ -2461,7 +2461,7 @@ namespace WildTerraBot
         {
             _isMountingRoutineActive = true;
             if (DBG_MOUNT)
-                DbgMount($"[MOUNT SEQ] start | coleta={_modoColeta} hunter={_modoHunter} mountedBefore={CheckIsMounted(p)}");
+                DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerMountSequenceStartFormat, _modoColeta, _modoHunter, CheckIsMounted(p)));
 
             SafeStopAgent(p);
             yield return new WaitForSeconds(0.25f);
@@ -2473,7 +2473,7 @@ namespace WildTerraBot
                 if (underThreat)
                 {
                     if (DBG_MOUNT)
-                        DbgMount($"[MOUNT SEQ] abort | em combate/dano recente -> não toggle | dmgAgo={(Time.time - _lastDamageTime):0.0}s combat={CheckInCombat(p)} alvo={(_combatTarget != null ? MobDbg(_combatTarget) : "null")}");
+                        DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerMountSequenceAbortFormat, (Time.time - _lastDamageTime), CheckInCombat(p), (_combatTarget != null ? MobDbg(_combatTarget) : "null")));
                     _pauseMovementUntil = Time.time + 0.25f;
                     _isMountingRoutineActive = false;
                     yield break;
@@ -2486,7 +2486,7 @@ namespace WildTerraBot
             _pauseMovementUntil = Time.time + MOUNT_ANIMATION_TIME;
 
             if (DBG_MOUNT)
-                DbgMount($"[MOUNT SEQ] toggle | mountedAfter={CheckIsMounted(p)} pause={MOUNT_ANIMATION_TIME:0.00}s");
+                DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerMountSequenceToggleFormat, CheckIsMounted(p), MOUNT_ANIMATION_TIME));
 
             _isMountingRoutineActive = false;
         }

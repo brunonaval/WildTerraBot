@@ -1874,5 +1874,23 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("UdpRunnerHarvestResultFormat", resourceCulture);
             }
         }
+
+        internal static string UdpRunnerMountSequenceStartFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerMountSequenceStartFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerMountSequenceAbortFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerMountSequenceAbortFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerMountSequenceToggleFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerMountSequenceToggleFormat", resourceCulture);
+            }
+        }
     }
 }

@@ -897,4 +897,13 @@
   <data name="UdpRunnerHarvestResultFormat" xml:space="preserve">
     <value>[HARVEST-RESULT] alvo={0} success={1} toolFail={2} dropped={3}</value>
   </data>
+  <data name="UdpRunnerMountSequenceStartFormat" xml:space="preserve">
+    <value>[MOUNT SEQ] início | coleta={0} hunter={1} mountedBefore={2}</value>
+  </data>
+  <data name="UdpRunnerMountSequenceAbortFormat" xml:space="preserve">
+    <value>[MOUNT SEQ] abortado | em combate/dano recente -&gt; não toggle | dmgAgo={0:0.0}s combat={1} alvo={2}</value>
+  </data>
+  <data name="UdpRunnerMountSequenceToggleFormat" xml:space="preserve">
+    <value>[MOUNT SEQ] toggle | mountedAfter={0} pause={1:0.00}s</value>
+  </data>
 </root>
