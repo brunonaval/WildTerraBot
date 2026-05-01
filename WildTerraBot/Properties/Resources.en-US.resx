@@ -399,4 +399,55 @@
   <data name="TamingDismounting" xml:space="preserve">
     <value>[TAMING] dismounting...</value>
   </data>
+  <data name="TamingTimeoutEquippingTrap" xml:space="preserve">
+    <value>timeout equipping trap</value>
+  </data>
+  <data name="TamingTrapEquippedFormat" xml:space="preserve">
+    <value>[TAMING] trap equipped '{0}'. hand={1}</value>
+  </data>
+  <data name="TamingEquipTrapFormat" xml:space="preserve">
+    <value>[TAMING] equip trap='{0}' alreadyEquipped={1} handBefore={2} handAfter={3}</value>
+  </data>
+  <data name="TamingTrapEquippedAfterEquipFormat" xml:space="preserve">
+    <value>[TAMING] trap equipped '{0}' right after equip. hand={1}</value>
+  </data>
+  <data name="TamingTimeoutPreparingTrapThrow" xml:space="preserve">
+    <value>timeout preparing trap throw</value>
+  </data>
+  <data name="TamingPreparingTrapThrowFormat" xml:space="preserve">
+    <value>[TAMING] preparing trap throw target='{0}' aim={1} point=({2:F1},{3:F1}) dist={4:F1}</value>
+  </data>
+  <data name="TamingThrowTrapAttemptFormat" xml:space="preserve">
+    <value>[TAMING] throw trap attempt={0} target='{1}' aim={2} point=({3:F1},{4:F1}) dist={5:F1}</value>
+  </data>
+  <data name="TamingTrapConfirmedFormat" xml:space="preserve">
+    <value>[TAMING] trap confirmed on target='{0}' effects=[{1}] -&gt; approaching Catching</value>
+  </data>
+  <data name="TamingTrapNotConfirmedRetryFormat" xml:space="preserve">
+    <value>[TAMING] trap not confirmed. retry {0}/{1}.</value>
+  </data>
+  <data name="TamingTrapNotConfirmedAfterAttemptsFormat" xml:space="preserve">
+    <value>trap not confirmed after {0} attempt(s)</value>
+  </data>
+  <data name="TamingTimeoutApproachingCatching" xml:space="preserve">
+    <value>timeout approaching catching</value>
+  </data>
+  <data name="TamingTrapEffectGoneBeforeCatchingFormat" xml:space="preserve">
+    <value>[TAMING] trap effect vanished before Catching. effects=[{0}] retry trap.</value>
+  </data>
+  <data name="TamingApproachingCatchingFormat" xml:space="preserve">
+    <value>[TAMING] approaching Catching target='{0}' dist={1:F2} desired&lt;={2:F2} effects=[{3}]</value>
+  </data>
+  <data name="TamingCatchingSkillNotFound" xml:space="preserve">
+    <value>skill Catching not found</value>
+  </data>
+  <data name="TamingTimeoutBeforeCatching" xml:space="preserve">
+    <value>timeout before Catching</value>
+  </data>
+  <data name="TamingCatchingAttemptLimitReachedFormat" xml:space="preserve">
+    <value>Catching attempt limit reached ({0}/{1})</value>
+  </data>
+  <data name="TamingUsingCatchingFormat" xml:space="preserve">
+    <value>[TAMING] using Catching attempt={0}/{1} idx={2} target='{3}' dist={4:F2}</value>
+  </data>
 </root>

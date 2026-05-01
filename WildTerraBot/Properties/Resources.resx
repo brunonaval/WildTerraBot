@@ -504,4 +504,55 @@
   <data name="TamingDismounting" xml:space="preserve">
     <value>[TAMING] desmontando...</value>
   </data>
+  <data name="TamingTimeoutEquippingTrap" xml:space="preserve">
+    <value>timeout equipando trap</value>
+  </data>
+  <data name="TamingTrapEquippedFormat" xml:space="preserve">
+    <value>[TAMING] trap equipada '{0}'. hand={1}</value>
+  </data>
+  <data name="TamingEquipTrapFormat" xml:space="preserve">
+    <value>[TAMING] equipando trap='{0}' alreadyEquipped={1} handBefore={2} handAfter={3}</value>
+  </data>
+  <data name="TamingTrapEquippedAfterEquipFormat" xml:space="preserve">
+    <value>[TAMING] trap equipada '{0}' logo após equip. hand={1}</value>
+  </data>
+  <data name="TamingTimeoutPreparingTrapThrow" xml:space="preserve">
+    <value>timeout preparando lançamento da trap</value>
+  </data>
+  <data name="TamingPreparingTrapThrowFormat" xml:space="preserve">
+    <value>[TAMING] preparando lançamento da trap alvo='{0}' aim={1} point=({2:F1},{3:F1}) dist={4:F1}</value>
+  </data>
+  <data name="TamingThrowTrapAttemptFormat" xml:space="preserve">
+    <value>[TAMING] lançando trap attempt={0} alvo='{1}' aim={2} point=({3:F1},{4:F1}) dist={5:F1}</value>
+  </data>
+  <data name="TamingTrapConfirmedFormat" xml:space="preserve">
+    <value>[TAMING] trap confirmada no alvo='{0}' effects=[{1}] -&gt; aproximando para Catching</value>
+  </data>
+  <data name="TamingTrapNotConfirmedRetryFormat" xml:space="preserve">
+    <value>[TAMING] trap não confirmou. retry {0}/{1}.</value>
+  </data>
+  <data name="TamingTrapNotConfirmedAfterAttemptsFormat" xml:space="preserve">
+    <value>trap não confirmou após {0} tentativa(s)</value>
+  </data>
+  <data name="TamingTimeoutApproachingCatching" xml:space="preserve">
+    <value>timeout aproximando para Catching</value>
+  </data>
+  <data name="TamingTrapEffectGoneBeforeCatchingFormat" xml:space="preserve">
+    <value>[TAMING] efeito da trap sumiu antes do Catching. effects=[{0}] retry trap.</value>
+  </data>
+  <data name="TamingApproachingCatchingFormat" xml:space="preserve">
+    <value>[TAMING] aproximando para Catching alvo='{0}' dist={1:F2} desired&lt;={2:F2} effects=[{3}]</value>
+  </data>
+  <data name="TamingCatchingSkillNotFound" xml:space="preserve">
+    <value>skill Catching não encontrada</value>
+  </data>
+  <data name="TamingTimeoutBeforeCatching" xml:space="preserve">
+    <value>timeout antes do Catching</value>
+  </data>
+  <data name="TamingCatchingAttemptLimitReachedFormat" xml:space="preserve">
+    <value>limite de tentativas de Catching atingido ({0}/{1})</value>
+  </data>
+  <data name="TamingUsingCatchingFormat" xml:space="preserve">
+    <value>[TAMING] usando Catching attempt={0}/{1} idx={2} alvo='{3}' dist={4:F2}</value>
+  </data>
 </root>

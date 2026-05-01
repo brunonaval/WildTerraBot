@@ -1088,5 +1088,107 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("TamingDismounting", resourceCulture);
             }
         }
+
+        internal static string TamingTimeoutEquippingTrap {
+            get {
+                return ResourceManager.GetString("TamingTimeoutEquippingTrap", resourceCulture);
+            }
+        }
+
+        internal static string TamingTrapEquippedFormat {
+            get {
+                return ResourceManager.GetString("TamingTrapEquippedFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingEquipTrapFormat {
+            get {
+                return ResourceManager.GetString("TamingEquipTrapFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingTrapEquippedAfterEquipFormat {
+            get {
+                return ResourceManager.GetString("TamingTrapEquippedAfterEquipFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingTimeoutPreparingTrapThrow {
+            get {
+                return ResourceManager.GetString("TamingTimeoutPreparingTrapThrow", resourceCulture);
+            }
+        }
+
+        internal static string TamingPreparingTrapThrowFormat {
+            get {
+                return ResourceManager.GetString("TamingPreparingTrapThrowFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingThrowTrapAttemptFormat {
+            get {
+                return ResourceManager.GetString("TamingThrowTrapAttemptFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingTrapConfirmedFormat {
+            get {
+                return ResourceManager.GetString("TamingTrapConfirmedFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingTrapNotConfirmedRetryFormat {
+            get {
+                return ResourceManager.GetString("TamingTrapNotConfirmedRetryFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingTrapNotConfirmedAfterAttemptsFormat {
+            get {
+                return ResourceManager.GetString("TamingTrapNotConfirmedAfterAttemptsFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingTimeoutApproachingCatching {
+            get {
+                return ResourceManager.GetString("TamingTimeoutApproachingCatching", resourceCulture);
+            }
+        }
+
+        internal static string TamingTrapEffectGoneBeforeCatchingFormat {
+            get {
+                return ResourceManager.GetString("TamingTrapEffectGoneBeforeCatchingFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingApproachingCatchingFormat {
+            get {
+                return ResourceManager.GetString("TamingApproachingCatchingFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingCatchingSkillNotFound {
+            get {
+                return ResourceManager.GetString("TamingCatchingSkillNotFound", resourceCulture);
+            }
+        }
+
+        internal static string TamingTimeoutBeforeCatching {
+            get {
+                return ResourceManager.GetString("TamingTimeoutBeforeCatching", resourceCulture);
+            }
+        }
+
+        internal static string TamingCatchingAttemptLimitReachedFormat {
+            get {
+                return ResourceManager.GetString("TamingCatchingAttemptLimitReachedFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingUsingCatchingFormat {
+            get {
+                return ResourceManager.GetString("TamingUsingCatchingFormat", resourceCulture);
+            }
+        }
     }
 }

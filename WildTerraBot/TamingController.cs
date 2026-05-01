@@ -569,7 +569,7 @@ namespace WildTerraBot
         private bool TickEquipTrap(WTPlayer me)
         {
             if (!EnsureTargetStillValid()) return false;
-            if (Time.time > _stateUntil) { Fail("timeout equipando trap"); return false; }
+            if (Time.time > _stateUntil) { Fail(WildTerraBot.Properties.Resources.TamingTimeoutEquippingTrap); return false; }
 
             bool equippedNow = IsTrapEquipped(me, _config.TrapName, out string handInfo);
             if (equippedNow) _trapEquipLatched = true;
@@ -580,7 +580,7 @@ namespace WildTerraBot
                 _stateUntil = Time.time + 4.0f;
                 _nextActionAt = 0f;
                 _trapThrowPrepared = false;
-                _log($"[TAMING] trap equipada '{_config.TrapName}'. hand={handInfo}");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingTrapEquippedFormat, _config.TrapName, handInfo));
                 return true;
             }
 
@@ -590,14 +590,14 @@ namespace WildTerraBot
                 bool alreadyEquipped = _checkAndEquipItem(me, _config.TrapName, 0);
                 bool equippedAfterEquip = IsTrapEquipped(me, _config.TrapName, out string handAfterEquip);
                 if (equippedAfterEquip) _trapEquipLatched = true;
-                _log($"[TAMING] equip trap='{_config.TrapName}' alreadyEquipped={alreadyEquipped} handBefore={handInfo} handAfter={handAfterEquip}");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingEquipTrapFormat, _config.TrapName, alreadyEquipped, handInfo, handAfterEquip));
                 if (_trapEquipLatched)
                 {
                     _state = TamingState.ThrowTrap;
                     _stateUntil = Time.time + 4.0f;
                     _nextActionAt = 0f;
                     _trapThrowPrepared = false;
-                    _log($"[TAMING] trap equipada '{_config.TrapName}' logo após equip. hand={handAfterEquip}");
+                    _log(string.Format(WildTerraBot.Properties.Resources.TamingTrapEquippedAfterEquipFormat, _config.TrapName, handAfterEquip));
                     return true;
                 }
 
@@ -608,7 +608,7 @@ namespace WildTerraBot
         private bool TickThrowTrap(WTPlayer me)
         {
             if (!EnsureTargetStillValid()) return false;
-            if (Time.time > _stateUntil) { Fail("timeout preparando lançamento da trap"); return false; }
+            if (Time.time > _stateUntil) { Fail(WildTerraBot.Properties.Resources.TamingTimeoutPreparingTrapThrow); return false; }
 
             float dist = DistanceToTarget(me, _target);
             if (dist > (_trapRange + 0.9f))
@@ -634,7 +634,7 @@ namespace WildTerraBot
             {
                 _trapThrowPrepared = true;
                 _nextActionAt = Time.time + 0.05f;
-                _log($"[TAMING] preparando lançamento da trap alvo='{SafeName(_target)}' aim={aimInfo} point=({point.x:F1},{point.z:F1}) dist={dist:F1}");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingPreparingTrapThrowFormat, SafeName(_target), aimInfo, point.x, point.z, dist));
                 return true;
             }
 
@@ -646,7 +646,7 @@ namespace WildTerraBot
                 _lastTrapThrowAt = Time.time;
                 _state = TamingState.ConfirmTrap;
                 _stateUntil = Time.time + 3.8f;
-                _log($"[TAMING] throw trap attempt={_trapAttempts} alvo='{SafeName(_target)}' aim={aimInfo} point=({point.x:F1},{point.z:F1}) dist={dist:F1}");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingThrowTrapAttemptFormat, _trapAttempts, SafeName(_target), aimInfo, point.x, point.z, dist));
             }
             return true;
         }
@@ -663,7 +663,7 @@ namespace WildTerraBot
                 _state = TamingState.ApproachCatch;
                 _stateUntil = Time.time + 8.0f;
                 _nextMoveLogAt = 0f;
-                _log($"[TAMING] trap confirmada no alvo='{SafeName(_target)}' effects=[{effects}] -> aproximando para Catching");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingTrapConfirmedFormat, SafeName(_target), effects));
                 return true;
             }
 
@@ -671,13 +671,13 @@ namespace WildTerraBot
             {
                 if (_trapAttempts < _config.MaxTrapAttempts)
                 {
-                    _log($"[TAMING] trap não confirmou. retry {_trapAttempts}/{_config.MaxTrapAttempts}.");
+                    _log(string.Format(WildTerraBot.Properties.Resources.TamingTrapNotConfirmedRetryFormat, _trapAttempts, _config.MaxTrapAttempts));
                     _state = TamingState.ApproachTrapRange;
                     _stateUntil = Time.time + 10.0f;
                     return true;
                 }
 
-                Fail($"trap não confirmou após {_trapAttempts} tentativa(s)");
+                Fail(string.Format(WildTerraBot.Properties.Resources.TamingTrapNotConfirmedAfterAttemptsFormat, _trapAttempts));
                 return false;
             }
 
@@ -692,7 +692,7 @@ namespace WildTerraBot
         private bool TickApproachCatch(WTPlayer me)
         {
             if (!EnsureTargetStillValid()) return false;
-            if (Time.time > _stateUntil) { Fail("timeout aproximando para catching"); return false; }
+            if (Time.time > _stateUntil) { Fail(WildTerraBot.Properties.Resources.TamingTimeoutApproachingCatching); return false; }
 
             float dist = DistanceToTarget(me, _target);
             float desired = Mathf.Max(MIN_CATCH_DISTANCE, _catchRange - CATCH_DISTANCE_BUFFER);
@@ -701,7 +701,7 @@ namespace WildTerraBot
             {
                 if (_trapAttempts < _config.MaxTrapAttempts)
                 {
-                    _log($"[TAMING] efeito da trap sumiu antes do Catching. effects=[{effects}] retry trap.");
+                    _log(string.Format(WildTerraBot.Properties.Resources.TamingTrapEffectGoneBeforeCatchingFormat, effects));
                     _state = TamingState.ApproachTrapRange;
                     _stateUntil = Time.time + 10.0f;
                     return true;
@@ -713,7 +713,7 @@ namespace WildTerraBot
                 if (Time.time >= _nextMoveLogAt)
                 {
                     _nextMoveLogAt = Time.time + 0.8f;
-                    _log($"[TAMING] aproximando para Catching alvo='{SafeName(_target)}' dist={dist:F2} desired<={desired:F2} effects=[{effects}]");
+                    _log(string.Format(WildTerraBot.Properties.Resources.TamingApproachingCatchingFormat, SafeName(_target), dist, desired, effects));
                 }
                 _moveToXZ(me, _target.transform.position.x, _target.transform.position.z);
                 return true;
@@ -728,15 +728,15 @@ namespace WildTerraBot
         private bool TickUseCatching(WTPlayer me)
         {
             if (!EnsureTargetStillValid()) return false;
-            if (_catchSkillIndex < 0) { Fail("skill Catching não encontrada"); return false; }
-            if (Time.time > _stateUntil) { Fail("timeout antes do Catching"); return false; }
+            if (_catchSkillIndex < 0) { Fail(WildTerraBot.Properties.Resources.TamingCatchingSkillNotFound); return false; }
+            if (Time.time > _stateUntil) { Fail(WildTerraBot.Properties.Resources.TamingTimeoutBeforeCatching); return false; }
 
             if (Time.time >= _nextActionAt)
             {
 
                 if (_catchAttempts >= MAX_CATCH_ATTEMPTS)
                 {
-                    Fail($"limite de tentativas de Catching atingido ({_catchAttempts}/{MAX_CATCH_ATTEMPTS})");
+                    Fail(string.Format(WildTerraBot.Properties.Resources.TamingCatchingAttemptLimitReachedFormat, _catchAttempts, MAX_CATCH_ATTEMPTS));
                     return false;
                 }
 
@@ -748,7 +748,7 @@ namespace WildTerraBot
                 _tryUseSkill(me, _catchSkillIndex);
                 _state = TamingState.ConfirmCatch;
                 _stateUntil = Time.time + 7.0f;
-                _log($"[TAMING] usando Catching attempt={_catchAttempts}/{MAX_CATCH_ATTEMPTS} idx={_catchSkillIndex} alvo='{SafeName(_target)}' dist={DistanceToTarget(me, _target):F2}");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingUsingCatchingFormat, _catchAttempts, MAX_CATCH_ATTEMPTS, _catchSkillIndex, SafeName(_target), DistanceToTarget(me, _target)));
             }
             return true;
         }
