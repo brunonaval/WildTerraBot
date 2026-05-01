@@ -819,4 +819,82 @@
   <data name="UdpRunnerCombatSetTargetExceptionFormat" xml:space="preserve">
     <value>[COMBAT-ERR] CmdSetTarget exception: {0}: {1}</value>
   </data>
+  <data name="UdpRunnerHarvestActionFormat" xml:space="preserve">
+    <value>[HARVEST-ACTION] {0} alvo={1} wid={2}</value>
+  </data>
+  <data name="UdpRunnerHarvestActionStartMounted" xml:space="preserve">
+    <value>início-montado</value>
+  </data>
+  <data name="UdpRunnerHarvestActionStart" xml:space="preserve">
+    <value>início</value>
+  </data>
+  <data name="UdpRunnerHarvestAbortTimeoutFormat" xml:space="preserve">
+    <value>[HARVEST-ABORT] timeout &gt;{0:0.0}s alvo={1}</value>
+  </data>
+  <data name="UdpRunnerHarvestActionMicroAdjustArriveFormat" xml:space="preserve">
+    <value>micro-ajuste chegada d={0:0.00}</value>
+  </data>
+  <data name="UdpRunnerHarvestActionFlankArriveFormat" xml:space="preserve">
+    <value>flank chegada d={0:0.00}</value>
+  </data>
+  <data name="UdpRunnerHarvestWatchFormat" xml:space="preserve">
+    <value>[HARVEST-WATCH] alvo={0} use={1} distC={2:0.00} best={3:0.00} noProg={4:0.0}s pathBad={5} slow={6} rem={7:0.00}</value>
+  </data>
+  <data name="UdpRunnerHarvestAbortArmedNearTargetStalledFormat" xml:space="preserve">
+    <value>[HARVEST-ABORT] travado perto do alvo armado use={0} distC={1:0.00} rem={2:0.00} stall={3:0.0}s alvo={4}</value>
+  </data>
+  <data name="UdpRunnerHarvestActionRetryAfterDismountFormat" xml:space="preserve">
+    <value>retry-após-desmontar lost={0:0.00}s</value>
+  </data>
+  <data name="UdpRunnerHarvestActionNearTargetRetryFormat" xml:space="preserve">
+    <value>retry-próximo-alvo {0}/{1} lost={2:0.0}s</value>
+  </data>
+  <data name="UdpRunnerHarvestAbortLostInteractionNearTargetFormat" xml:space="preserve">
+    <value>[HARVEST-ABORT] interação perdida perto do alvo lost={0:0.0}s alvo={1}</value>
+  </data>
+  <data name="UdpRunnerHarvestAbortMaxFlankAttemptsFormat" xml:space="preserve">
+    <value>[HARVEST-ABORT] máximo de tentativas de flank ({0}) alvo={1}</value>
+  </data>
+  <data name="UdpRunnerHarvestStuckStartFlankFormat" xml:space="preserve">
+    <value>[HARVEST-STUCK] noProg={0:0.0}s distC={1:0.00} pathBad={2} slow={3} -&gt; START_FLANK attempt={4}/{5} alvo={6}</value>
+  </data>
+  <data name="UdpRunnerHarvestFlankNoColliderFormat" xml:space="preserve">
+    <value>[HARVEST-FLANK] sem collider no alvo -&gt; não dá pra flanquear alvo={0}</value>
+  </data>
+  <data name="UdpRunnerHarvestFlankNoGoodPointFormat" xml:space="preserve">
+    <value>[HARVEST-FLANK] nenhum ponto bom (PathComplete) encontrado. {0}</value>
+  </data>
+  <data name="UdpRunnerHarvestFlankChosenFormat" xml:space="preserve">
+    <value>[HARVEST-FLANK-CHOSEN] {0}</value>
+  </data>
+  <data name="UdpRunnerHarvestStallMicroAdjustFormat" xml:space="preserve">
+    <value>[HARVEST-STALL] armed-near-target use={0} distC={1:0.00} rem={2:0.00} stall={3:0.0}s retry={4}/{5} -&gt; MICRO-ADJUST {6}</value>
+  </data>
+  <data name="UdpRunnerHarvestActionArmedNearTargetDirectRetryFormat" xml:space="preserve">
+    <value>retry-direto-alvo-próximo {0}/{1} use={2} stall={3:0.0}s</value>
+  </data>
+  <data name="UdpRunnerHarvestStallFallbackDirectRetryFormat" xml:space="preserve">
+    <value>[HARVEST-STALL] armed-near-target fallback-direct-retry use={0} distC={1:0.00} rem={2:0.00} stall={3:0.0}s retry={4}/{5}</value>
+  </data>
+  <data name="UdpRunnerHarvestMicroAdjustNoCandidates" xml:space="preserve">
+    <value>sem candidatos</value>
+  </data>
+  <data name="UdpRunnerHarvestMicroAdjustPointFormat" xml:space="preserve">
+    <value>p=({0:0.00},{1:0.00}) side={2:0.00}</value>
+  </data>
+  <data name="UdpRunnerHarvestFlankCandidateFormat" xml:space="preserve">
+    <value>cand a={0:0} r={1:0.0} st={2} len={3:0.0}; </value>
+  </data>
+  <data name="UdpRunnerHarvestFlankNoCandidates" xml:space="preserve">
+    <value>sem candidatos</value>
+  </data>
+  <data name="UdpRunnerHarvestFlankBestFormat" xml:space="preserve">
+    <value>best a={0} r={1:0.0} score={2:0.0} p=({3:0.0},{4:0.0}) | {5}</value>
+  </data>
+  <data name="UdpRunnerHarvestCleanupOrphanLockFormat" xml:space="preserve">
+    <value>[HARVEST-CLEANUP] limpando trava órfã origem={0} wid={1} motivo={2} alvo={3} flanking={4} queued={5}</value>
+  </data>
+  <data name="UdpRunnerHarvestResultFormat" xml:space="preserve">
+    <value>[HARVEST-RESULT] alvo={0} success={1} toolFail={2} dropped={3}</value>
+  </data>
 </root>

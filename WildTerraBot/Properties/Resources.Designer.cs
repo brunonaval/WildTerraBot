@@ -1718,5 +1718,161 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("UdpRunnerCombatSetTargetExceptionFormat", resourceCulture);
             }
         }
+
+        internal static string UdpRunnerHarvestActionFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestActionFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestActionStartMounted {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestActionStartMounted", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestActionStart {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestActionStart", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestAbortTimeoutFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestAbortTimeoutFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestActionMicroAdjustArriveFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestActionMicroAdjustArriveFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestActionFlankArriveFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestActionFlankArriveFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestWatchFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestWatchFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestAbortArmedNearTargetStalledFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestAbortArmedNearTargetStalledFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestActionRetryAfterDismountFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestActionRetryAfterDismountFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestActionNearTargetRetryFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestActionNearTargetRetryFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestAbortLostInteractionNearTargetFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestAbortLostInteractionNearTargetFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestAbortMaxFlankAttemptsFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestAbortMaxFlankAttemptsFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestStuckStartFlankFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestStuckStartFlankFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestFlankNoColliderFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestFlankNoColliderFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestFlankNoGoodPointFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestFlankNoGoodPointFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestFlankChosenFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestFlankChosenFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestStallMicroAdjustFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestStallMicroAdjustFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestActionArmedNearTargetDirectRetryFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestActionArmedNearTargetDirectRetryFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestStallFallbackDirectRetryFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestStallFallbackDirectRetryFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestMicroAdjustNoCandidates {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestMicroAdjustNoCandidates", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestMicroAdjustPointFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestMicroAdjustPointFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestFlankCandidateFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestFlankCandidateFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestFlankNoCandidates {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestFlankNoCandidates", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestFlankBestFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestFlankBestFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestCleanupOrphanLockFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestCleanupOrphanLockFormat", resourceCulture);
+            }
+        }
+
+        internal static string UdpRunnerHarvestResultFormat {
+            get {
+                return ResourceManager.GetString("UdpRunnerHarvestResultFormat", resourceCulture);
+            }
+        }
     }
 }

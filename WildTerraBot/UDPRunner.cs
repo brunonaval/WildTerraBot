@@ -2800,7 +2800,7 @@ namespace WildTerraBot
             if (Time.time < _nextHarvestTry) return false;
 
             if (!string.IsNullOrWhiteSpace(debugReason))
-                WTSocketBot.PublicLogger.LogInfo($"[HARVEST-ACTION] {debugReason} alvo={SafeName(target)} wid={SafeWorldObjectId(target)}");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestActionFormat, debugReason, SafeName(target), SafeWorldObjectId(target)));
 
             if (!string.IsNullOrWhiteSpace(stateForTelemetry))
                 NotifyHarvestState(stateForTelemetry, target);
@@ -2909,7 +2909,7 @@ namespace WildTerraBot
             _lastMoveTarget = null;
             _nextHarvestTry = 0f;
 
-            TryTriggerHarvestAction(wtPlayer, alvo, "Approaching", _harvestStartedMounted ? "start-mounted" : "start");
+            TryTriggerHarvestAction(wtPlayer, alvo, "Approaching", _harvestStartedMounted ? WildTerraBot.Properties.Resources.UdpRunnerHarvestActionStartMounted : WildTerraBot.Properties.Resources.UdpRunnerHarvestActionStart);
         }
 
         void HarvestWatchdog(WTPlayer wtPlayer)
@@ -2922,7 +2922,7 @@ namespace WildTerraBot
             }
             if (Time.time > _harvestTimeout)
             {
-                WTSocketBot.PublicLogger.LogInfo($"[HARVEST-ABORT] timeout >{HARVEST_TOTAL_TIMEOUT:0.0}s alvo={SafeName(_harvestTarget)}");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestAbortTimeoutFormat, HARVEST_TOTAL_TIMEOUT, SafeName(_harvestTarget)));
                 NotifyHarvestDone(false, "GlobalTimeout", _harvestTarget);
                 BlacklistAndClearHarvest(_harvestTarget);
                 return;
@@ -2967,7 +2967,7 @@ namespace WildTerraBot
                     _harvestMicroAdjusting = false;
                     _nextHarvestTry = 0f;
 
-                    if (TryTriggerHarvestAction(wtPlayer, _harvestTarget, "Interacting", wasMicroAdjust ? $"micro-adjust-arrive d={d:0.00}" : $"flank-arrive d={d:0.00}"))
+                    if (TryTriggerHarvestAction(wtPlayer, _harvestTarget, "Interacting", wasMicroAdjust ? string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestActionMicroAdjustArriveFormat, d) : string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestActionFlankArriveFormat, d)))
                     {
                         _harvestNearTargetRetryCount = 0;
                         _harvestLostInteractionSince = 0f;
@@ -2999,7 +2999,7 @@ namespace WildTerraBot
             try { isCasting = (wtPlayer.state == "CASTING"); } catch { }
 
             // Debug leve (1 linha por tick do watchdog)
-            WTSocketBot.PublicLogger.LogInfo($"[HARVEST-WATCH] alvo={SafeName(_harvestTarget)} use={use} distC={distC:0.00} best={_harvestBestDistC:0.00} noProg={(Time.time - _harvestLastProgressTime):0.0}s pathBad={pathBad} slow={slow} rem={remDist:0.00}");
+            WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestWatchFormat, SafeName(_harvestTarget), use, distC, _harvestBestDistC, (Time.time - _harvestLastProgressTime), pathBad, slow, remDist));
 
             bool armedNearTargetStall = use != -1 && !isCasting && !_harvestFlanking && distC <= HARVEST_MIN_DISTC_FOR_STUCK && remDist <= HARVEST_ARMED_STALL_REMDIST_MAX && slow && (Time.time - _harvestLastActionTime) >= 0.20f;
 
@@ -3022,7 +3022,7 @@ namespace WildTerraBot
 
                 if (armedFor >= HARVEST_ARMED_STALL_ABORT_TIME)
                 {
-                    WTSocketBot.PublicLogger.LogInfo($"[HARVEST-ABORT] armed near target stalled use={use} distC={distC:0.00} rem={remDist:0.00} stall={armedFor:0.0}s alvo={SafeName(_harvestTarget)}");
+                    WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestAbortArmedNearTargetStalledFormat, use, distC, remDist, armedFor, SafeName(_harvestTarget)));
                     NotifyHarvestDone(false, "ArmedNearTargetStall", _harvestTarget);
                     BlacklistAndClearHarvest(_harvestTarget);
                     return;
@@ -3042,7 +3042,7 @@ namespace WildTerraBot
 
                 if (_harvestStartedMounted && !_harvestRetriedAfterDismount && !mounted && lostFor >= HARVEST_POST_DISMOUNT_RETRY_DELAY)
                 {
-                    if (TryTriggerHarvestAction(wtPlayer, _harvestTarget, "Interacting", $"retry-after-dismount lost={lostFor:0.00}s"))
+                    if (TryTriggerHarvestAction(wtPlayer, _harvestTarget, "Interacting", string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestActionRetryAfterDismountFormat, lostFor)))
                     {
                         _harvestRetriedAfterDismount = true;
                         _harvestLastProgressTime = Time.time;
@@ -3065,7 +3065,7 @@ namespace WildTerraBot
                     }
                     catch { }
 
-                    if (TryTriggerHarvestAction(wtPlayer, _harvestTarget, "Recovering", $"near-target-retry {_harvestNearTargetRetryCount}/{HARVEST_MAX_NEAR_TARGET_RETRIES} lost={lostFor:0.0}s"))
+                    if (TryTriggerHarvestAction(wtPlayer, _harvestTarget, "Recovering", string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestActionNearTargetRetryFormat, _harvestNearTargetRetryCount, HARVEST_MAX_NEAR_TARGET_RETRIES, lostFor)))
                     {
                         _harvestLastProgressTime = Time.time;
                         _harvestLostInteractionSince = Time.time;
@@ -3075,7 +3075,7 @@ namespace WildTerraBot
 
                 if (lostFor >= HARVEST_NEAR_TARGET_ABORT_TIME)
                 {
-                    WTSocketBot.PublicLogger.LogInfo($"[HARVEST-ABORT] lost interaction near target lost={lostFor:0.0}s alvo={SafeName(_harvestTarget)}");
+                    WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestAbortLostInteractionNearTargetFormat, lostFor, SafeName(_harvestTarget)));
                     NotifyHarvestDone(false, "LostInteractionNearTarget", _harvestTarget);
                     BlacklistAndClearHarvest(_harvestTarget);
                     return;
@@ -3096,14 +3096,14 @@ namespace WildTerraBot
             // Dispara flank
             if (_harvestFlankAttempts >= HARVEST_MAX_FLANK_ATTEMPTS)
             {
-                WTSocketBot.PublicLogger.LogInfo($"[HARVEST-ABORT] max flank attempts ({HARVEST_MAX_FLANK_ATTEMPTS}) alvo={SafeName(_harvestTarget)}");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestAbortMaxFlankAttemptsFormat, HARVEST_MAX_FLANK_ATTEMPTS, SafeName(_harvestTarget)));
                 NotifyHarvestDone(false, "MaxFlankAttempts", _harvestTarget);
                 BlacklistAndClearHarvest(_harvestTarget);
                 return;
             }
 
             _harvestFlankAttempts++;
-            WTSocketBot.PublicLogger.LogInfo($"[HARVEST-STUCK] noProg={noProgFor:0.0}s distC={distC:0.00} pathBad={pathBad} slow={slow} -> START_FLANK attempt={_harvestFlankAttempts}/{HARVEST_MAX_FLANK_ATTEMPTS} alvo={SafeName(_harvestTarget)}");
+            WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestStuckStartFlankFormat, noProgFor, distC, pathBad, slow, _harvestFlankAttempts, HARVEST_MAX_FLANK_ATTEMPTS, SafeName(_harvestTarget)));
             NotifyHarvestState("Recovering", _harvestTarget);
             StartHarvestFlank(wtPlayer, _harvestTarget);
         }
@@ -3119,13 +3119,13 @@ namespace WildTerraBot
             try { col = target.collider != null ? target.collider : target.GetComponent<Collider>(); } catch { }
             if (col == null)
             {
-                WTSocketBot.PublicLogger.LogInfo($"[HARVEST-FLANK] sem collider no alvo -> não dá pra flanquear alvo={SafeName(target)}");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestFlankNoColliderFormat, SafeName(target)));
                 return;
             }
 
             if (!TryPickFlankPoint(wtPlayer, col, out Vector3 flankPoint, out string pickLog))
             {
-                WTSocketBot.PublicLogger.LogInfo($"[HARVEST-FLANK] nenhum ponto bom (PathComplete) encontrado. {pickLog}");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestFlankNoGoodPointFormat, pickLog));
                 return;
             }
 
@@ -3137,7 +3137,7 @@ namespace WildTerraBot
             _harvestLostInteractionSince = 0f;
             _harvestNearTargetRetryCount = 0;
 
-            WTSocketBot.PublicLogger.LogInfo($"[HARVEST-FLANK-CHOSEN] {pickLog}");
+            WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestFlankChosenFormat, pickLog));
             MoveAgentToPoint(wtPlayer, flankPoint, 0.25f);
         }
 
@@ -3165,14 +3165,14 @@ namespace WildTerraBot
                 _harvestFlankPoint = adjustPoint;
                 _nextHarvestTry = 0f;
                 NotifyHarvestState("Recovering", target);
-                WTSocketBot.PublicLogger.LogInfo($"[HARVEST-STALL] armed-near-target use={useSkill} distC={distC:0.00} rem={remDist:0.00} stall={armedFor:0.0}s retry={retryNo}/{HARVEST_MAX_NEAR_TARGET_RETRIES} -> MICRO-ADJUST {adjustLog}");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestStallMicroAdjustFormat, useSkill, distC, remDist, armedFor, retryNo, HARVEST_MAX_NEAR_TARGET_RETRIES, adjustLog));
                 MoveAgentToPoint(wtPlayer, adjustPoint, HARVEST_MICROADJUST_STOPPING_DISTANCE);
                 return true;
             }
 
-            if (TryTriggerHarvestAction(wtPlayer, target, "Recovering", $"armed-near-target-direct-retry {retryNo}/{HARVEST_MAX_NEAR_TARGET_RETRIES} use={useSkill} stall={armedFor:0.0}s"))
+            if (TryTriggerHarvestAction(wtPlayer, target, "Recovering", string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestActionArmedNearTargetDirectRetryFormat, retryNo, HARVEST_MAX_NEAR_TARGET_RETRIES, useSkill, armedFor)))
             {
-                WTSocketBot.PublicLogger.LogInfo($"[HARVEST-STALL] armed-near-target fallback-direct-retry use={useSkill} distC={distC:0.00} rem={remDist:0.00} stall={armedFor:0.0}s retry={retryNo}/{HARVEST_MAX_NEAR_TARGET_RETRIES}");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestStallFallbackDirectRetryFormat, useSkill, distC, remDist, armedFor, retryNo, HARVEST_MAX_NEAR_TARGET_RETRIES));
                 return true;
             }
 
@@ -3182,7 +3182,7 @@ namespace WildTerraBot
         private bool TryPickHarvestMicroAdjustPoint(WTPlayer wtPlayer, WTObject target, int retryNo, out Vector3 bestPoint, out string log)
         {
             bestPoint = Vector3.zero;
-            log = "no candidates";
+            log = WildTerraBot.Properties.Resources.UdpRunnerHarvestMicroAdjustNoCandidates;
             if (wtPlayer == null || target == null || target.collider == null) return false;
 
             Vector3 from = wtPlayer.transform.position;
@@ -3213,7 +3213,7 @@ namespace WildTerraBot
                     continue;
 
                 bestPoint = hit.position;
-                log = $"p=({bestPoint.x:0.00},{bestPoint.z:0.00}) side={side:0.00}";
+                log = string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestMicroAdjustPointFormat, bestPoint.x, bestPoint.z, side);
                 return true;
             }
 
@@ -3265,7 +3265,7 @@ namespace WildTerraBot
 
                     if (logged < 6)
                     {
-                        sb.Append($"cand a={ang:0} r={r:0.0} st={path.status} len={len:0.0}; ");
+                        sb.Append(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestFlankCandidateFormat, ang, r, path.status, len));
                         logged++;
                     }
 
@@ -3284,11 +3284,11 @@ namespace WildTerraBot
 
             if (bestAngle < 0)
             {
-                log = sb.Length > 0 ? sb.ToString() : "no candidates";
+                log = sb.Length > 0 ? sb.ToString() : WildTerraBot.Properties.Resources.UdpRunnerHarvestFlankNoCandidates;
                 return false;
             }
 
-            log = $"best a={bestAngle} r={bestR:0.0} score={bestScore:0.0} p=({bestPoint.x:0.0},{bestPoint.z:0.0}) | {sb}";
+            log = string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestFlankBestFormat, bestAngle, bestR, bestScore, bestPoint.x, bestPoint.z, sb.ToString());
             return true;
         }
 
@@ -3351,7 +3351,7 @@ namespace WildTerraBot
             try
             {
                 string why = timedOut ? "timeout" : "target-null";
-                WTSocketBot.PublicLogger.LogInfo($"[HARVEST-CLEANUP] limpando trava órfã origem={origin ?? "?"} wid={_activeHarvestWorldId} motivo={why} alvo={SafeName(_harvestTarget)} flanking={_harvestFlanking} queued={queued}");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestCleanupOrphanLockFormat, (origin ?? "?"), _activeHarvestWorldId, why, SafeName(_harvestTarget), _harvestFlanking, queued));
             }
             catch { }
 
@@ -3454,7 +3454,7 @@ namespace WildTerraBot
                 if (target == null) return;
                 string alvoName = "?";
                 try { alvoName = target != null ? target.name : "?"; } catch { }
-                WTSocketBot.PublicLogger.LogInfo($"[HARVEST-RESULT] alvo={alvoName} success={res.success} toolFail={res.tool} dropped={res.dropped}");
+                WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.UdpRunnerHarvestResultFormat, alvoName, res.success, res.tool, res.dropped));
             }
             catch { }
 
