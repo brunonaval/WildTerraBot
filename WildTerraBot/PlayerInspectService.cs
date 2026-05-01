@@ -107,23 +107,23 @@ namespace WildTerraBot
             WTPlayer wtTarget = target as WTPlayer;
 
             sb.AppendLine("========================================");
-            sb.AppendLine("PLAYER INSPECT");
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectReportTitle);
             sb.AppendLine("========================================");
             sb.AppendLine("Consulta: " + Safe(requestedPlayerName));
             sb.AppendLine("Player encontrado: " + Safe(target.name));
             sb.AppendLine("Gerado em: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             sb.AppendLine();
 
-            sb.AppendLine("[GERAL]");
-            sb.AppendLine("Nome: " + Safe(target.name));
-            sb.AppendLine("Level: " + target.level);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionGeneral);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelName + ": " + Safe(target.name));
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelLevel + ": " + target.level);
             sb.AppendLine("HP: " + target.health);
             sb.AppendLine("SP: " + target.stamina);
             sb.AppendLine("Distância: " + distance.ToString("F1") + "m");
             sb.AppendLine(string.Format("Posição: X={0:F1} | Y={1:F1} | Z={2:F1}", targetPos.x, targetPos.y, targetPos.z));
             sb.AppendLine("Estado: " + Safe(target.state));
             sb.AppendLine("Skill atual: " + GetCurrentSkillName(target));
-            sb.AppendLine("Guild: " + GetGuildName(target));
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelGuild + ": " + GetGuildName(target));
             AppendCosmeticsSection(sb, target);
 
             try
@@ -174,7 +174,7 @@ namespace WildTerraBot
             sb.AppendLine("Intelligence: " + target.intelligence);
             sb.AppendLine();
 
-            sb.AppendLine("[EQUIPAMENTOS]");
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionEquipment);
             AppendEquipmentSection(sb, target);
             sb.AppendLine();
 
@@ -334,7 +334,7 @@ namespace WildTerraBot
             try
             {
                 sb.AppendLine();
-                sb.AppendLine("[COSMETICOS]");
+                sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionCosmetics);
 
                 string titleRaw = Safe(target.view.title);
                 string titleLocalized = Safe(GetLocalizedTitle(target));
@@ -343,12 +343,12 @@ namespace WildTerraBot
                 sb.AppendLine("Titulo (localizado): " + titleLocalized);
                 sb.AppendLine("Avatar: " + Safe(target.view.avatar));
                 sb.AppendLine("Border: " + Safe(target.view.border));
-                sb.AppendLine("Sexo: " + (target.view.isMale ? "Masculino" : "Feminino"));
+                sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelSex + ": " + (target.view.isMale ? WildTerraBot.Properties.Resources.InspectValueMale : WildTerraBot.Properties.Resources.InspectValueFemale));
             }
             catch
             {
                 sb.AppendLine();
-                sb.AppendLine("[COSMETICOS]");
+                sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionCosmetics);
                 sb.AppendLine("Sem dados de cosmeticos.");
             }
         }
@@ -529,7 +529,7 @@ namespace WildTerraBot
 
         private static string FormatBool(bool value)
         {
-            return value ? "Sim" : "Nao";
+            return value ? WildTerraBot.Properties.Resources.InspectValueYes : WildTerraBot.Properties.Resources.InspectValueNo;
         }
 
         private static string FormatPercent(long current, long max)

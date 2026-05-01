@@ -53,5 +53,101 @@ namespace WildTerraBot.Properties
                 resourceCulture = value;
             }
         }
+
+        internal static string InspectLabelGuild
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelGuild", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelLevel
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelLevel", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelName
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelName", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelSex
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelSex", resourceCulture);
+            }
+        }
+
+        internal static string InspectReportTitle
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectReportTitle", resourceCulture);
+            }
+        }
+
+        internal static string InspectSectionCosmetics
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectSectionCosmetics", resourceCulture);
+            }
+        }
+
+        internal static string InspectSectionEquipment
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectSectionEquipment", resourceCulture);
+            }
+        }
+
+        internal static string InspectSectionGeneral
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectSectionGeneral", resourceCulture);
+            }
+        }
+
+        internal static string InspectValueFemale
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectValueFemale", resourceCulture);
+            }
+        }
+
+        internal static string InspectValueMale
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectValueMale", resourceCulture);
+            }
+        }
+
+        internal static string InspectValueNo
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectValueNo", resourceCulture);
+            }
+        }
+
+        internal static string InspectValueYes
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectValueYes", resourceCulture);
+            }
+        }
     }
 }

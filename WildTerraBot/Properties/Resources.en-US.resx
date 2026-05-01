@@ -12,4 +12,40 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="InspectLabelGuild" xml:space="preserve">
+    <value>Guild</value>
+  </data>
+  <data name="InspectLabelLevel" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="InspectLabelName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="InspectLabelSex" xml:space="preserve">
+    <value>Sex</value>
+  </data>
+  <data name="InspectReportTitle" xml:space="preserve">
+    <value>PLAYER INSPECT</value>
+  </data>
+  <data name="InspectSectionCosmetics" xml:space="preserve">
+    <value>[COSMETICS]</value>
+  </data>
+  <data name="InspectSectionEquipment" xml:space="preserve">
+    <value>[EQUIPMENT]</value>
+  </data>
+  <data name="InspectSectionGeneral" xml:space="preserve">
+    <value>[GENERAL]</value>
+  </data>
+  <data name="InspectValueFemale" xml:space="preserve">
+    <value>Female</value>
+  </data>
+  <data name="InspectValueMale" xml:space="preserve">
+    <value>Male</value>
+  </data>
+  <data name="InspectValueNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="InspectValueYes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
 </root>
