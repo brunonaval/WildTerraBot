@@ -921,4 +921,28 @@
   <data name="LicenseGateUnexpectedValidationError" xml:space="preserve">
     <value>[LICENSING] Unexpected error while validating license:</value>
   </data>
+  <data name="TrainingModeConfigNoBlockEnabled" xml:space="preserve">
+    <value>no Training block was enabled</value>
+  </data>
+  <data name="TrainingModeConfigSkillsEnabledEmpty" xml:space="preserve">
+    <value>Training: Skills block is active, but the skills list is empty</value>
+  </data>
+  <data name="TrainingModeConfigBuffItemsEnabledEmpty" xml:space="preserve">
+    <value>Training: BuffItems block is active, but the consumables list is empty</value>
+  </data>
+  <data name="TrainingModeConfigRecoveryEnabledEmptyOrInvalid" xml:space="preserve">
+    <value>Training: Recovery block is active, but the HP/SP list is empty or invalid</value>
+  </data>
+  <data name="TrainingModeConfigAutoAttackEnabledEmptyTarget" xml:space="preserve">
+    <value>Training: AutoAttack block is active, but the target is empty</value>
+  </data>
+  <data name="TrainingModeConfigSummaryAutoAttackOnFormat" xml:space="preserve">
+    <value>on({0})</value>
+  </data>
+  <data name="TrainingModeConfigSummaryAutoAttackOff" xml:space="preserve">
+    <value>off</value>
+  </data>
+  <data name="TrainingModeConfigSummaryFormat" xml:space="preserve">
+    <value>skills={0}, buffs={1}, recovery={2}, autoatk={3}, hp&lt;{4}%, sp&lt;{5}%, refresh={6}s</value>
+  </data>
 </root>

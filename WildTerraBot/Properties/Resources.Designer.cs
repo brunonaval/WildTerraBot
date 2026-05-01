@@ -2132,5 +2132,53 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("LicenseGateUnexpectedValidationError", resourceCulture);
             }
         }
+
+        internal static string TrainingModeConfigNoBlockEnabled {
+            get {
+                return ResourceManager.GetString("TrainingModeConfigNoBlockEnabled", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeConfigSkillsEnabledEmpty {
+            get {
+                return ResourceManager.GetString("TrainingModeConfigSkillsEnabledEmpty", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeConfigBuffItemsEnabledEmpty {
+            get {
+                return ResourceManager.GetString("TrainingModeConfigBuffItemsEnabledEmpty", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeConfigRecoveryEnabledEmptyOrInvalid {
+            get {
+                return ResourceManager.GetString("TrainingModeConfigRecoveryEnabledEmptyOrInvalid", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeConfigAutoAttackEnabledEmptyTarget {
+            get {
+                return ResourceManager.GetString("TrainingModeConfigAutoAttackEnabledEmptyTarget", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeConfigSummaryAutoAttackOnFormat {
+            get {
+                return ResourceManager.GetString("TrainingModeConfigSummaryAutoAttackOnFormat", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeConfigSummaryAutoAttackOff {
+            get {
+                return ResourceManager.GetString("TrainingModeConfigSummaryAutoAttackOff", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeConfigSummaryFormat {
+            get {
+                return ResourceManager.GetString("TrainingModeConfigSummaryFormat", resourceCulture);
+            }
+        }
     }
 }

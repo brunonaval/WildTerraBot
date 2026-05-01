@@ -55,31 +55,31 @@ namespace WildTerraBot
 
             if (!EnableSkills && !EnableBuffItems && !EnableRecovery && !EnableAutoAttack)
             {
-                error = "nenhum bloco do Training foi ativado";
+                error = WildTerraBot.Properties.Resources.TrainingModeConfigNoBlockEnabled;
                 return false;
             }
 
             if (EnableSkills && (SkillNames == null || SkillNames.Count == 0))
             {
-                error = "Training: bloco Skills ativo, mas lista de skills vazia";
+                error = WildTerraBot.Properties.Resources.TrainingModeConfigSkillsEnabledEmpty;
                 return false;
             }
 
             if (EnableBuffItems && (BuffItemNames == null || BuffItemNames.Count == 0))
             {
-                error = "Training: bloco BuffItems ativo, mas lista de consumíveis vazia";
+                error = WildTerraBot.Properties.Resources.TrainingModeConfigBuffItemsEnabledEmpty;
                 return false;
             }
 
             if (EnableRecovery && (RecoveryItems == null || RecoveryItems.Count == 0))
             {
-                error = "Training: bloco Recovery ativo, mas lista de HP/SP vazia ou inválida";
+                error = WildTerraBot.Properties.Resources.TrainingModeConfigRecoveryEnabledEmptyOrInvalid;
                 return false;
             }
 
             if (EnableAutoAttack && string.IsNullOrWhiteSpace(AutoAttackTargetName))
             {
-                error = "Training: bloco AutoAttack ativo, mas alvo está vazio";
+                error = WildTerraBot.Properties.Resources.TrainingModeConfigAutoAttackEnabledEmptyTarget;
                 return false;
             }
 
@@ -88,8 +88,19 @@ namespace WildTerraBot
 
         public string BuildSummary()
         {
-            string autoAtk = EnableAutoAttack ? $"on({AutoAttackTargetName})" : "off";
-            return $"skills={SkillNames.Count}, buffs={BuffItemNames.Count}, recovery={RecoveryItems.Count}, autoatk={autoAtk}, hp<{HpThreshold}%, sp<{SpThreshold}%, refresh={BuffRefreshSeconds}s";
+            string autoAtk = EnableAutoAttack
+                ? string.Format(WildTerraBot.Properties.Resources.TrainingModeConfigSummaryAutoAttackOnFormat, AutoAttackTargetName)
+                : WildTerraBot.Properties.Resources.TrainingModeConfigSummaryAutoAttackOff;
+
+            return string.Format(
+                WildTerraBot.Properties.Resources.TrainingModeConfigSummaryFormat,
+                SkillNames.Count,
+                BuffItemNames.Count,
+                RecoveryItems.Count,
+                autoAtk,
+                HpThreshold,
+                SpThreshold,
+                BuffRefreshSeconds);
         }
 
         public static TrainingModeConfig FromUdpParts(string[] p)

@@ -1026,4 +1026,28 @@
   <data name="LicenseGateUnexpectedValidationError" xml:space="preserve">
     <value>[LICENSING] Erro inesperado ao validar licença:</value>
   </data>
+  <data name="TrainingModeConfigNoBlockEnabled" xml:space="preserve">
+    <value>nenhum bloco do Training foi ativado</value>
+  </data>
+  <data name="TrainingModeConfigSkillsEnabledEmpty" xml:space="preserve">
+    <value>Training: bloco Skills ativo, mas lista de skills vazia</value>
+  </data>
+  <data name="TrainingModeConfigBuffItemsEnabledEmpty" xml:space="preserve">
+    <value>Training: bloco BuffItems ativo, mas lista de consumíveis vazia</value>
+  </data>
+  <data name="TrainingModeConfigRecoveryEnabledEmptyOrInvalid" xml:space="preserve">
+    <value>Training: bloco Recovery ativo, mas lista de HP/SP vazia ou inválida</value>
+  </data>
+  <data name="TrainingModeConfigAutoAttackEnabledEmptyTarget" xml:space="preserve">
+    <value>Training: bloco AutoAttack ativo, mas alvo está vazio</value>
+  </data>
+  <data name="TrainingModeConfigSummaryAutoAttackOnFormat" xml:space="preserve">
+    <value>ligado({0})</value>
+  </data>
+  <data name="TrainingModeConfigSummaryAutoAttackOff" xml:space="preserve">
+    <value>desligado</value>
+  </data>
+  <data name="TrainingModeConfigSummaryFormat" xml:space="preserve">
+    <value>skills={0}, buffs={1}, recovery={2}, autoatk={3}, hp&lt;{4}%, sp&lt;{5}%, refresh={6}s</value>
+  </data>
 </root>
