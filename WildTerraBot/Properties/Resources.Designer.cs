@@ -2006,5 +2006,47 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("MeuBotDumpFatalErrorFormat", resourceCulture);
             }
         }
+
+        internal static string FishingHooksLockRedMismatchFormat {
+            get {
+                return ResourceManager.GetString("FishingHooksLockRedMismatchFormat", resourceCulture);
+            }
+        }
+
+        internal static string FishingHooksLockGreenMismatchFormat {
+            get {
+                return ResourceManager.GetString("FishingHooksLockGreenMismatchFormat", resourceCulture);
+            }
+        }
+
+        internal static string FishingHooksGreenStepFormat {
+            get {
+                return ResourceManager.GetString("FishingHooksGreenStepFormat", resourceCulture);
+            }
+        }
+
+        internal static string FishingHooksLockExecutingFullSequenceFormat {
+            get {
+                return ResourceManager.GetString("FishingHooksLockExecutingFullSequenceFormat", resourceCulture);
+            }
+        }
+
+        internal static string FishingHooksRedStepWrongHintFormat {
+            get {
+                return ResourceManager.GetString("FishingHooksRedStepWrongHintFormat", resourceCulture);
+            }
+        }
+
+        internal static string FishingHooksLockExecutingIgnoringRedHintFormat {
+            get {
+                return ResourceManager.GetString("FishingHooksLockExecutingIgnoringRedHintFormat", resourceCulture);
+            }
+        }
+
+        internal static string FishingHooksLockProfileExecutingFullSequenceFormat {
+            get {
+                return ResourceManager.GetString("FishingHooksLockProfileExecutingFullSequenceFormat", resourceCulture);
+            }
+        }
     }
 }

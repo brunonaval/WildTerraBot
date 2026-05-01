@@ -963,4 +963,25 @@
   <data name="MeuBotDumpFatalErrorFormat" xml:space="preserve">
     <value>[DUMP] Erro Fatal: {0}</value>
   </data>
+  <data name="FishingHooksLockRedMismatchFormat" xml:space="preserve">
+    <value>[IA][LOCK] Passo {0}: UI marcou '{1}' como VERMELHO, mas esta era a ação travada. Destravando e recalculando...</value>
+  </data>
+  <data name="FishingHooksLockGreenMismatchFormat" xml:space="preserve">
+    <value>[IA][LOCK] Passo {0}: UI confirmou '{1}' como VERDE, mas o lock previa '{2}'. Destravando e voltando a confiar no UI...</value>
+  </data>
+  <data name="FishingHooksGreenStepFormat" xml:space="preserve">
+    <value>[VERDE] Passo: {0} | Visual: {1} ({2}) | OK: {3}</value>
+  </data>
+  <data name="FishingHooksLockExecutingFullSequenceFormat" xml:space="preserve">
+    <value>[IA][LOCK] Passo {0}: Executando {1} (seguindo sequência completa).</value>
+  </data>
+  <data name="FishingHooksRedStepWrongHintFormat" xml:space="preserve">
+    <value>[VERMELHO] Passo: {0} | Visual: {1} ({2}) | Dica ERRADA: {3}. Filtrando...</value>
+  </data>
+  <data name="FishingHooksLockExecutingIgnoringRedHintFormat" xml:space="preserve">
+    <value>[IA][LOCK] Passo {0}: Executando {1} (ignorando dica vermelha).</value>
+  </data>
+  <data name="FishingHooksLockProfileExecutingFullSequenceFormat" xml:space="preserve">
+    <value>[IA][LOCK] Passo {0}: Travado em '{1}'. Executando {2} e seguindo sequência completa.</value>
+  </data>
 </root>

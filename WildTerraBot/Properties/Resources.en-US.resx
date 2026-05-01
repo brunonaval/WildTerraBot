@@ -858,4 +858,25 @@
   <data name="MeuBotDumpFatalErrorFormat" xml:space="preserve">
     <value>[DUMP] Fatal Error: {0}</value>
   </data>
+  <data name="FishingHooksLockRedMismatchFormat" xml:space="preserve">
+    <value>[IA][LOCK] Step {0}: UI marked '{1}' as RED, but this was the locked action. Unlocking and recalculating...</value>
+  </data>
+  <data name="FishingHooksLockGreenMismatchFormat" xml:space="preserve">
+    <value>[IA][LOCK] Step {0}: UI confirmed '{1}' as GREEN, but lock expected '{2}'. Unlocking and trusting UI again...</value>
+  </data>
+  <data name="FishingHooksGreenStepFormat" xml:space="preserve">
+    <value>[VERDE] Step: {0} | Visual: {1} ({2}) | OK: {3}</value>
+  </data>
+  <data name="FishingHooksLockExecutingFullSequenceFormat" xml:space="preserve">
+    <value>[IA][LOCK] Step {0}: Executing {1} (following full sequence).</value>
+  </data>
+  <data name="FishingHooksRedStepWrongHintFormat" xml:space="preserve">
+    <value>[VERMELHO] Step: {0} | Visual: {1} ({2}) | WRONG hint: {3}. Filtering...</value>
+  </data>
+  <data name="FishingHooksLockExecutingIgnoringRedHintFormat" xml:space="preserve">
+    <value>[IA][LOCK] Step {0}: Executing {1} (ignoring red hint).</value>
+  </data>
+  <data name="FishingHooksLockProfileExecutingFullSequenceFormat" xml:space="preserve">
+    <value>[IA][LOCK] Step {0}: Locked on '{1}'. Executing {2} and following full sequence.</value>
+  </data>
 </root>

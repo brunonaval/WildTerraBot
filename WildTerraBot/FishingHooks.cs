@@ -42,14 +42,14 @@ namespace WildTerraBot
                     // Vermelho: a dica do jogo é errada. Se a dica errada coincidir com nossa ação travada, o lock está incorreto.
                     if (!isSuccess && lockedAction == tipID)
                     {
-                        WTSocketBot.PublicLogger.LogWarning($"[IA][LOCK] Passo {stepIndex}: UI marcou '{FishBrain.GetKeyName(tipID)}' como VERMELHO, mas esta era a ação travada. Destravando e recalculando...");
+                        WTSocketBot.PublicLogger.LogWarning(string.Format(WildTerraBot.Properties.Resources.FishingHooksLockRedMismatchFormat, stepIndex, FishBrain.GetKeyName(tipID)));
                         FishBrain.LockedProfile = null;
                     }
 
                     // Verde: a dica do jogo é correta. Se ela divergir do lock, o lock está incorreto.
                     if (isSuccess && lockedAction != tipID)
                     {
-                        WTSocketBot.PublicLogger.LogWarning($"[IA][LOCK] Passo {stepIndex}: UI confirmou '{FishBrain.GetKeyName(tipID)}' como VERDE, mas o lock previa '{FishBrain.GetKeyName(lockedAction)}'. Destravando e voltando a confiar no UI...");
+                        WTSocketBot.PublicLogger.LogWarning(string.Format(WildTerraBot.Properties.Resources.FishingHooksLockGreenMismatchFormat, stepIndex, FishBrain.GetKeyName(tipID), FishBrain.GetKeyName(lockedAction)));
                         FishBrain.LockedProfile = null;
                     }
                 }
@@ -60,7 +60,7 @@ namespace WildTerraBot
                     FishBrain.RecordConfirmedStep(stepIndex, visualID, tipID);
 
                     actionToTake = tipID;
-                    WTSocketBot.PublicLogger.LogInfo($"[VERDE] Passo: {stepIndex} | Visual: {visualID} ({FishBrain.GetVisualName(visualID)}) | OK: {FishBrain.GetKeyName(actionToTake)}");
+                    WTSocketBot.PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.FishingHooksGreenStepFormat, stepIndex, visualID, FishBrain.GetVisualName(visualID), FishBrain.GetKeyName(actionToTake)));
 
                     // Tenta travar o peixe se a dedução ficar única
                     FishBrain.EvaluateLockOnGreen(stepIndex, visualID, tipID, WTSocketBot.PublicLogger);
@@ -69,18 +69,18 @@ namespace WildTerraBot
                     {
                         // A partir daqui, seguimos a sequência do peixe travado (para este passo costuma ser igual ao tipID)
                         actionToTake = FishBrain.GetLockedAction(stepIndex);
-                        WTSocketBot.PublicLogger.LogWarning($"[IA][LOCK] Passo {stepIndex}: Executando {FishBrain.GetKeyName(actionToTake)} (seguindo sequência completa).");
+                        WTSocketBot.PublicLogger.LogWarning(string.Format(WildTerraBot.Properties.Resources.FishingHooksLockExecutingFullSequenceFormat, stepIndex, FishBrain.GetKeyName(actionToTake)));
                     }
                 }
                 else
                 {
                     // === VERMELHO (Eliminação) ===
-                    WTSocketBot.PublicLogger.LogWarning($"[VERMELHO] Passo: {stepIndex} | Visual: {visualID} ({FishBrain.GetVisualName(visualID)}) | Dica ERRADA: {FishBrain.GetKeyName(tipID)}. Filtrando...");
+                    WTSocketBot.PublicLogger.LogWarning(string.Format(WildTerraBot.Properties.Resources.FishingHooksRedStepWrongHintFormat, stepIndex, visualID, FishBrain.GetVisualName(visualID), FishBrain.GetKeyName(tipID)));
 
                     if (FishBrain.IsLocked)
                     {
                         actionToTake = FishBrain.GetLockedAction(stepIndex);
-                        WTSocketBot.PublicLogger.LogWarning($"[IA][LOCK] Passo {stepIndex}: Executando {FishBrain.GetKeyName(actionToTake)} (ignorando dica vermelha).");
+                        WTSocketBot.PublicLogger.LogWarning(string.Format(WildTerraBot.Properties.Resources.FishingHooksLockExecutingIgnoringRedHintFormat, stepIndex, FishBrain.GetKeyName(actionToTake)));
                     }
                     else
                     {
@@ -90,7 +90,7 @@ namespace WildTerraBot
                         if (FishBrain.IsLocked)
                         {
                             actionToTake = FishBrain.GetLockedAction(stepIndex);
-                            WTSocketBot.PublicLogger.LogWarning($"[IA][LOCK] Passo {stepIndex}: Travado em '{FishBrain.LockedProfile.Name}'. Executando {FishBrain.GetKeyName(actionToTake)} e seguindo sequência completa.");
+                            WTSocketBot.PublicLogger.LogWarning(string.Format(WildTerraBot.Properties.Resources.FishingHooksLockProfileExecutingFullSequenceFormat, stepIndex, FishBrain.LockedProfile.Name, FishBrain.GetKeyName(actionToTake)));
                         }
                     }
                 }
