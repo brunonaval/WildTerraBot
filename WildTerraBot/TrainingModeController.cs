@@ -50,13 +50,13 @@ namespace WildTerraBot
             _nextMountedLogAt = 0f;
             _nextAutoAttackAt = 0f;
             _nextMissingTargetLogAt = 0f;
-            _logInfo("[TRAINING] ENABLED | " + _cfg.BuildSummary());
+            _logInfo(string.Format(WildTerraBot.Properties.Resources.TrainingModeEnabledFormat, _cfg.BuildSummary()));
         }
 
         public void Disable()
         {
             if (_enabled)
-                _logInfo("[TRAINING] DISABLED");
+                _logInfo(WildTerraBot.Properties.Resources.TrainingModeDisabled);
 
             _enabled = false;
             _cfg = null;
@@ -82,7 +82,7 @@ namespace WildTerraBot
                 if (Time.time >= _nextMountedLogAt)
                 {
                     _nextMountedLogAt = Time.time + 5.0f;
-                    _logInfo("[TRAINING] aguardando desmontar para agir");
+                    _logInfo(WildTerraBot.Properties.Resources.TrainingModeWaitingDismount);
                 }
                 return;
             }
@@ -141,12 +141,12 @@ namespace WildTerraBot
                 try
                 {
                     me.CmdUseInventoryItem(inventoryIndex);
-                    _logInfo($"[TRAINING] recovery use {entry.ResourceType}:{usable.name} idx={inventoryIndex} hp={hpPct:F0}% sp={spPct:F0}%");
+                    _logInfo(string.Format(WildTerraBot.Properties.Resources.TrainingModeRecoveryUseFormat, entry.ResourceType, usable.name, inventoryIndex, hpPct, spPct));
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    _logWarn($"[TRAINING] recovery error item='{entry.ItemName}' idx={inventoryIndex} ex={ex.GetType().Name}:{ex.Message}");
+                    _logWarn(string.Format(WildTerraBot.Properties.Resources.TrainingModeRecoveryErrorFormat, entry.ItemName, inventoryIndex, ex.GetType().Name, ex.Message));
                     return false;
                 }
             }
@@ -172,12 +172,12 @@ namespace WildTerraBot
                 try
                 {
                     me.CmdUseInventoryItem(inventoryIndex);
-                    _logInfo($"[TRAINING] buff use {usable.name} idx={inventoryIndex}");
+                    _logInfo(string.Format(WildTerraBot.Properties.Resources.TrainingModeBuffUseFormat, usable.name, inventoryIndex));
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    _logWarn($"[TRAINING] buff error item='{itemName}' idx={inventoryIndex} ex={ex.GetType().Name}:{ex.Message}");
+                    _logWarn(string.Format(WildTerraBot.Properties.Resources.TrainingModeBuffErrorFormat, itemName, inventoryIndex, ex.GetType().Name, ex.Message));
                     return false;
                 }
             }
@@ -207,12 +207,12 @@ namespace WildTerraBot
                 try
                 {
                     me.TryUseSkill(idx, ignoreState: false, actionBarMouseClick: false);
-                    _logInfo($"[TRAINING] skill try {skill.name} idx={idx}");
+                    _logInfo(string.Format(WildTerraBot.Properties.Resources.TrainingModeSkillTryFormat, skill.name, idx));
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    _logWarn($"[TRAINING] skill error name='{wanted}' idx={idx} ex={ex.GetType().Name}:{ex.Message}");
+                    _logWarn(string.Format(WildTerraBot.Properties.Resources.TrainingModeSkillErrorFormat, wanted, idx, ex.GetType().Name, ex.Message));
                     return false;
                 }
             }
@@ -233,7 +233,7 @@ namespace WildTerraBot
                 if (Time.time >= _nextMissingTargetLogAt)
                 {
                     _nextMissingTargetLogAt = Time.time + 5.0f;
-                    _logInfo($"[TRAINING] auto attack aguardando alvo '{_cfg.AutoAttackTargetName}'");
+                    _logInfo(string.Format(WildTerraBot.Properties.Resources.TrainingModeAutoAttackWaitingTargetFormat, _cfg.AutoAttackTargetName));
                 }
                 return;
             }
@@ -247,7 +247,7 @@ namespace WildTerraBot
             }
             catch (Exception ex)
             {
-                _logWarn($"[TRAINING] auto attack error alvo='{_cfg.AutoAttackTargetName}' ex={ex.GetType().Name}:{ex.Message}");
+                _logWarn(string.Format(WildTerraBot.Properties.Resources.TrainingModeAutoAttackErrorFormat, _cfg.AutoAttackTargetName, ex.GetType().Name, ex.Message));
             }
         }
 

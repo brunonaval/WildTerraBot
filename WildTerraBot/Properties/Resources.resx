@@ -372,4 +372,37 @@
   <data name="HealTrainingAntiAfkStepFormat" xml:space="preserve">
     <value>[CURA] passo anti-afk target='{0}' angle={1:F0} dist={2:F1}</value>
   </data>
+  <data name="TrainingModeEnabledFormat" xml:space="preserve">
+    <value>[TRAINING] ATIVADO | {0}</value>
+  </data>
+  <data name="TrainingModeDisabled" xml:space="preserve">
+    <value>[TRAINING] DESATIVADO</value>
+  </data>
+  <data name="TrainingModeWaitingDismount" xml:space="preserve">
+    <value>[TRAINING] aguardando desmontar para agir</value>
+  </data>
+  <data name="TrainingModeRecoveryUseFormat" xml:space="preserve">
+    <value>[TRAINING] recuperação usando {0}:{1} idx={2} hp={3:F0}% sp={4:F0}%</value>
+  </data>
+  <data name="TrainingModeRecoveryErrorFormat" xml:space="preserve">
+    <value>[TRAINING] erro na recuperação item='{0}' idx={1} ex={2}:{3}</value>
+  </data>
+  <data name="TrainingModeBuffUseFormat" xml:space="preserve">
+    <value>[TRAINING] buff usando {0} idx={1}</value>
+  </data>
+  <data name="TrainingModeBuffErrorFormat" xml:space="preserve">
+    <value>[TRAINING] erro no buff item='{0}' idx={1} ex={2}:{3}</value>
+  </data>
+  <data name="TrainingModeSkillTryFormat" xml:space="preserve">
+    <value>[TRAINING] tentando skill {0} idx={1}</value>
+  </data>
+  <data name="TrainingModeSkillErrorFormat" xml:space="preserve">
+    <value>[TRAINING] erro na skill name='{0}' idx={1} ex={2}:{3}</value>
+  </data>
+  <data name="TrainingModeAutoAttackWaitingTargetFormat" xml:space="preserve">
+    <value>[TRAINING] auto attack aguardando alvo '{0}'</value>
+  </data>
+  <data name="TrainingModeAutoAttackErrorFormat" xml:space="preserve">
+    <value>[TRAINING] erro no auto attack alvo='{0}' ex={1}:{2}</value>
+  </data>
 </root>

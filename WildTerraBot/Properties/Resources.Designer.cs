@@ -824,5 +824,71 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("HealTrainingAntiAfkStepFormat", resourceCulture);
             }
         }
+
+        internal static string TrainingModeEnabledFormat {
+            get {
+                return ResourceManager.GetString("TrainingModeEnabledFormat", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeDisabled {
+            get {
+                return ResourceManager.GetString("TrainingModeDisabled", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeWaitingDismount {
+            get {
+                return ResourceManager.GetString("TrainingModeWaitingDismount", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeRecoveryUseFormat {
+            get {
+                return ResourceManager.GetString("TrainingModeRecoveryUseFormat", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeRecoveryErrorFormat {
+            get {
+                return ResourceManager.GetString("TrainingModeRecoveryErrorFormat", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeBuffUseFormat {
+            get {
+                return ResourceManager.GetString("TrainingModeBuffUseFormat", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeBuffErrorFormat {
+            get {
+                return ResourceManager.GetString("TrainingModeBuffErrorFormat", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeSkillTryFormat {
+            get {
+                return ResourceManager.GetString("TrainingModeSkillTryFormat", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeSkillErrorFormat {
+            get {
+                return ResourceManager.GetString("TrainingModeSkillErrorFormat", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeAutoAttackWaitingTargetFormat {
+            get {
+                return ResourceManager.GetString("TrainingModeAutoAttackWaitingTargetFormat", resourceCulture);
+            }
+        }
+
+        internal static string TrainingModeAutoAttackErrorFormat {
+            get {
+                return ResourceManager.GetString("TrainingModeAutoAttackErrorFormat", resourceCulture);
+            }
+        }
     }
 }
