@@ -1190,5 +1190,77 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("TamingUsingCatchingFormat", resourceCulture);
             }
         }
+
+        internal static string TamingTargetInvalidBeforeConfirmation {
+            get {
+                return ResourceManager.GetString("TamingTargetInvalidBeforeConfirmation", resourceCulture);
+            }
+        }
+
+        internal static string TamingCombatWeaponNotConfigured {
+            get {
+                return ResourceManager.GetString("TamingCombatWeaponNotConfigured", resourceCulture);
+            }
+        }
+
+        internal static string TamingTimeoutEquippingCombatWeapon {
+            get {
+                return ResourceManager.GetString("TamingTimeoutEquippingCombatWeapon", resourceCulture);
+            }
+        }
+
+        internal static string TamingTimeoutApproachingCombat {
+            get {
+                return ResourceManager.GetString("TamingTimeoutApproachingCombat", resourceCulture);
+            }
+        }
+
+        internal static string TamingPetCapturedFormat {
+            get {
+                return ResourceManager.GetString("TamingPetCapturedFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingTargetRemovedAfterCatchingFormat {
+            get {
+                return ResourceManager.GetString("TamingTargetRemovedAfterCatchingFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingCatchingNotConfirmedRetryFormat {
+            get {
+                return ResourceManager.GetString("TamingCatchingNotConfirmedRetryFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingCatchingNotConfirmedAfterAttemptsFormat {
+            get {
+                return ResourceManager.GetString("TamingCatchingNotConfirmedAfterAttemptsFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingSuccessFormat {
+            get {
+                return ResourceManager.GetString("TamingSuccessFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingFailFormat {
+            get {
+                return ResourceManager.GetString("TamingFailFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingTargetInvalidBeforeFlee {
+            get {
+                return ResourceManager.GetString("TamingTargetInvalidBeforeFlee", resourceCulture);
+            }
+        }
+
+        internal static string TamingTargetLost {
+            get {
+                return ResourceManager.GetString("TamingTargetLost", resourceCulture);
+            }
+        }
     }
 }

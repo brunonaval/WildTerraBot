@@ -234,7 +234,7 @@ namespace WildTerraBot
 
             if (_target != null && !IsValidTarget(_target) && _state != TamingState.ConfirmCatch)
             {
-                Fail("alvo inválido antes da confirmação");
+                Fail(WildTerraBot.Properties.Resources.TamingTargetInvalidBeforeConfirmation);
                 return false;
             }
 
@@ -342,8 +342,8 @@ namespace WildTerraBot
         private bool TickEquipCombatWeapon(WTPlayer me)
         {
             if (!EnsureTargetStillValid()) return false;
-            if (string.IsNullOrWhiteSpace(_config.CombatWeaponName)) { Fail("arma de combate não configurada"); return false; }
-            if (Time.time > _stateUntil) { Fail("timeout equipando arma de combate"); return false; }
+            if (string.IsNullOrWhiteSpace(_config.CombatWeaponName)) { Fail(WildTerraBot.Properties.Resources.TamingCombatWeaponNotConfigured); return false; }
+            if (Time.time > _stateUntil) { Fail(WildTerraBot.Properties.Resources.TamingTimeoutEquippingCombatWeapon); return false; }
 
             if (IsCombatWeaponEquipped(me, _config.CombatWeaponName, out string handInfo, out float range, out bool isRanged))
             {
@@ -368,7 +368,7 @@ namespace WildTerraBot
         private bool TickApproachCombatRange(WTPlayer me)
         {
             if (!EnsureTargetStillValid()) return false;
-            if (Time.time > _stateUntil) { Fail("timeout aproximando para combate"); return false; }
+            if (Time.time > _stateUntil) { Fail(WildTerraBot.Properties.Resources.TamingTimeoutApproachingCombat); return false; }
 
             float dist = DistanceToTarget(me, _target);
             float desired = GetAggressiveEngageDistance();
@@ -761,13 +761,13 @@ namespace WildTerraBot
 
             if (itemGained)
             {
-                Success($"pet '{_expectedCatchItemName}' capturado. before={_expectedCatchItemCount} after={afterCount}");
+                Success(string.Format(WildTerraBot.Properties.Resources.TamingPetCapturedFormat, _expectedCatchItemName, _expectedCatchItemCount, afterCount));
                 return false;
             }
 
             if (!targetAlive && Time.time > (_lastTrapThrowAt + 0.25f))
             {
-                Success($"alvo removido após Catching. item esperado='{_expectedCatchItemName}' before={_expectedCatchItemCount} after={afterCount}");
+                Success(string.Format(WildTerraBot.Properties.Resources.TamingTargetRemovedAfterCatchingFormat, _expectedCatchItemName, _expectedCatchItemCount, afterCount));
                 return false;
             }
 
@@ -779,11 +779,11 @@ namespace WildTerraBot
                     _stateUntil = Time.time + 6.0f;
                     _nextActionAt = 0f;
                     _nextMoveLogAt = 0f;
-                    _log($"[TAMING] Catching não confirmou. retry {_catchAttempts}/{MAX_CATCH_ATTEMPTS} alvo='{SafeName(_target)}'");
+                    _log(string.Format(WildTerraBot.Properties.Resources.TamingCatchingNotConfirmedRetryFormat, _catchAttempts, MAX_CATCH_ATTEMPTS, SafeName(_target)));
                     return true;
                 }
 
-                Fail($"Catching não confirmou após {_catchAttempts}/{MAX_CATCH_ATTEMPTS} tentativa(s). targetAlive={targetAlive} item='{_expectedCatchItemName}' before={_expectedCatchItemCount} after={afterCount}");
+                Fail(string.Format(WildTerraBot.Properties.Resources.TamingCatchingNotConfirmedAfterAttemptsFormat, _catchAttempts, MAX_CATCH_ATTEMPTS, targetAlive, _expectedCatchItemName, _expectedCatchItemCount, afterCount));
                 return false;
             }
 
@@ -792,14 +792,14 @@ namespace WildTerraBot
 
         private void Success(string message)
         {
-            _log($"[TAMING] SUCCESS {message}");
+            _log(string.Format(WildTerraBot.Properties.Resources.TamingSuccessFormat, message));
             CleanupActorContext(success: true);
             ResetRun(clearBlacklist: false);
         }
 
         private void Fail(string reason)
         {
-            _log($"[TAMING] FAIL {reason}");
+            _log(string.Format(WildTerraBot.Properties.Resources.TamingFailFormat, reason));
             BlacklistCurrentTarget(20f);
             CleanupActorContext(success: false);
             ResetRun(clearBlacklist: false);
@@ -825,10 +825,10 @@ namespace WildTerraBot
             if (IsValidTarget(_target)) return true;
             if (IsInAggressiveCombatPhase)
             {
-                Fail("alvo morreu ou sumiu antes da fuga");
+                Fail(WildTerraBot.Properties.Resources.TamingTargetInvalidBeforeFlee);
                 return false;
             }
-            Fail("target perdido");
+            Fail(WildTerraBot.Properties.Resources.TamingTargetLost);
             return false;
         }
 

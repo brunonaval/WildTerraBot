@@ -555,4 +555,40 @@
   <data name="TamingUsingCatchingFormat" xml:space="preserve">
     <value>[TAMING] usando Catching attempt={0}/{1} idx={2} alvo='{3}' dist={4:F2}</value>
   </data>
+  <data name="TamingTargetInvalidBeforeConfirmation" xml:space="preserve">
+    <value>alvo inválido antes da confirmação</value>
+  </data>
+  <data name="TamingCombatWeaponNotConfigured" xml:space="preserve">
+    <value>arma de combate não configurada</value>
+  </data>
+  <data name="TamingTimeoutEquippingCombatWeapon" xml:space="preserve">
+    <value>timeout equipando arma de combate</value>
+  </data>
+  <data name="TamingTimeoutApproachingCombat" xml:space="preserve">
+    <value>timeout aproximando para combate</value>
+  </data>
+  <data name="TamingPetCapturedFormat" xml:space="preserve">
+    <value>pet '{0}' capturado. before={1} after={2}</value>
+  </data>
+  <data name="TamingTargetRemovedAfterCatchingFormat" xml:space="preserve">
+    <value>alvo removido após Catching. item esperado='{0}' before={1} after={2}</value>
+  </data>
+  <data name="TamingCatchingNotConfirmedRetryFormat" xml:space="preserve">
+    <value>[TAMING] Catching não confirmou. retry {0}/{1} alvo='{2}'</value>
+  </data>
+  <data name="TamingCatchingNotConfirmedAfterAttemptsFormat" xml:space="preserve">
+    <value>Catching não confirmou após {0}/{1} tentativa(s). targetAlive={2} item='{3}' before={4} after={5}</value>
+  </data>
+  <data name="TamingSuccessFormat" xml:space="preserve">
+    <value>[TAMING] SUCESSO {0}</value>
+  </data>
+  <data name="TamingFailFormat" xml:space="preserve">
+    <value>[TAMING] FALHA {0}</value>
+  </data>
+  <data name="TamingTargetInvalidBeforeFlee" xml:space="preserve">
+    <value>alvo morreu ou sumiu antes da fuga</value>
+  </data>
+  <data name="TamingTargetLost" xml:space="preserve">
+    <value>alvo perdido</value>
+  </data>
 </root>
