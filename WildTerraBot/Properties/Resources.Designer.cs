@@ -1892,5 +1892,119 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("UdpRunnerMountSequenceToggleFormat", resourceCulture);
             }
         }
+
+        internal static string MeuBotConfigEnableLicensingDescription {
+            get {
+                return ResourceManager.GetString("MeuBotConfigEnableLicensingDescription", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotConfigApiBaseUrlDescription {
+            get {
+                return ResourceManager.GetString("MeuBotConfigApiBaseUrlDescription", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotConfigLicenseKeyDescription {
+            get {
+                return ResourceManager.GetString("MeuBotConfigLicenseKeyDescription", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotConfigDeviceIdDescription {
+            get {
+                return ResourceManager.GetString("MeuBotConfigDeviceIdDescription", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotConfigAppNameDescription {
+            get {
+                return ResourceManager.GetString("MeuBotConfigAppNameDescription", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotConfigAppVersionDescription {
+            get {
+                return ResourceManager.GetString("MeuBotConfigAppVersionDescription", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotLicenseInvalidBotDisabled {
+            get {
+                return ResourceManager.GetString("MeuBotLicenseInvalidBotDisabled", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotLicensingDevMode {
+            get {
+                return ResourceManager.GetString("MeuBotLicensingDevMode", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotLicenseOkHarmonyActive {
+            get {
+                return ResourceManager.GetString("MeuBotLicenseOkHarmonyActive", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotCriticalErrorFormat {
+            get {
+                return ResourceManager.GetString("MeuBotCriticalErrorFormat", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotF9DetectedScanning {
+            get {
+                return ResourceManager.GetString("MeuBotF9DetectedScanning", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotScanningFishingAreasFormat {
+            get {
+                return ResourceManager.GetString("MeuBotScanningFishingAreasFormat", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotDumpNoFishingSpots {
+            get {
+                return ResourceManager.GetString("MeuBotDumpNoFishingSpots", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotDumpFishingSpotsFoundFormat {
+            get {
+                return ResourceManager.GetString("MeuBotDumpFishingSpotsFoundFormat", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotDumpAreaFormat {
+            get {
+                return ResourceManager.GetString("MeuBotDumpAreaFormat", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotDumpFishSequencePrefixFormat {
+            get {
+                return ResourceManager.GetString("MeuBotDumpFishSequencePrefixFormat", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotDumpFishActionFormat {
+            get {
+                return ResourceManager.GetString("MeuBotDumpFishActionFormat", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotDumpSceneCompleted {
+            get {
+                return ResourceManager.GetString("MeuBotDumpSceneCompleted", resourceCulture);
+            }
+        }
+
+        internal static string MeuBotDumpFatalErrorFormat {
+            get {
+                return ResourceManager.GetString("MeuBotDumpFatalErrorFormat", resourceCulture);
+            }
+        }
     }
 }

@@ -42,22 +42,22 @@ namespace WildTerraBot
 
             // ====== LICENSING (API) ======
             EnableLicensing = Config.Bind("Licensing", "EnableLicensing", true,
-                "If true, the bot requires a valid license (POST /license/verify) before starting.");
+                WildTerraBot.Properties.Resources.MeuBotConfigEnableLicensingDescription);
 
             ApiBaseUrl = Config.Bind("Licensing", "ApiBaseUrl", "https://wildterralicensing.onrender.com",
-                "Licensing API base URL.");
+                WildTerraBot.Properties.Resources.MeuBotConfigApiBaseUrlDescription);
 
             LicenseKey = Config.Bind("Licensing", "LicenseKey", "",
-                "Paste your license key here (WTB-XXXX-XXXX-XXXX-XXXX).");
+                WildTerraBot.Properties.Resources.MeuBotConfigLicenseKeyDescription);
 
             DeviceId = Config.Bind("Licensing", "DeviceId", "",
-                "Auto-generated device id (leave blank). One license = one device binding.");
+                WildTerraBot.Properties.Resources.MeuBotConfigDeviceIdDescription);
 
             AppName = Config.Bind("Licensing", "AppName", "wildterra-bot",
-                "App name sent to /license/verify.");
+                WildTerraBot.Properties.Resources.MeuBotConfigAppNameDescription);
 
             AppVersion = Config.Bind("Licensing", "AppVersion", PluginVersion,
-                "App version sent to /license/verify.");
+                WildTerraBot.Properties.Resources.MeuBotConfigAppVersionDescription);
 
             // gera/persiste DeviceId 1x
             if (string.IsNullOrWhiteSpace(DeviceId.Value))
@@ -71,14 +71,14 @@ namespace WildTerraBot
             {
                 if (!LicenseGate.Validar(Logger))
                 {
-                    Logger.LogError(">>> LICENÇA INVÁLIDA - BOT DESATIVADO <<<");
+                    Logger.LogError(WildTerraBot.Properties.Resources.MeuBotLicenseInvalidBotDisabled);
                     Destroy(this.gameObject);
                     return;
                 }
             }
             else
             {
-                Logger.LogWarning("[LICENSING] EnableLicensing=false (modo dev).");
+                Logger.LogWarning(WildTerraBot.Properties.Resources.MeuBotLicensingDevMode);
             }
 
             // Só depois de licenciado
@@ -97,9 +97,9 @@ namespace WildTerraBot
                 Harmony.CreateAndPatchAll(typeof(FishingHooks));
                 Harmony.CreateAndPatchAll(typeof(SkillUseLogger));
                 Harmony.CreateAndPatchAll(typeof(HarvestHooks));
-                Logger.LogInfo(">>> BOT 9.126: LICENÇA OK & HARMONY ATIVO <<<");
+                Logger.LogInfo(WildTerraBot.Properties.Resources.MeuBotLicenseOkHarmonyActive);
             }
-            catch (Exception ex) { Logger.LogError($"[CRITICAL] {ex.Message}"); }
+            catch (Exception ex) { Logger.LogError(string.Format(WildTerraBot.Properties.Resources.MeuBotCriticalErrorFormat, ex.Message)); }
         }
 
         void Update()
@@ -107,7 +107,7 @@ namespace WildTerraBot
             // Gatilho Manual F9 para ler os peixes da cena
             if (Input.GetKeyDown(KeyCode.F9))
             {
-                PublicLogger.LogWarning("!!! F9 DETECTADO - ESCANEANDO CENÁRIO !!!");
+                PublicLogger.LogWarning(WildTerraBot.Properties.Resources.MeuBotF9DetectedScanning);
                 DumpFromScene("MANUAL F9");
             }
         }
@@ -118,7 +118,7 @@ namespace WildTerraBot
         {
             try
             {
-                PublicLogger.LogWarning($">>> [{origin}] ESCANEANDO ÁREAS DE PESCA NA CENA... <<<");
+                PublicLogger.LogWarning(string.Format(WildTerraBot.Properties.Resources.MeuBotScanningFishingAreasFormat, origin));
 
                 // Procura todos os pontos de pesca ativos no mundo ao redor
                 // Isso pega direto da memória RAM do que está carregado
@@ -126,11 +126,11 @@ namespace WildTerraBot
 
                 if (fishingSpots == null || fishingSpots.Length == 0)
                 {
-                    PublicLogger.LogWarning("[DUMP] Nenhum ponto de pesca encontrado. Entre no jogo e fique perto da água.");
+                    PublicLogger.LogWarning(WildTerraBot.Properties.Resources.MeuBotDumpNoFishingSpots);
                     return;
                 }
 
-                PublicLogger.LogInfo($"[DUMP] Encontrados {fishingSpots.Length} pontos de pesca ativos.");
+                PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.MeuBotDumpFishingSpotsFoundFormat, fishingSpots.Length));
 
                 HashSet<string> processedFish = new HashSet<string>();
 
@@ -138,7 +138,7 @@ namespace WildTerraBot
                 {
                     if (spot.fishingArea == null || spot.fishingArea.fishes == null) continue;
 
-                    PublicLogger.LogInfo($"--- ÁREA: {spot.fishingArea.name} ---");
+                    PublicLogger.LogInfo(string.Format(WildTerraBot.Properties.Resources.MeuBotDumpAreaFormat, spot.fishingArea.name));
 
                     foreach (var fish in spot.fishingArea.fishes)
                     {
@@ -152,7 +152,7 @@ namespace WildTerraBot
                         processedFish.Add(fishName);
 
                         var sb = new StringBuilder();
-                        sb.Append($"[PEIXE] {fishName} SEQ: ");
+                        sb.Append(string.Format(WildTerraBot.Properties.Resources.MeuBotDumpFishSequencePrefixFormat, fishName));
 
                         if (fish.actions != null)
                         {
@@ -169,16 +169,16 @@ namespace WildTerraBot
                                 string altKey = FishBrain.GetKeyName(altVal);
                                 string bite = a.fishBite.ToString();
 
-                                sb.Append($" -> [{bite} : {mainKey} / Alt:{altKey}]");
+                                sb.Append(string.Format(WildTerraBot.Properties.Resources.MeuBotDumpFishActionFormat, bite, mainKey, altKey));
                             }
                         }
                         PublicLogger.LogInfo(sb.ToString());
                     }
                 }
-                PublicLogger.LogWarning(">>> DUMP DE CENA CONCLUÍDO <<<");
+                PublicLogger.LogWarning(WildTerraBot.Properties.Resources.MeuBotDumpSceneCompleted);
                 HasDumped = true;
             }
-            catch (Exception ex) { PublicLogger.LogError("[DUMP] Erro Fatal: " + ex); }
+            catch (Exception ex) { PublicLogger.LogError(string.Format(WildTerraBot.Properties.Resources.MeuBotDumpFatalErrorFormat, ex)); }
         }
     }
 }

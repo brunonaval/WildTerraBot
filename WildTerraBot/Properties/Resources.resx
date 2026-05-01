@@ -906,4 +906,61 @@
   <data name="UdpRunnerMountSequenceToggleFormat" xml:space="preserve">
     <value>[MOUNT SEQ] toggle | mountedAfter={0} pause={1:0.00}s</value>
   </data>
+  <data name="MeuBotConfigEnableLicensingDescription" xml:space="preserve">
+    <value>Se verdadeiro, o bot exige uma licença válida (POST /license/verify) antes de iniciar.</value>
+  </data>
+  <data name="MeuBotConfigApiBaseUrlDescription" xml:space="preserve">
+    <value>URL base da API de licenciamento.</value>
+  </data>
+  <data name="MeuBotConfigLicenseKeyDescription" xml:space="preserve">
+    <value>Cole sua chave de licença aqui (WTB-XXXX-XXXX-XXXX-XXXX).</value>
+  </data>
+  <data name="MeuBotConfigDeviceIdDescription" xml:space="preserve">
+    <value>ID do dispositivo gerado automaticamente (deixe em branco). Uma licença = um vínculo de dispositivo.</value>
+  </data>
+  <data name="MeuBotConfigAppNameDescription" xml:space="preserve">
+    <value>Nome do app enviado para /license/verify.</value>
+  </data>
+  <data name="MeuBotConfigAppVersionDescription" xml:space="preserve">
+    <value>Versão do app enviada para /license/verify.</value>
+  </data>
+  <data name="MeuBotLicenseInvalidBotDisabled" xml:space="preserve">
+    <value>&gt;&gt;&gt; LICENÇA INVÁLIDA - BOT DESATIVADO &lt;&lt;&lt;</value>
+  </data>
+  <data name="MeuBotLicensingDevMode" xml:space="preserve">
+    <value>[LICENSING] EnableLicensing=false (modo dev).</value>
+  </data>
+  <data name="MeuBotLicenseOkHarmonyActive" xml:space="preserve">
+    <value>&gt;&gt;&gt; BOT 9.126: LICENÇA OK &amp; HARMONY ATIVO &lt;&lt;&lt;</value>
+  </data>
+  <data name="MeuBotCriticalErrorFormat" xml:space="preserve">
+    <value>[CRITICAL] {0}</value>
+  </data>
+  <data name="MeuBotF9DetectedScanning" xml:space="preserve">
+    <value>!!! F9 DETECTADO - ESCANEANDO CENÁRIO !!!</value>
+  </data>
+  <data name="MeuBotScanningFishingAreasFormat" xml:space="preserve">
+    <value>&gt;&gt;&gt; [{0}] ESCANEANDO ÁREAS DE PESCA NA CENA... &lt;&lt;&lt;</value>
+  </data>
+  <data name="MeuBotDumpNoFishingSpots" xml:space="preserve">
+    <value>[DUMP] Nenhum ponto de pesca encontrado. Entre no jogo e fique perto da água.</value>
+  </data>
+  <data name="MeuBotDumpFishingSpotsFoundFormat" xml:space="preserve">
+    <value>[DUMP] Encontrados {0} pontos de pesca ativos.</value>
+  </data>
+  <data name="MeuBotDumpAreaFormat" xml:space="preserve">
+    <value>--- ÁREA: {0} ---</value>
+  </data>
+  <data name="MeuBotDumpFishSequencePrefixFormat" xml:space="preserve">
+    <value>[PEIXE] {0} SEQ: </value>
+  </data>
+  <data name="MeuBotDumpFishActionFormat" xml:space="preserve">
+    <value> -&gt; [{0} : {1} / Alt:{2}]</value>
+  </data>
+  <data name="MeuBotDumpSceneCompleted" xml:space="preserve">
+    <value>&gt;&gt;&gt; DUMP DE CENA CONCLUÍDO &lt;&lt;&lt;</value>
+  </data>
+  <data name="MeuBotDumpFatalErrorFormat" xml:space="preserve">
+    <value>[DUMP] Erro Fatal: {0}</value>
+  </data>
 </root>
