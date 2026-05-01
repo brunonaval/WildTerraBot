@@ -388,7 +388,7 @@ namespace WildTerraBot
             _nextActionAt = 0f;
             _extraHitsAfterThreshold = 0;
             _watchingForFlee = false;
-            _log($"[TAMING-AGGRO] entrou no range de combate. dist={dist:F1}. iniciando ataques controlados.");
+            _log(string.Format(WildTerraBot.Properties.Resources.TamingAggroEnteredCombatRangeFormat, dist));
             return true;
         }
 
@@ -397,10 +397,10 @@ namespace WildTerraBot
             if (!EnsureTargetStillValid()) return false;
             if (HasConfirmedFlee(_target))
             {
-                SwitchToTrapPipeline("fuga confirmada durante ataque");
+                SwitchToTrapPipeline(WildTerraBot.Properties.Resources.TamingAggroFleeConfirmedDuringAttack);
                 return true;
             }
-            if (Time.time > _stateUntil) { Fail("timeout forçando fuga"); return false; }
+            if (Time.time > _stateUntil) { Fail(WildTerraBot.Properties.Resources.TamingAggroTimeoutForcingFlee); return false; }
 
             float dist = DistanceToTarget(me, _target);
             float desired = GetAggressiveEngageDistance();
@@ -411,7 +411,7 @@ namespace WildTerraBot
                 _state = TamingState.WatchFlee;
                 _stateUntil = Time.time + 2.2f;
                 _nextActionAt = Mathf.Max(_nextActionAt, Time.time + 0.35f);
-                _log($"[TAMING-AGGRO] entrando em watch flee hp={hp:P0} threshold={_fleeHpThreshold:P0} state={_target.state}");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingAggroEnteringWatchFleeFormat, hp, _fleeHpThreshold, _target.state));
                 return true;
             }
 
@@ -427,7 +427,7 @@ namespace WildTerraBot
                 if (Time.time >= _nextActionAt)
                 {
                     _nextActionAt = Time.time + 0.9f;
-                    _log("[TAMING-AGGRO] desmontando para atacar...");
+                    _log(WildTerraBot.Properties.Resources.TamingAggroDismountingToAttack);
                     _toggleMount(me);
                 }
                 return true;
@@ -442,7 +442,7 @@ namespace WildTerraBot
                 _cmdSkillToPoint(me, aim);
                 _lastAggroAttackAt = Time.time;
                 _nextActionAt = Time.time + 0.90f;
-                _log($"[TAMING-AGGRO] attack pulse hp={hp:P0} threshold={_fleeHpThreshold:P0} state={_target.state} dist={dist:F1} aim={aimInfo}");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingAggroAttackPulseFormat, hp, _fleeHpThreshold, _target.state, dist, aimInfo));
             }
             return true;
         }
@@ -452,7 +452,7 @@ namespace WildTerraBot
             if (!EnsureTargetStillValid()) return false;
             if (HasConfirmedFlee(_target))
             {
-                SwitchToTrapPipeline("fuga confirmada");
+                SwitchToTrapPipeline(WildTerraBot.Properties.Resources.TamingAggroFleeConfirmed);
                 return true;
             }
 
@@ -472,7 +472,7 @@ namespace WildTerraBot
                 if (Time.time >= _nextActionAt)
                 {
                     _nextActionAt = Time.time + 0.9f;
-                    _log("[TAMING-AGGRO] desmontando em watch flee...");
+                    _log(WildTerraBot.Properties.Resources.TamingAggroDismountingWatchFlee);
                     _toggleMount(me);
                 }
                 return true;
@@ -486,18 +486,18 @@ namespace WildTerraBot
                     _state = TamingState.AttackUntilFlee;
                     _stateUntil = Time.time + 5.0f;
                     _nextActionAt = Time.time;
-                    _log($"[TAMING-AGGRO] watch flee expirou sem Slowdown/HP. extraHit={_extraHitsAfterThreshold}/{MAX_EXTRA_HITS_AFTER_THRESHOLD}");
+                    _log(string.Format(WildTerraBot.Properties.Resources.TamingAggroWatchFleeExpiredFormat, _extraHitsAfterThreshold, MAX_EXTRA_HITS_AFTER_THRESHOLD));
                     return true;
                 }
 
-                Fail($"alvo não entrou em fuga hp={hp:P0} state={_target.state}");
+                Fail(string.Format(WildTerraBot.Properties.Resources.TamingAggroTargetDidNotFleeFormat, hp, _target.state));
                 return false;
             }
 
             if (Time.time >= _nextMoveLogAt)
             {
                 _nextMoveLogAt = Time.time + 0.7f;
-                _log($"[TAMING-AGGRO] watch flee hp={hp:P0} threshold={_fleeHpThreshold:P0} state={_target.state} dist={dist:F1}");
+                _log(string.Format(WildTerraBot.Properties.Resources.TamingAggroWatchFleeStatusFormat, hp, _fleeHpThreshold, _target.state, dist));
             }
             SafeStopActor(me);
             TrySetTarget(me, _target);
@@ -515,13 +515,13 @@ namespace WildTerraBot
             _stateUntil = Time.time + 12f;
             _nextMoveLogAt = 0f;
             _nextActionAt = 0f;
-            _log($"[TAMING-AGGRO] flee confirmed ({reason}) -> mudando para pipeline da trap");
+            _log(string.Format(WildTerraBot.Properties.Resources.TamingAggroSwitchToTrapPipelineFormat, reason));
         }
 
         private bool TickApproachTrapRange(WTPlayer me)
         {
             if (!EnsureTargetStillValid()) return false;
-            if (Time.time > _stateUntil) { Fail("timeout aproximando para trap"); return false; }
+            if (Time.time > _stateUntil) { Fail(WildTerraBot.Properties.Resources.TamingTimeoutApproachingTrap); return false; }
 
             float dist = DistanceToTarget(me, _target);
             float desired = Mathf.Max(2.2f, _trapRange - 0.8f);
@@ -531,7 +531,7 @@ namespace WildTerraBot
                 if (Time.time >= _nextMoveLogAt)
                 {
                     _nextMoveLogAt = Time.time + 1.0f;
-                    _log($"[TAMING] aproximando trap alvo='{SafeName(_target)}' dist={dist:F1} desired<={desired:F1}");
+                    _log(string.Format(WildTerraBot.Properties.Resources.TamingApproachingTrapFormat, SafeName(_target), dist, desired));
                 }
                 _moveToXZ(me, _target.transform.position.x, _target.transform.position.z);
                 return true;
@@ -540,7 +540,7 @@ namespace WildTerraBot
             _state = TamingState.Dismount;
             _stateUntil = Time.time + 4.5f;
             _nextActionAt = 0f;
-            _log($"[TAMING] entrou no range da trap. dist={dist:F1}. preparando desmontar.");
+            _log(string.Format(WildTerraBot.Properties.Resources.TamingEnteredTrapRangeFormat, dist));
             return true;
         }
 
@@ -552,15 +552,15 @@ namespace WildTerraBot
                 _state = TamingState.EquipTrap;
                 _stateUntil = Time.time + 6.0f;
                 _nextActionAt = 0f;
-                _log("[TAMING] desmontado. equipando armadilha...");
+                _log(WildTerraBot.Properties.Resources.TamingDismountedEquippingTrap);
                 return true;
             }
 
-            if (Time.time > _stateUntil) { Fail("timeout desmontando"); return false; }
+            if (Time.time > _stateUntil) { Fail(WildTerraBot.Properties.Resources.TamingTimeoutDismounting); return false; }
             if (Time.time >= _nextActionAt)
             {
                 _nextActionAt = Time.time + 1.2f;
-                _log("[TAMING] desmontando...");
+                _log(WildTerraBot.Properties.Resources.TamingDismounting);
                 _toggleMount(me);
             }
             return true;

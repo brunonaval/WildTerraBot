@@ -980,5 +980,113 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("TamingAggroApproachingCombatFormat", resourceCulture);
             }
         }
+
+        internal static string TamingAggroEnteredCombatRangeFormat {
+            get {
+                return ResourceManager.GetString("TamingAggroEnteredCombatRangeFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroFleeConfirmedDuringAttack {
+            get {
+                return ResourceManager.GetString("TamingAggroFleeConfirmedDuringAttack", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroTimeoutForcingFlee {
+            get {
+                return ResourceManager.GetString("TamingAggroTimeoutForcingFlee", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroEnteringWatchFleeFormat {
+            get {
+                return ResourceManager.GetString("TamingAggroEnteringWatchFleeFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroDismountingToAttack {
+            get {
+                return ResourceManager.GetString("TamingAggroDismountingToAttack", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroAttackPulseFormat {
+            get {
+                return ResourceManager.GetString("TamingAggroAttackPulseFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroFleeConfirmed {
+            get {
+                return ResourceManager.GetString("TamingAggroFleeConfirmed", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroDismountingWatchFlee {
+            get {
+                return ResourceManager.GetString("TamingAggroDismountingWatchFlee", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroWatchFleeExpiredFormat {
+            get {
+                return ResourceManager.GetString("TamingAggroWatchFleeExpiredFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroTargetDidNotFleeFormat {
+            get {
+                return ResourceManager.GetString("TamingAggroTargetDidNotFleeFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroWatchFleeStatusFormat {
+            get {
+                return ResourceManager.GetString("TamingAggroWatchFleeStatusFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingAggroSwitchToTrapPipelineFormat {
+            get {
+                return ResourceManager.GetString("TamingAggroSwitchToTrapPipelineFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingTimeoutApproachingTrap {
+            get {
+                return ResourceManager.GetString("TamingTimeoutApproachingTrap", resourceCulture);
+            }
+        }
+
+        internal static string TamingApproachingTrapFormat {
+            get {
+                return ResourceManager.GetString("TamingApproachingTrapFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingEnteredTrapRangeFormat {
+            get {
+                return ResourceManager.GetString("TamingEnteredTrapRangeFormat", resourceCulture);
+            }
+        }
+
+        internal static string TamingDismountedEquippingTrap {
+            get {
+                return ResourceManager.GetString("TamingDismountedEquippingTrap", resourceCulture);
+            }
+        }
+
+        internal static string TamingTimeoutDismounting {
+            get {
+                return ResourceManager.GetString("TamingTimeoutDismounting", resourceCulture);
+            }
+        }
+
+        internal static string TamingDismounting {
+            get {
+                return ResourceManager.GetString("TamingDismounting", resourceCulture);
+            }
+        }
     }
 }

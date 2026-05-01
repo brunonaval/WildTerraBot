@@ -345,4 +345,58 @@
   <data name="TamingAggroApproachingCombatFormat" xml:space="preserve">
     <value>[TAMING-AGGRO] approaching combat target='{0}' dist={1:F1} desired&lt;={2:F1}</value>
   </data>
+  <data name="TamingAggroEnteredCombatRangeFormat" xml:space="preserve">
+    <value>[TAMING-AGGRO] entered combat range. dist={0:F1}. starting controlled attacks.</value>
+  </data>
+  <data name="TamingAggroFleeConfirmedDuringAttack" xml:space="preserve">
+    <value>flee confirmed during attack</value>
+  </data>
+  <data name="TamingAggroTimeoutForcingFlee" xml:space="preserve">
+    <value>timeout forcing flee</value>
+  </data>
+  <data name="TamingAggroEnteringWatchFleeFormat" xml:space="preserve">
+    <value>[TAMING-AGGRO] entering watch flee hp={0:P0} threshold={1:P0} state={2}</value>
+  </data>
+  <data name="TamingAggroDismountingToAttack" xml:space="preserve">
+    <value>[TAMING-AGGRO] dismounting to attack...</value>
+  </data>
+  <data name="TamingAggroAttackPulseFormat" xml:space="preserve">
+    <value>[TAMING-AGGRO] attack pulse hp={0:P0} threshold={1:P0} state={2} dist={3:F1} aim={4}</value>
+  </data>
+  <data name="TamingAggroFleeConfirmed" xml:space="preserve">
+    <value>flee confirmed</value>
+  </data>
+  <data name="TamingAggroDismountingWatchFlee" xml:space="preserve">
+    <value>[TAMING-AGGRO] dismounting in watch flee...</value>
+  </data>
+  <data name="TamingAggroWatchFleeExpiredFormat" xml:space="preserve">
+    <value>[TAMING-AGGRO] watch flee expired without Slowdown/HP. extraHit={0}/{1}</value>
+  </data>
+  <data name="TamingAggroTargetDidNotFleeFormat" xml:space="preserve">
+    <value>target did not enter flee hp={0:P0} state={1}</value>
+  </data>
+  <data name="TamingAggroWatchFleeStatusFormat" xml:space="preserve">
+    <value>[TAMING-AGGRO] watch flee hp={0:P0} threshold={1:P0} state={2} dist={3:F1}</value>
+  </data>
+  <data name="TamingAggroSwitchToTrapPipelineFormat" xml:space="preserve">
+    <value>[TAMING-AGGRO] flee confirmed ({0}) -&gt; switching to trap pipeline</value>
+  </data>
+  <data name="TamingTimeoutApproachingTrap" xml:space="preserve">
+    <value>timeout approaching trap</value>
+  </data>
+  <data name="TamingApproachingTrapFormat" xml:space="preserve">
+    <value>[TAMING] approaching trap target='{0}' dist={1:F1} desired&lt;={2:F1}</value>
+  </data>
+  <data name="TamingEnteredTrapRangeFormat" xml:space="preserve">
+    <value>[TAMING] entered trap range. dist={0:F1}. preparing dismount.</value>
+  </data>
+  <data name="TamingDismountedEquippingTrap" xml:space="preserve">
+    <value>[TAMING] dismounted. equipping trap...</value>
+  </data>
+  <data name="TamingTimeoutDismounting" xml:space="preserve">
+    <value>timeout dismounting</value>
+  </data>
+  <data name="TamingDismounting" xml:space="preserve">
+    <value>[TAMING] dismounting...</value>
+  </data>
 </root>
