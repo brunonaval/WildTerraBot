@@ -17,7 +17,7 @@ namespace WildTerraBot
                 runner.MeuPersonagem = __instance;
                 Object.DontDestroyOnLoad(go);
 
-                WTSocketBot.PublicLogger.LogInfo("WTRunner Criado.");
+                WTSocketBot.PublicLogger.LogInfo(WildTerraBot.Properties.Resources.PlayerHooksWtRunnerCreated);
             }
         }
     }

@@ -2084,5 +2084,11 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("FishBrainAmbiguousFormat", resourceCulture);
             }
         }
+
+        internal static string PlayerHooksWtRunnerCreated {
+            get {
+                return ResourceManager.GetString("PlayerHooksWtRunnerCreated", resourceCulture);
+            }
+        }
     }
 }

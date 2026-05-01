@@ -897,4 +897,7 @@
   <data name="FishBrainAmbiguousFormat" xml:space="preserve">
     <value>[IA] Ambiguous (Step {0}): {1} candidates. Possible actions: {2}. Executing: {3}</value>
   </data>
+  <data name="PlayerHooksWtRunnerCreated" xml:space="preserve">
+    <value>WTRunner created.</value>
+  </data>
 </root>
