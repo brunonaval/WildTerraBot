@@ -18,6 +18,24 @@
   <data name="InspectLabelBorder" xml:space="preserve">
     <value>Border</value>
   </data>
+  <data name="InspectLabelBoostActive" xml:space="preserve">
+    <value>Boost Active</value>
+  </data>
+  <data name="InspectLabelBoostCurrent" xml:space="preserve">
+    <value>Current Boost</value>
+  </data>
+  <data name="InspectLabelBoostMax" xml:space="preserve">
+    <value>Max Boost</value>
+  </data>
+  <data name="InspectLabelDurability" xml:space="preserve">
+    <value>Durability</value>
+  </data>
+  <data name="InspectLabelEnchantment" xml:space="preserve">
+    <value>Enchantment</value>
+  </data>
+  <data name="InspectLabelEnchantmentEffect" xml:space="preserve">
+    <value>Enchant. Effect</value>
+  </data>
   <data name="InspectLabelCurrentSkill" xml:space="preserve">
     <value>Current skill</value>
   </data>
@@ -60,6 +78,12 @@
   <data name="InspectLabelQuery" xml:space="preserve">
     <value>Query</value>
   </data>
+  <data name="InspectLabelQuality" xml:space="preserve">
+    <value>Quality</value>
+  </data>
+  <data name="InspectLabelRarity" xml:space="preserve">
+    <value>Rarity</value>
+  </data>
   <data name="InspectLabelSex" xml:space="preserve">
     <value>Sex</value>
   </data>
@@ -90,6 +114,9 @@
   <data name="InspectNoEquipmentData" xml:space="preserve">
     <value>No equipment data.</value>
   </data>
+  <data name="InspectNoBuffsData" xml:space="preserve">
+    <value>No active buffs.</value>
+  </data>
   <data name="InspectNoCosmeticsData" xml:space="preserve">
     <value>No cosmetics data.</value>
   </data>
@@ -107,6 +134,9 @@
   </data>
   <data name="InspectObservationLocalizedNames" xml:space="preserve">
     <value>Localized names depend on the active translation in the game client.</value>
+  </data>
+  <data name="InspectObservationSkillLevelUnavailable" xml:space="preserve">
+    <value>Active skills do not expose their own numeric level in the Skill struct.</value>
   </data>
   <data name="InspectReportTitle" xml:space="preserve">
     <value>PLAYER INSPECT</value>
@@ -141,6 +171,12 @@
   <data name="InspectSectionSkills" xml:space="preserve">
     <value>[SKILLS]</value>
   </data>
+  <data name="InspectLabelSlot" xml:space="preserve">
+    <value>Slot</value>
+  </data>
+  <data name="InspectLabelXpProgress" xml:space="preserve">
+    <value>XP Progress</value>
+  </data>
   <data name="InspectValueFemale" xml:space="preserve">
     <value>Female</value>
   </data>
@@ -152,5 +188,53 @@
   </data>
   <data name="InspectValueYes" xml:space="preserve">
     <value>Yes</value>
+  </data>
+  <data name="InspectLabelActiveMount" xml:space="preserve">
+    <value>Active mount</value>
+  </data>
+  <data name="InspectLabelActivePet" xml:space="preserve">
+    <value>Active pet</value>
+  </data>
+  <data name="InspectLabelCast" xml:space="preserve">
+    <value>Cast</value>
+  </data>
+  <data name="InspectLabelCooldown" xml:space="preserve">
+    <value>CD</value>
+  </data>
+  <data name="InspectLabelExtraValues" xml:space="preserve">
+    <value>Extra values</value>
+  </data>
+  <data name="InspectLabelLevelInline" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="InspectLabelProfSkill" xml:space="preserve">
+    <value>ProfSkill</value>
+  </data>
+  <data name="InspectLabelRemainingTime" xml:space="preserve">
+    <value>Remaining</value>
+  </data>
+  <data name="InspectLabelReqProfLevel" xml:space="preserve">
+    <value>ReqProfLevel</value>
+  </data>
+  <data name="InspectLabelXpInline" xml:space="preserve">
+    <value>XP</value>
+  </data>
+  <data name="InspectValueEmpty" xml:space="preserve">
+    <value>[empty]</value>
+  </data>
+  <data name="InspectErrorLocalPlayerUnavailable" xml:space="preserve">
+    <value>Local player unavailable.</value>
+  </data>
+  <data name="InspectErrorPlayerNameMissing" xml:space="preserve">
+    <value>Player name not informed.</value>
+  </data>
+  <data name="InspectErrorNoNearbyPlayers" xml:space="preserve">
+    <value>No nearby/visible player was found for inspection.</value>
+  </data>
+  <data name="InspectErrorMultiplePlayersMatch" xml:space="preserve">
+    <value>More than one player matches the informed name</value>
+  </data>
+  <data name="InspectErrorPlayerNotFoundFormat" xml:space="preserve">
+    <value>Player '{0}' was not found among nearby/visible players.</value>
   </data>
 </root>

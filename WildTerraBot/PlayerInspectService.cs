@@ -24,14 +24,14 @@ namespace WildTerraBot
 
             if (localPlayer == null)
             {
-                error = "Player local não disponível.";
+                error = WildTerraBot.Properties.Resources.InspectErrorLocalPlayerUnavailable;
                 return false;
             }
 
             requestedPlayerName = (requestedPlayerName ?? "").Trim();
             if (string.IsNullOrWhiteSpace(requestedPlayerName))
             {
-                error = "Nome do player não informado.";
+                error = WildTerraBot.Properties.Resources.InspectErrorPlayerNameMissing;
                 return false;
             }
 
@@ -63,7 +63,7 @@ namespace WildTerraBot
 
             if (nearbyPlayers.Count == 0)
             {
-                error = "Nenhum player próximo/visível foi encontrado para inspeção.";
+                error = WildTerraBot.Properties.Resources.InspectErrorNoNearbyPlayers;
                 return null;
             }
 
@@ -89,12 +89,12 @@ namespace WildTerraBot
 
             if (partial.Count > 1)
             {
-                error = "Mais de um player corresponde ao nome informado: " +
+                error = WildTerraBot.Properties.Resources.InspectErrorMultiplePlayersMatch + ": " +
                         string.Join(", ", partial.Take(8).Select(x => string.Format("{0} ({1:F1}m)", x.Player.name, x.Distance)).ToArray());
                 return null;
             }
 
-            error = string.Format("Player '{0}' não encontrado entre os players próximos/visíveis.", requestedPlayerName);
+            error = string.Format(WildTerraBot.Properties.Resources.InspectErrorPlayerNotFoundFormat, requestedPlayerName);
             return null;
         }
 
@@ -140,7 +140,7 @@ namespace WildTerraBot
                         petName = Safe(target.activePet.name);
                     }
 
-                    sb.AppendLine("Pet ativo: " + Safe(petName) + " | Level=" + target.activePet.level);
+                    sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelActivePet + ": " + Safe(petName) + " | " + WildTerraBot.Properties.Resources.InspectLabelLevelInline + "=" + target.activePet.level);
                 }
             }
             catch { }
@@ -148,7 +148,7 @@ namespace WildTerraBot
             try
             {
                 if (target.activeMount != null)
-                    sb.AppendLine("Montaria ativa: " + GetLocalizedMountName(target.activeMount) + " | Level=" + target.activeMount.level);
+                    sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelActiveMount + ": " + GetLocalizedMountName(target.activeMount) + " | " + WildTerraBot.Properties.Resources.InspectLabelLevelInline + "=" + target.activeMount.level);
             }
             catch { }
 
@@ -162,10 +162,10 @@ namespace WildTerraBot
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelExperience + ": " + target.experience);
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelExperienceMax + ": " + target.experienceMax);
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelSkillExperience + ": " + target.skillExperience);
-            sb.AppendLine("Boost Atual: " + target.boost);
-            sb.AppendLine("Boost Max: " + target.boostMax);
-            sb.AppendLine("Boost Ativo: " + FormatBool(target.isBoostOn));
-            sb.AppendLine("XP Progress: " + FormatPercent(target.experience, target.experienceMax));
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelBoostCurrent + ": " + target.boost);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelBoostMax + ": " + target.boostMax);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelBoostActive + ": " + FormatBool(target.isBoostOn));
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelXpProgress + ": " + FormatPercent(target.experience, target.experienceMax));
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelBoostProgress + ": " + FormatPercent(target.boost, target.boostMax));
             sb.AppendLine();
 
@@ -194,7 +194,7 @@ namespace WildTerraBot
             sb.AppendLine("- " + WildTerraBot.Properties.Resources.InspectObservationClientData);
             sb.AppendLine("- " + WildTerraBot.Properties.Resources.InspectObservationVisiblePlayers);
             sb.AppendLine("- " + WildTerraBot.Properties.Resources.InspectObservationLocalizedNames);
-            sb.AppendLine("- Skills ativas não expõem um level numérico próprio no struct Skill.");
+            sb.AppendLine("- " + WildTerraBot.Properties.Resources.InspectObservationSkillLevelUnavailable);
 
             return sb.ToString();
         }
@@ -215,7 +215,7 @@ namespace WildTerraBot
 
                 if (slot.amount <= 0 || slot.item.hash == 0)
                 {
-                    sb.AppendLine(slotName + ": [vazio]");
+                    sb.AppendLine(slotName + ": " + WildTerraBot.Properties.Resources.InspectValueEmpty);
                     continue;
                 }
 
@@ -223,22 +223,22 @@ namespace WildTerraBot
                 string itemName = Safe(GetLocalizedItemName(item));
 
                 sb.AppendLine(slotName + ": " + itemName);
-                sb.AppendLine("  Qualidade: " + FormatQuality(item.quality));
-                sb.AppendLine("  Raridade: " + item.GetRarity());
-                sb.AppendLine("  Durabilidade: " + FormatDurability(item));
+                sb.AppendLine("  " + WildTerraBot.Properties.Resources.InspectLabelQuality + ": " + FormatQuality(item.quality));
+                sb.AppendLine("  " + WildTerraBot.Properties.Resources.InspectLabelRarity + ": " + item.GetRarity());
+                sb.AppendLine("  " + WildTerraBot.Properties.Resources.InspectLabelDurability + ": " + FormatDurability(item));
 
                 string enchantName = Safe(item.GetEnchantmentName());
                 string enchantEffect = Safe(item.GetEnchantmentEffect());
 
                 if (!string.IsNullOrWhiteSpace(enchantName) && enchantName != "-")
-                    sb.AppendLine("  Encantamento: " + enchantName);
+                    sb.AppendLine("  " + WildTerraBot.Properties.Resources.InspectLabelEnchantment + ": " + enchantName);
 
                 if (!string.IsNullOrWhiteSpace(enchantEffect) && enchantEffect != "-")
-                    sb.AppendLine("  Efeito Encant.: " + enchantEffect);
+                    sb.AppendLine("  " + WildTerraBot.Properties.Resources.InspectLabelEnchantmentEffect + ": " + enchantEffect);
 
                 if (item.itemValues != null && item.itemValues.Length > 0)
                 {
-                    sb.AppendLine("  Valores extras:");
+                    sb.AppendLine("  " + WildTerraBot.Properties.Resources.InspectLabelExtraValues + ":");
                     foreach (ItemValue iv in item.itemValues)
                     {
                         if (string.IsNullOrWhiteSpace(iv.key) && string.IsNullOrWhiteSpace(iv.value))
@@ -260,7 +260,7 @@ namespace WildTerraBot
 
             foreach (WTProfSkill prof in target.profSkills.OrderBy(x => x.name))
             {
-                sb.AppendLine("- " + Safe(GetLocalizedProfSkillName(prof)) + " | Level=" + prof.level + " | XP=" + prof.xp);
+                sb.AppendLine("- " + Safe(GetLocalizedProfSkillName(prof)) + " | " + WildTerraBot.Properties.Resources.InspectLabelLevelInline + "=" + prof.level + " | " + WildTerraBot.Properties.Resources.InspectLabelXpInline + "=" + prof.xp);
             }
         }
 
@@ -280,7 +280,7 @@ namespace WildTerraBot
                 {
                     WTWeaponSkill weaponSkill = skill.data as WTWeaponSkill;
                     if (weaponSkill != null && !string.IsNullOrWhiteSpace(weaponSkill.profSkillName))
-                        line += " | ProfSkill=" + Safe(GetLocalizedProfSkillName(new WTProfSkill(weaponSkill.profSkillName)));
+                        line += " | " + WildTerraBot.Properties.Resources.InspectLabelProfSkill + "=" + Safe(GetLocalizedProfSkillName(new WTProfSkill(weaponSkill.profSkillName)));
                 }
                 catch { }
 
@@ -288,7 +288,7 @@ namespace WildTerraBot
                 {
                     WTAbilitySkill abilitySkill = skill.data as WTAbilitySkill;
                     if (abilitySkill != null && abilitySkill.profSkillLevel > 0)
-                        line += " | ReqProfLevel=" + abilitySkill.profSkillLevel;
+                        line += " | " + WildTerraBot.Properties.Resources.InspectLabelReqProfLevel + "=" + abilitySkill.profSkillLevel;
                 }
                 catch { }
 
@@ -296,7 +296,7 @@ namespace WildTerraBot
                 {
                     float cooldown = skill.CooldownRemaining();
                     if (cooldown > 0.01f)
-                        line += " | CD=" + cooldown.ToString("F1") + "s";
+                        line += " | " + WildTerraBot.Properties.Resources.InspectLabelCooldown + "=" + cooldown.ToString("F1") + "s";
                 }
                 catch { }
 
@@ -304,7 +304,7 @@ namespace WildTerraBot
                 {
                     float cast = skill.CastTimeRemaining();
                     if (cast > 0.01f)
-                        line += " | Cast=" + cast.ToString("F1") + "s";
+                        line += " | " + WildTerraBot.Properties.Resources.InspectLabelCast + "=" + cast.ToString("F1") + "s";
                 }
                 catch { }
 
@@ -316,7 +316,7 @@ namespace WildTerraBot
         {
             if (target == null || target.buffs == null || target.buffs.Count == 0)
             {
-                sb.AppendLine("Sem buffs ativos.");
+                sb.AppendLine(WildTerraBot.Properties.Resources.InspectNoBuffsData);
                 return;
             }
 
@@ -325,7 +325,7 @@ namespace WildTerraBot
                 float remaining = 0f;
                 try { remaining = buff.BuffTimeRemaining(); } catch { }
 
-                sb.AppendLine("- " + Safe(GetLocalizedBuffName(buff)) + " | Level=" + buff.level + " | Restante=" + remaining.ToString("F1") + "s");
+                sb.AppendLine("- " + Safe(GetLocalizedBuffName(buff)) + " | " + WildTerraBot.Properties.Resources.InspectLabelLevelInline + "=" + buff.level + " | " + WildTerraBot.Properties.Resources.InspectLabelRemainingTime + "=" + remaining.ToString("F1") + "s");
             }
         }
 
@@ -366,7 +366,7 @@ namespace WildTerraBot
             }
             catch { }
 
-            return "Slot" + index;
+            return WildTerraBot.Properties.Resources.InspectLabelSlot + index;
         }
 
         private static string GetCurrentSkillName(Player target)
