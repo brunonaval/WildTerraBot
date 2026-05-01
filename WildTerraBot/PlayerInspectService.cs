@@ -154,24 +154,24 @@ namespace WildTerraBot
 
             sb.AppendLine();
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionEconomy);
-            sb.AppendLine("Money: " + target.money);
-            sb.AppendLine("Gold: " + target.gold);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelMoney + ": " + target.money);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelGold + ": " + target.gold);
             sb.AppendLine();
 
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionProgression);
-            sb.AppendLine("Experience: " + target.experience);
-            sb.AppendLine("Experience Max: " + target.experienceMax);
-            sb.AppendLine("SkillExperience: " + target.skillExperience);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelExperience + ": " + target.experience);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelExperienceMax + ": " + target.experienceMax);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelSkillExperience + ": " + target.skillExperience);
             sb.AppendLine("Boost Atual: " + target.boost);
             sb.AppendLine("Boost Max: " + target.boostMax);
             sb.AppendLine("Boost Ativo: " + FormatBool(target.isBoostOn));
             sb.AppendLine("XP Progress: " + FormatPercent(target.experience, target.experienceMax));
-            sb.AppendLine("Boost Progress: " + FormatPercent(target.boost, target.boostMax));
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelBoostProgress + ": " + FormatPercent(target.boost, target.boostMax));
             sb.AppendLine();
 
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionAttributes);
-            sb.AppendLine("Strength: " + target.strength);
-            sb.AppendLine("Intelligence: " + target.intelligence);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelStrength + ": " + target.strength);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelIntelligence + ": " + target.intelligence);
             sb.AppendLine();
 
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionEquipment);
@@ -191,9 +191,9 @@ namespace WildTerraBot
             sb.AppendLine();
 
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionObservations);
-            sb.AppendLine("- Os dados dependem do que o cliente recebeu do servidor.");
-            sb.AppendLine("- A inspeção é limitada a players próximos/visíveis no cliente.");
-            sb.AppendLine("- Os nomes localizados dependem da tradução ativa no cliente do jogo.");
+            sb.AppendLine("- " + WildTerraBot.Properties.Resources.InspectObservationClientData);
+            sb.AppendLine("- " + WildTerraBot.Properties.Resources.InspectObservationVisiblePlayers);
+            sb.AppendLine("- " + WildTerraBot.Properties.Resources.InspectObservationLocalizedNames);
             sb.AppendLine("- Skills ativas não expõem um level numérico próprio no struct Skill.");
 
             return sb.ToString();

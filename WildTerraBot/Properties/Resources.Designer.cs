@@ -341,5 +341,93 @@ namespace WildTerraBot.Properties
                 return ResourceManager.GetString("InspectValueYes", resourceCulture);
             }
         }
+
+        internal static string InspectLabelExperience
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelExperience", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelExperienceMax
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelExperienceMax", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelGold
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelGold", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelMoney
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelMoney", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelStrength
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelStrength", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelIntelligence
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelIntelligence", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelSkillExperience
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelSkillExperience", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelBoostProgress
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelBoostProgress", resourceCulture);
+            }
+        }
+
+        internal static string InspectObservationClientData
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectObservationClientData", resourceCulture);
+            }
+        }
+
+        internal static string InspectObservationVisiblePlayers
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectObservationVisiblePlayers", resourceCulture);
+            }
+        }
+
+        internal static string InspectObservationLocalizedNames
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectObservationLocalizedNames", resourceCulture);
+            }
+        }
     }
 }

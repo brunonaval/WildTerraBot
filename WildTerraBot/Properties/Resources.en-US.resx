@@ -24,17 +24,29 @@
   <data name="InspectLabelDistance" xml:space="preserve">
     <value>Distance</value>
   </data>
+  <data name="InspectLabelExperience" xml:space="preserve">
+    <value>Experience</value>
+  </data>
+  <data name="InspectLabelExperienceMax" xml:space="preserve">
+    <value>Experience Max</value>
+  </data>
   <data name="InspectLabelGeneratedAt" xml:space="preserve">
     <value>Generated at</value>
   </data>
   <data name="InspectLabelGuild" xml:space="preserve">
     <value>Guild</value>
   </data>
+  <data name="InspectLabelGold" xml:space="preserve">
+    <value>Gold</value>
+  </data>
   <data name="InspectLabelHp" xml:space="preserve">
     <value>HP</value>
   </data>
   <data name="InspectLabelLevel" xml:space="preserve">
     <value>Level</value>
+  </data>
+  <data name="InspectLabelMoney" xml:space="preserve">
+    <value>Money</value>
   </data>
   <data name="InspectLabelName" xml:space="preserve">
     <value>Name</value>
@@ -57,6 +69,18 @@
   <data name="InspectLabelState" xml:space="preserve">
     <value>State</value>
   </data>
+  <data name="InspectLabelStrength" xml:space="preserve">
+    <value>Strength</value>
+  </data>
+  <data name="InspectLabelIntelligence" xml:space="preserve">
+    <value>Intelligence</value>
+  </data>
+  <data name="InspectLabelSkillExperience" xml:space="preserve">
+    <value>SkillExperience</value>
+  </data>
+  <data name="InspectLabelBoostProgress" xml:space="preserve">
+    <value>Boost Progress</value>
+  </data>
   <data name="InspectLabelTitleRaw" xml:space="preserve">
     <value>Title (raw)</value>
   </data>
@@ -74,6 +98,15 @@
   </data>
   <data name="InspectNoSkillsData" xml:space="preserve">
     <value>No skills data.</value>
+  </data>
+  <data name="InspectObservationClientData" xml:space="preserve">
+    <value>Data depends on what the client received from the server.</value>
+  </data>
+  <data name="InspectObservationVisiblePlayers" xml:space="preserve">
+    <value>Inspection is limited to nearby/visible players on the client.</value>
+  </data>
+  <data name="InspectObservationLocalizedNames" xml:space="preserve">
+    <value>Localized names depend on the active translation in the game client.</value>
   </data>
   <data name="InspectReportTitle" xml:space="preserve">
     <value>PLAYER INSPECT</value>
