@@ -84,7 +84,7 @@ namespace WildTerraBot
             if (candidates != null && candidates.Count == 1)
             {
                 LockedProfile = candidates[0];
-                logger.LogWarning($"[IA] LOCK: Peixe deduzido com certeza: '{LockedProfile.Name}'. A partir de agora seguirei a sequência completa (E/R/T/Wait) sem depender das dicas do UI.");
+                logger.LogWarning(string.Format(WildTerraBot.Properties.Resources.FishBrainLockCertainFormat, LockedProfile.Name));
             }
         }
 
@@ -450,7 +450,7 @@ namespace WildTerraBot
         /// </summary>
         public static int PredictMoveWithElimination(int stepIndex, int visualID, int wrongActionID, ManualLogSource logger)
         {
-            logger.LogInfo($"[IA] Analisando Vermelho. Passo: {stepIndex}. Visual: {visualID} ({GetVisualName(visualID)}). Erro sugerido: {GetKeyName(wrongActionID)}");
+            logger.LogInfo(string.Format(WildTerraBot.Properties.Resources.FishBrainAnalyzingRedFormat, stepIndex, visualID, GetVisualName(visualID), GetKeyName(wrongActionID)));
 
             // 1) Filtra candidatos usando: visuais observados + passos verdes confirmados + (ação do passo atual != dica vermelha)
             var candidates = GetCandidates(stepIndex, visualID, null, wrongActionID);
@@ -458,13 +458,13 @@ namespace WildTerraBot
             // Se ficar vazio, tentamos sem a restrição "forbiddenAction" (perfil/local/isca pode estar divergente)
             if (candidates.Count == 0)
             {
-                logger.LogWarning($"[IA] Nenhum candidato após filtrar pela dica vermelha. Tentando apenas com visuais/histórico (sem eliminar pela dica)...");
+                logger.LogWarning(WildTerraBot.Properties.Resources.FishBrainNoCandidateAfterRedHint);
                 candidates = GetCandidates(stepIndex, visualID, null, null);
             }
 
             if (candidates.Count == 0)
             {
-                logger.LogWarning($"[IA] Ainda sem candidatos. Usando WAIT como fallback.");
+                logger.LogWarning(WildTerraBot.Properties.Resources.FishBrainStillNoCandidatesUsingWait);
                 return WAIT;
             }
 
@@ -474,12 +474,12 @@ namespace WildTerraBot
 
             if (candidates.Count == 1)
             {
-                logger.LogWarning($"[IA] DEDUÇÃO (Passo {stepIndex}): '{candidates[0].Name}'. Executando: {GetKeyName(chosen)}");
+                logger.LogWarning(string.Format(WildTerraBot.Properties.Resources.FishBrainDeductionSingleFormat, stepIndex, candidates[0].Name, GetKeyName(chosen)));
             }
             else
             {
                 var actions = candidates.Select(c => GetKeyName(c.ActionSequence[stepIndex])).Distinct().ToList();
-                logger.LogWarning($"[IA] Ambíguo (Passo {stepIndex}): {candidates.Count} candidatos. Ações possíveis: {string.Join(", ", actions)}. Executando: {GetKeyName(chosen)}");
+                logger.LogWarning(string.Format(WildTerraBot.Properties.Resources.FishBrainAmbiguousFormat, stepIndex, candidates.Count, string.Join(", ", actions), GetKeyName(chosen)));
             }
 
             return chosen;

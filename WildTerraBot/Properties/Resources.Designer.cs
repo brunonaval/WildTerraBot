@@ -2048,5 +2048,41 @@ namespace WildTerraBot.Properties {
                 return ResourceManager.GetString("FishingHooksLockProfileExecutingFullSequenceFormat", resourceCulture);
             }
         }
+
+        internal static string FishBrainLockCertainFormat {
+            get {
+                return ResourceManager.GetString("FishBrainLockCertainFormat", resourceCulture);
+            }
+        }
+
+        internal static string FishBrainAnalyzingRedFormat {
+            get {
+                return ResourceManager.GetString("FishBrainAnalyzingRedFormat", resourceCulture);
+            }
+        }
+
+        internal static string FishBrainNoCandidateAfterRedHint {
+            get {
+                return ResourceManager.GetString("FishBrainNoCandidateAfterRedHint", resourceCulture);
+            }
+        }
+
+        internal static string FishBrainStillNoCandidatesUsingWait {
+            get {
+                return ResourceManager.GetString("FishBrainStillNoCandidatesUsingWait", resourceCulture);
+            }
+        }
+
+        internal static string FishBrainDeductionSingleFormat {
+            get {
+                return ResourceManager.GetString("FishBrainDeductionSingleFormat", resourceCulture);
+            }
+        }
+
+        internal static string FishBrainAmbiguousFormat {
+            get {
+                return ResourceManager.GetString("FishBrainAmbiguousFormat", resourceCulture);
+            }
+        }
     }
 }

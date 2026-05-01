@@ -879,4 +879,22 @@
   <data name="FishingHooksLockProfileExecutingFullSequenceFormat" xml:space="preserve">
     <value>[IA][LOCK] Step {0}: Locked on '{1}'. Executing {2} and following full sequence.</value>
   </data>
+  <data name="FishBrainLockCertainFormat" xml:space="preserve">
+    <value>[IA] LOCK: Fish deduced with certainty: '{0}'. From now on I will follow the full sequence (E/R/T/Wait) without relying on UI hints.</value>
+  </data>
+  <data name="FishBrainAnalyzingRedFormat" xml:space="preserve">
+    <value>[IA] Analyzing Red. Step: {0}. Visual: {1} ({2}). Suggested error: {3}</value>
+  </data>
+  <data name="FishBrainNoCandidateAfterRedHint" xml:space="preserve">
+    <value>[IA] No candidates after filtering by red hint. Trying only with visuals/history (without eliminating by hint)...</value>
+  </data>
+  <data name="FishBrainStillNoCandidatesUsingWait" xml:space="preserve">
+    <value>[IA] Still no candidates. Using WAIT as fallback.</value>
+  </data>
+  <data name="FishBrainDeductionSingleFormat" xml:space="preserve">
+    <value>[IA] DEDUCTION (Step {0}): '{1}'. Executing: {2}</value>
+  </data>
+  <data name="FishBrainAmbiguousFormat" xml:space="preserve">
+    <value>[IA] Ambiguous (Step {0}): {1} candidates. Possible actions: {2}. Executing: {3}</value>
+  </data>
 </root>

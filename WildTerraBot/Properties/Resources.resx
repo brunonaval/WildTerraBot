@@ -984,4 +984,22 @@
   <data name="FishingHooksLockProfileExecutingFullSequenceFormat" xml:space="preserve">
     <value>[IA][LOCK] Passo {0}: Travado em '{1}'. Executando {2} e seguindo sequência completa.</value>
   </data>
+  <data name="FishBrainLockCertainFormat" xml:space="preserve">
+    <value>[IA] LOCK: Peixe deduzido com certeza: '{0}'. A partir de agora seguirei a sequência completa (E/R/T/Wait) sem depender das dicas do UI.</value>
+  </data>
+  <data name="FishBrainAnalyzingRedFormat" xml:space="preserve">
+    <value>[IA] Analisando Vermelho. Passo: {0}. Visual: {1} ({2}). Erro sugerido: {3}</value>
+  </data>
+  <data name="FishBrainNoCandidateAfterRedHint" xml:space="preserve">
+    <value>[IA] Nenhum candidato após filtrar pela dica vermelha. Tentando apenas com visuais/histórico (sem eliminar pela dica)...</value>
+  </data>
+  <data name="FishBrainStillNoCandidatesUsingWait" xml:space="preserve">
+    <value>[IA] Ainda sem candidatos. Usando WAIT como fallback.</value>
+  </data>
+  <data name="FishBrainDeductionSingleFormat" xml:space="preserve">
+    <value>[IA] DEDUÇÃO (Passo {0}): '{1}'. Executando: {2}</value>
+  </data>
+  <data name="FishBrainAmbiguousFormat" xml:space="preserve">
+    <value>[IA] Ambíguo (Passo {0}): {1} candidatos. Ações possíveis: {2}. Executando: {3}</value>
+  </data>
 </root>
