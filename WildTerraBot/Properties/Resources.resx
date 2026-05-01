@@ -12,8 +12,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="InspectLabelAvatar" xml:space="preserve">
+    <value>Avatar</value>
+  </data>
+  <data name="InspectLabelCurrentSkill" xml:space="preserve">
+    <value>Skill atual</value>
+  </data>
+  <data name="InspectLabelDistance" xml:space="preserve">
+    <value>Distância</value>
+  </data>
+  <data name="InspectLabelGeneratedAt" xml:space="preserve">
+    <value>Gerado em</value>
+  </data>
   <data name="InspectLabelGuild" xml:space="preserve">
     <value>Guild</value>
+  </data>
+  <data name="InspectLabelHp" xml:space="preserve">
+    <value>HP</value>
   </data>
   <data name="InspectLabelLevel" xml:space="preserve">
     <value>Level</value>
@@ -21,8 +36,29 @@
   <data name="InspectLabelName" xml:space="preserve">
     <value>Nome</value>
   </data>
+  <data name="InspectLabelPlayerFound" xml:space="preserve">
+    <value>Player encontrado</value>
+  </data>
+  <data name="InspectLabelPosition" xml:space="preserve">
+    <value>Posição</value>
+  </data>
+  <data name="InspectLabelQuery" xml:space="preserve">
+    <value>Consulta</value>
+  </data>
   <data name="InspectLabelSex" xml:space="preserve">
     <value>Sexo</value>
+  </data>
+  <data name="InspectLabelSp" xml:space="preserve">
+    <value>SP</value>
+  </data>
+  <data name="InspectLabelState" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="InspectLabelTitleRaw" xml:space="preserve">
+    <value>Título (raw)</value>
+  </data>
+  <data name="InspectNoCosmeticsData" xml:space="preserve">
+    <value>Sem dados de cosméticos.</value>
   </data>
   <data name="InspectReportTitle" xml:space="preserve">
     <value>INSPEÇÃO DE PLAYER</value>

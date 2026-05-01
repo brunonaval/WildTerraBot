@@ -62,6 +62,46 @@ namespace WildTerraBot.Properties
             }
         }
 
+        internal static string InspectLabelAvatar
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelAvatar", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelCurrentSkill
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelCurrentSkill", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelDistance
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelDistance", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelGeneratedAt
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelGeneratedAt", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelHp
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelHp", resourceCulture);
+            }
+        }
+
         internal static string InspectLabelLevel
         {
             get
@@ -78,11 +118,67 @@ namespace WildTerraBot.Properties
             }
         }
 
+        internal static string InspectLabelPlayerFound
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelPlayerFound", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelPosition
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelPosition", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelQuery
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelQuery", resourceCulture);
+            }
+        }
+
         internal static string InspectLabelSex
         {
             get
             {
                 return ResourceManager.GetString("InspectLabelSex", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelSp
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelSp", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelState
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelState", resourceCulture);
+            }
+        }
+
+        internal static string InspectLabelTitleRaw
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectLabelTitleRaw", resourceCulture);
+            }
+        }
+
+        internal static string InspectNoCosmeticsData
+        {
+            get
+            {
+                return ResourceManager.GetString("InspectNoCosmeticsData", resourceCulture);
             }
         }
 

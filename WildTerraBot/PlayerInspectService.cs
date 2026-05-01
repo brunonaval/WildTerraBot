@@ -109,20 +109,20 @@ namespace WildTerraBot
             sb.AppendLine("========================================");
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectReportTitle);
             sb.AppendLine("========================================");
-            sb.AppendLine("Consulta: " + Safe(requestedPlayerName));
-            sb.AppendLine("Player encontrado: " + Safe(target.name));
-            sb.AppendLine("Gerado em: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelQuery + ": " + Safe(requestedPlayerName));
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelPlayerFound + ": " + Safe(target.name));
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelGeneratedAt + ": " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             sb.AppendLine();
 
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionGeneral);
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelName + ": " + Safe(target.name));
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelLevel + ": " + target.level);
-            sb.AppendLine("HP: " + target.health);
-            sb.AppendLine("SP: " + target.stamina);
-            sb.AppendLine("Distância: " + distance.ToString("F1") + "m");
-            sb.AppendLine(string.Format("Posição: X={0:F1} | Y={1:F1} | Z={2:F1}", targetPos.x, targetPos.y, targetPos.z));
-            sb.AppendLine("Estado: " + Safe(target.state));
-            sb.AppendLine("Skill atual: " + GetCurrentSkillName(target));
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelHp + ": " + target.health);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelSp + ": " + target.stamina);
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelDistance + ": " + distance.ToString("F1") + "m");
+            sb.AppendLine(string.Format(WildTerraBot.Properties.Resources.InspectLabelPosition + ": X={0:F1} | Y={1:F1} | Z={2:F1}", targetPos.x, targetPos.y, targetPos.z));
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelState + ": " + Safe(target.state));
+            sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelCurrentSkill + ": " + GetCurrentSkillName(target));
             sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelGuild + ": " + GetGuildName(target));
             AppendCosmeticsSection(sb, target);
 
@@ -339,9 +339,9 @@ namespace WildTerraBot
                 string titleRaw = Safe(target.view.title);
                 string titleLocalized = Safe(GetLocalizedTitle(target));
 
-                sb.AppendLine("Titulo (raw): " + titleRaw);
+                sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelTitleRaw + ": " + titleRaw);
                 sb.AppendLine("Titulo (localizado): " + titleLocalized);
-                sb.AppendLine("Avatar: " + Safe(target.view.avatar));
+                sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelAvatar + ": " + Safe(target.view.avatar));
                 sb.AppendLine("Border: " + Safe(target.view.border));
                 sb.AppendLine(WildTerraBot.Properties.Resources.InspectLabelSex + ": " + (target.view.isMale ? WildTerraBot.Properties.Resources.InspectValueMale : WildTerraBot.Properties.Resources.InspectValueFemale));
             }
@@ -349,7 +349,7 @@ namespace WildTerraBot
             {
                 sb.AppendLine();
                 sb.AppendLine(WildTerraBot.Properties.Resources.InspectSectionCosmetics);
-                sb.AppendLine("Sem dados de cosmeticos.");
+                sb.AppendLine(WildTerraBot.Properties.Resources.InspectNoCosmeticsData);
             }
         }
 
