@@ -718,7 +718,7 @@ namespace WildTerraBot.Properties {
         }
         
         /// <summary>
-        ///   Consulta uma cadeia de caracteres localizada semelhante a Nao.
+        ///   Consulta uma cadeia de caracteres localizada semelhante a Não.
         /// </summary>
         internal static string InspectValueNo {
             get {
