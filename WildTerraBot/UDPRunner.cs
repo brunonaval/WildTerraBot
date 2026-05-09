@@ -579,6 +579,20 @@ namespace WildTerraBot
                         bool useMount = string.Equals(p[3], "ON", StringComparison.OrdinalIgnoreCase);
                         mainThreadActions.Enqueue(() => StartLocationGo(new Vector3(locX, 0f, locZ), useMount));
                     }
+                    else if (p[0] == "RESPAWN")
+                    {
+                        mainThreadActions.Enqueue(() =>
+                        {
+                            if (TryInvokePlayerCommand("CmdRespawn"))
+                            {
+                                WTSocketBot.PublicLogger.LogInfo("[RESPAWN] CmdRespawn invoked.");
+                            }
+                            else
+                            {
+                                WTSocketBot.PublicLogger.LogWarning("[RESPAWN] Player or CmdRespawn not available.");
+                            }
+                        });
+                    }
                     else if (p[0] == "HARVEST" && p.Length >= 2)
                     {
                         int requestedWorldId = 0;
@@ -2631,6 +2645,39 @@ namespace WildTerraBot
         bool CheckInCombat(WTPlayer p) { if (_inCombatMethod == null) return false; try { return (bool)_inCombatMethod.Invoke(p, null); } catch { return false; } }
         bool CheckIsMounted(WTPlayer p) { if (_isMountedMethod == null) return false; try { return (bool)_isMountedMethod.Invoke(p, null); } catch { return false; } }
         void ToggleMount(WTPlayer p) { if (_toggleMountMethod == null) return; try { _toggleMountMethod.Invoke(p, null); } catch { } }
+        private object ResolveUdpPlayerObject()
+        {
+            if (MeuPersonagem != null) return MeuPersonagem;
+            try { if (Player.localPlayer != null) return Player.localPlayer; } catch { }
+            return null;
+        }
+        private static MethodInfo FindInstanceMethodRecursive(Type type, string methodName)
+        {
+            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            while (type != null)
+            {
+                MethodInfo method = type.GetMethod(methodName, flags);
+                if (method != null) return method;
+                type = type.BaseType;
+            }
+            return null;
+        }
+        private bool TryInvokePlayerCommand(string methodName)
+        {
+            object playerObj = ResolveUdpPlayerObject();
+            if (playerObj == null) return false;
+            try
+            {
+                MethodInfo method = FindInstanceMethodRecursive(playerObj.GetType(), methodName);
+                if (method == null || method.GetParameters().Length != 0) return false;
+                method.Invoke(playerObj, null);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         void CmdSetTarget(WTPlayer p, NetworkIdentity target)
         {
             if (_setTargetMethod == null) return;
