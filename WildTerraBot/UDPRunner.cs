@@ -44,6 +44,13 @@ namespace WildTerraBot
         private bool _modoHunter = false;
         private bool _modoPesca = false;
         private bool _returningHome = false;
+        private bool _locationGoActive = false;
+        private Vector3 _locationGoTarget = Vector3.zero;
+        private bool _locationGoUseMount = false;
+        private float _locationGoStartedAt = 0f;
+        private const float LOCATION_GO_TIMEOUT_SECONDS = 60f;
+        private const float LOCATION_GO_ARRIVAL_DISTANCE = 2.0f;
+        private float _nextLocationGoLog = 0f;
         // ===== DEBUG MONTARIA =====
         private const bool DBG_MOUNT = true;
         private float _dbgNextAutoMountLog = 0f;
@@ -554,6 +561,24 @@ namespace WildTerraBot
                         _returningHome = false;
                         _modoPesca = false;
                     }
+                    else if (p[0] == "LOCATION_GO")
+                    {
+                        if (p.Length < 4)
+                        {
+                            WTSocketBot.PublicLogger.LogWarning("[LOCATION] Invalid LOCATION_GO payload.");
+                            continue;
+                        }
+
+                        if (!float.TryParse(p[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float locX) ||
+                            !float.TryParse(p[2], NumberStyles.Float, CultureInfo.InvariantCulture, out float locZ))
+                        {
+                            WTSocketBot.PublicLogger.LogWarning("[LOCATION] Invalid LOCATION_GO payload.");
+                            continue;
+                        }
+
+                        bool useMount = string.Equals(p[3], "ON", StringComparison.OrdinalIgnoreCase);
+                        mainThreadActions.Enqueue(() => StartLocationGo(new Vector3(locX, 0f, locZ), useMount));
+                    }
                     else if (p[0] == "HARVEST" && p.Length >= 2)
                     {
                         int requestedWorldId = 0;
@@ -939,6 +964,111 @@ namespace WildTerraBot
                 DbgMount(string.Format(WildTerraBot.Properties.Resources.UdpRunnerResetModesAfterFormat, _modoColeta, _modoHunter, _modoPesca, _returningHome));
         }
 
+        private void StartLocationGo(Vector3 target, bool useMount)
+        {
+            if (MeuPersonagem == null) return;
+            WTPlayer wtPlayer = MeuPersonagem as WTPlayer;
+            if (wtPlayer == null) return;
+
+            StopLocationGo(null);
+            ResetModes();
+
+            _locationGoActive = true;
+            _locationGoUseMount = useMount;
+            _locationGoStartedAt = Time.time;
+            _locationGoTarget = new Vector3(target.x, wtPlayer.transform.position.y, target.z);
+            _useMount = useMount;
+            _lastMoveTarget = _locationGoTarget;
+
+            WTSocketBot.PublicLogger.LogInfo($"[LOCATION] Go started: ({_locationGoTarget.x:F0}, {_locationGoTarget.z:F0}) useMount={_locationGoUseMount}.");
+        }
+
+        private void StopLocationGo(string reason = null)
+        {
+            if (!_locationGoActive) return;
+
+            bool clearMoveTarget = _lastMoveTarget.HasValue &&
+                                   Vector3.Distance(_lastMoveTarget.Value, _locationGoTarget) <= 0.1f;
+
+            _locationGoActive = false;
+            _locationGoUseMount = false;
+            _locationGoStartedAt = 0f;
+            _locationGoTarget = Vector3.zero;
+            if (clearMoveTarget) _lastMoveTarget = null;
+
+            if (reason == "arrived") WTSocketBot.PublicLogger.LogInfo("[LOCATION] Arrived.");
+            else if (reason == "timeout") WTSocketBot.PublicLogger.LogWarning("[LOCATION] Timeout.");
+            else if (reason == "conflict") WTSocketBot.PublicLogger.LogWarning("[LOCATION] Stopped due to active/conflicting mode.");
+        }
+
+        private bool IsLocationGoConflictActive(WTPlayer wtPlayer)
+        {
+            if (_modoColeta || _modoHunter || _modoPesca || _returningHome) return true;
+            if (_depositando) return true;
+            if (_trainingController != null && _trainingController.IsEnabled) return true;
+            if (_healTrainer != null && _healTrainer.IsEnabled) return true;
+            if (_tamingController != null && _tamingController.IsEnabled) return true;
+
+            bool emCombateReal = CheckInCombat(wtPlayer);
+            int currentHp = wtPlayer.health;
+            bool tomandoDano = (_lastKnownHp != -1 && currentHp < _lastKnownHp);
+            if (emCombateReal || tomandoDano) return true;
+
+            return false;
+        }
+
+        private void UpdateLocationGo(WTPlayer wtPlayer)
+        {
+            if (!_locationGoActive) return;
+            if (wtPlayer == null) { StopLocationGo("conflict"); return; }
+
+            if (IsLocationGoConflictActive(wtPlayer))
+            {
+                StopLocationGo("conflict");
+                return;
+            }
+
+            Vector3 pos = wtPlayer.transform.position;
+            Vector2 posXZ = new Vector2(pos.x, pos.z);
+            Vector2 targetXZ = new Vector2(_locationGoTarget.x, _locationGoTarget.z);
+            float dist = Vector2.Distance(posXZ, targetXZ);
+
+            if (dist <= LOCATION_GO_ARRIVAL_DISTANCE)
+            {
+                StopLocationGo("arrived");
+                return;
+            }
+
+            if ((Time.time - _locationGoStartedAt) > LOCATION_GO_TIMEOUT_SECONDS)
+            {
+                StopLocationGo("timeout");
+                return;
+            }
+
+            _useMount = _locationGoUseMount;
+            _lastMoveTarget = new Vector3(_locationGoTarget.x, wtPlayer.transform.position.y, _locationGoTarget.z);
+
+            if (_locationGoUseMount && !_isMountingRoutineActive && Time.time >= _pauseMovementUntil && !CheckIsMounted(wtPlayer))
+            {
+                bool underThreat = CheckInCombat(wtPlayer) || ((Time.time - _lastDamageTime) < 5.0f) || (_combatTarget != null && IsValidTarget(_combatTarget));
+                if (!underThreat && dist > 5.0f)
+                {
+                    StartCoroutine(MountSequence(wtPlayer));
+                    return;
+                }
+            }
+
+            if (_isMountingRoutineActive || Time.time < _pauseMovementUntil) return;
+
+            MoveToXZ(wtPlayer, _locationGoTarget.x, _locationGoTarget.z);
+
+            if (DBG_MOUNT && Time.time >= _nextLocationGoLog)
+            {
+                _nextLocationGoLog = Time.time + 2.0f;
+                DbgMount($"[LOCATION] moving dist={dist:0.0} useMount={_locationGoUseMount}");
+            }
+        }
+
         void Update()
         {
             if (MeuPersonagem == null) return;
@@ -1304,6 +1434,12 @@ namespace WildTerraBot
 
                 RunFishingLogic(wtPlayer);
                 return;
+            }
+
+            if (_locationGoActive)
+            {
+                UpdateLocationGo(wtPlayer);
+                if (_locationGoActive) return;
             }
 
             if (!_botAtivo) return;
